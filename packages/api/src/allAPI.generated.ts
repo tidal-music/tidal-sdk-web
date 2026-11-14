@@ -421,7 +421,7 @@ export interface paths {
         put?: never;
         /**
          * Create single album.
-         * @description Creates an uploaded album. Album creation is not atomic with its artist assignment, so every listed artist must be owned by the caller; a collaborator or album-level grant is not enough until the album exists.
+         * @description Creates an uploaded album. Album creation is not atomic with its artist assignment, so the caller must be OWNER of every listed artist; COLLABORATOR, or a role on an album, is not enough until the album exists.
          */
         post: {
             parameters: {
@@ -583,7 +583,7 @@ export interface paths {
         head?: never;
         /**
          * Update single album.
-         * @description Updates existing album.
+         * @description Updates existing album. A COLLABORATOR on the album may update it; changing accessType, published or barcodeId needs OWNER.
          */
         patch: {
             parameters: {
@@ -766,7 +766,7 @@ export interface paths {
         head?: never;
         /**
          * Update artists relationship ("to-many").
-         * @description Sets the album's artists, replacing the current list. Artists are listed in the order given. Provide 1 to 10 distinct artists. You can add your own artist profile and the profiles of users who have owner or collaborator access to the album. Only the album's owner can change its artists. Returns an acknowledgement.
+         * @description Sets the album's artists, replacing the current list. Artists are listed in the order given. Provide 1 to 10 distinct artists. You can add your own artist profile and the profiles of users who have owner or collaborator access to the album. Owners and collaborators can change its artists. Returns an acknowledgement.
          */
         patch: {
             parameters: {
@@ -1073,7 +1073,7 @@ export interface paths {
         head?: never;
         /**
          * Update items relationship ("to-many").
-         * @description Incrementally updates one existing track's 1-based track number to meta.positionIndex. Does not replace the album's items or add or remove tracks. Empty data is rejected. Returns an acknowledgement.
+         * @description Incrementally updates one existing track's 1-based track number to meta.positionIndex. Does not replace the album's items or add or remove tracks. Empty data is rejected. A COLLABORATOR on the album may reorder. Returns an acknowledgement.
          */
         patch: {
             parameters: {
@@ -5745,6 +5745,138 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/commentSummaries": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get multiple commentSummaries.
+         * @description Returns one current summary per accessible subject, for up to 20 subjects. Duplicates are returned once. Inaccessible or missing subjects are omitted. Empty supported subjects still have a summary. IDs remain stable as counts change. Counts include root comments on source files and direct replies on comments.
+         */
+        get: {
+            parameters: {
+                query: {
+                    /** @description Subjects whose counts to return. */
+                    "filter[subject]": string[];
+                    /**
+                     * @description ISO 3166-1 alpha-2 country code
+                     * @example US
+                     */
+                    countryCode?: string;
+                    /**
+                     * @description Include related resources. Available relationships: subject
+                     * @example subject.author.albums
+                     */
+                    include?: string[];
+                    /** @description Comma-separated direct relationships to return as linkage only, without related content. */
+                    includeLinkage?: "subject"[];
+                    /**
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: subject.author.albums
+                     * @example subject.author.albums
+                     */
+                    replaceMedia?: string;
+                    /** @description Share code used as a bearer credential for the resource. */
+                    shareCode?: string;
+                };
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/vnd.api+json": components["schemas"]["CommentSummaries_Multi_Resource_Data_Document"];
+                    };
+                };
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/commentSummaries/{id}/relationships/subject": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get subject relationship ("to-one").
+         * @description Retrieves subject relationship.
+         */
+        get: {
+            parameters: {
+                query?: {
+                    /**
+                     * @description Include related resources. Available relationships: subject
+                     * @example subject.author.albums
+                     */
+                    include?: string[];
+                    /**
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: subject.author.albums
+                     * @example subject.author.albums
+                     */
+                    replaceMedia?: string;
+                    /** @description Share code used as a bearer credential for the resource. */
+                    shareCode?: string;
+                };
+                header?: never;
+                path: {
+                    /** @description Opaque identifier of one subject's current summary */
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/vnd.api+json": components["schemas"]["CommentSummaries_Subject_Single_Relationship_Data_Document"];
+                    };
+                };
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/comments": {
         parameters: {
             query?: never;
@@ -5754,32 +5886,20 @@ export interface paths {
         };
         /**
          * Get multiple comments.
-         * @description Retrieves multiple comments by available filters, or without if applicable.
+         * @description Returns root comments on a resource, or replies to a comment. Both support createdAt in either direction, newest first by default.
          */
         get: {
             parameters: {
-                query?: {
-                    /** @description Filter by parent comment ID to get replies (e.g. `550e8400-e29b-41d4-a716-446655440000`) */
-                    "filter[parentComment.id]"?: string[];
+                query: {
+                    /** @description The immediate subject whose comments to return. */
+                    "filter[subject]": string;
                     /**
-                     * @deprecated
-                     * @description Deprecated: use filter[subject]. Filter by subject resource ID (e.g. `12345`)
-                     */
-                    "filter[subject.id]"?: string[];
-                    /**
-                     * @deprecated
-                     * @description Deprecated: use filter[subject]. Filter by subject resource type (e.g. `albums`)
-                     */
-                    "filter[subject.type]"?: ("albums" | "tracks" | "trackSourceFiles")[];
-                    /** @description The subject whose comments to return. Use either subject or the deprecated subject.id and subject.type pair. */
-                    "filter[subject]"?: string;
-                    /**
-                     * @description Include related resources. Available relationships: author, owners, parentComment
+                     * @description Include related resources. Available relationships: author, commentSummary, owners, reactionSummary, rootSubject, subject
                      * @example author.albums
                      */
                     include?: string[];
                     /** @description Comma-separated direct relationships to return as linkage only, without related content. */
-                    includeLinkage?: ("author" | "owners" | "parentComment")[];
+                    includeLinkage?: ("author" | "commentSummary" | "owners" | "reactionSummary" | "rootSubject" | "subject")[];
                     /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
                     "page[cursor]"?: string;
                     /**
@@ -5788,7 +5908,7 @@ export interface paths {
                      */
                     replaceMedia?: string;
                     /** @description Values prefixed with "-" are sorted descending; values without it are sorted ascending. */
-                    sort?: ("createdAt" | "-createdAt" | "likeCount" | "-likeCount" | "replyCount" | "-replyCount" | "startTime" | "-startTime")[];
+                    sort?: ("createdAt" | "-createdAt")[];
                 };
                 header?: never;
                 path?: never;
@@ -5818,7 +5938,7 @@ export interface paths {
         put?: never;
         /**
          * Create single comment.
-         * @description Creates a new comment.
+         * @description Creates a root comment on a resource or a reply whose subject is a root comment. Replies to replies are rejected.
          */
         post: {
             parameters: {
@@ -5878,12 +5998,12 @@ export interface paths {
             parameters: {
                 query?: {
                     /**
-                     * @description Include related resources. Available relationships: author, owners, parentComment
+                     * @description Include related resources. Available relationships: author, commentSummary, owners, reactionSummary, rootSubject, subject
                      * @example author.albums
                      */
                     include?: string[];
                     /** @description Comma-separated direct relationships to return as linkage only, without related content. */
-                    includeLinkage?: ("author" | "owners" | "parentComment")[];
+                    includeLinkage?: ("author" | "commentSummary" | "owners" | "reactionSummary" | "rootSubject" | "subject")[];
                     /**
                      * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: author.albums
                      * @example author.albums
@@ -6081,6 +6201,65 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/comments/{id}/relationships/commentSummary": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get commentSummary relationship ("to-one").
+         * @description Retrieves commentSummary relationship.
+         */
+        get: {
+            parameters: {
+                query?: {
+                    /**
+                     * @description Include related resources. Available relationships: commentSummary
+                     * @example commentSummary
+                     */
+                    include?: string[];
+                };
+                header?: never;
+                path: {
+                    /**
+                     * @description Comment Id
+                     * @example 550e8400-e29b-41d4-a716-446655440000
+                     */
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/vnd.api+json": components["schemas"]["Comments_CommentSummary_Single_Relationship_Data_Document"];
+                    };
+                };
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/comments/{id}/relationships/owners": {
         parameters: {
             query?: never;
@@ -6142,7 +6321,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/comments/{id}/relationships/parentComment": {
+    "/comments/{id}/relationships/reactionSummary": {
         parameters: {
             query?: never;
             header?: never;
@@ -6150,20 +6329,138 @@ export interface paths {
             cookie?: never;
         };
         /**
-         * Get parentComment relationship ("to-one").
-         * @description Retrieves parentComment relationship.
+         * Get reactionSummary relationship ("to-one").
+         * @description Retrieves reactionSummary relationship.
          */
         get: {
             parameters: {
                 query?: {
                     /**
-                     * @description Include related resources. Available relationships: parentComment
-                     * @example parentComment.author.albums
+                     * @description Include related resources. Available relationships: reactionSummary
+                     * @example reactionSummary
+                     */
+                    include?: string[];
+                };
+                header?: never;
+                path: {
+                    /**
+                     * @description Comment Id
+                     * @example 550e8400-e29b-41d4-a716-446655440000
+                     */
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/vnd.api+json": components["schemas"]["Comments_ReactionSummary_Single_Relationship_Data_Document"];
+                    };
+                };
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/comments/{id}/relationships/rootSubject": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get rootSubject relationship ("to-one").
+         * @description Retrieves rootSubject relationship.
+         */
+        get: {
+            parameters: {
+                query?: {
+                    /**
+                     * @description Include related resources. Available relationships: rootSubject
+                     * @example rootSubject
+                     */
+                    include?: string[];
+                };
+                header?: never;
+                path: {
+                    /**
+                     * @description Comment Id
+                     * @example 550e8400-e29b-41d4-a716-446655440000
+                     */
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/vnd.api+json": components["schemas"]["Comments_RootSubject_Single_Relationship_Data_Document"];
+                    };
+                };
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/comments/{id}/relationships/subject": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get subject relationship ("to-one").
+         * @description Retrieves subject relationship.
+         */
+        get: {
+            parameters: {
+                query?: {
+                    /**
+                     * @description Include related resources. Available relationships: subject
+                     * @example subject.author.albums
                      */
                     include?: string[];
                     /**
-                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: parentComment.author.albums
-                     * @example parentComment.author.albums
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: subject.author.albums
+                     * @example subject.author.albums
                      */
                     replaceMedia?: string;
                 };
@@ -6185,7 +6482,7 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/vnd.api+json": components["schemas"]["Comments_ParentComment_Single_Relationship_Data_Document"];
+                        "application/vnd.api+json": components["schemas"]["Comments_Subject_Single_Relationship_Data_Document"];
                     };
                 };
                 400: components["responses"]["Default400Response"];
@@ -7696,20 +7993,20 @@ export interface paths {
                     /** @description Owner of the folder an item is in; must be the authenticated user. With parent.isRoot=true it selects your root, and with query or subject.albums:published your whole tree. Also accepts `me`. */
                     "filter[parent.owners.id]"?: string;
                     /** @description Searches every folder in your tree, selected with parent.owners.id=me, and lists the matching items in one flat list. An item matches when each word given starts a word in its folder's name, its album's title or the title of one of the album's tracks, ignoring case. An item shared with you matches by its subject, and only while you can open it. (e.g. `demo`) */
-                    "filter[query]"?: string;
-                    /** @description Searches every folder in your tree, selected with parent.owners.id=me, for albums that are (true) or are not (false) published, and lists them in one flat list. Other items never match. Combines with query. (e.g. `true`) */
+                    "filter[self][matchesQuery]"?: string;
+                    /** @description Searches every folder in your tree, selected with parent.owners.id=me, for albums that are (true) or are not (false) published, and lists them in one flat list. Other items never match. Combines with filter[self][matchesQuery]. (e.g. `true`) */
                     "filter[subject.albums:published]"?: string;
                     /** @description In your folders, `=me` selects owned placements and `[ne]=me` selects shared placements. In someone else's folder, `=me` returns no items and `[ne]=me` returns all items. Accepts only `me` or your own user ID. */
                     "filter[subject.owners.id]"?: string;
                     /** @description In your folders, `=me` selects owned placements and `[ne]=me` selects shared placements. In someone else's folder, `=me` returns no items and `[ne]=me` returns all items. Accepts only `me` or your own user ID. */
                     "filter[subject.owners.id][ne]"?: string;
                     /**
-                     * @description Include related resources. Available relationships: breadcrumb, owners, parent, subject, subjectSharingSettings
+                     * @description Include related resources. Available relationships: breadcrumb, owners, parent, sharingSummary, subject
                      * @example breadcrumb.children.subject
                      */
                     include?: string[];
                     /** @description Comma-separated direct relationships to return as linkage only, without related content. */
-                    includeLinkage?: ("breadcrumb" | "owners" | "parent" | "subject" | "subjectSharingSettings")[];
+                    includeLinkage?: ("breadcrumb" | "owners" | "parent" | "sharingSummary" | "subject")[];
                     /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
                     "page[cursor]"?: string;
                     /**
@@ -7806,12 +8103,12 @@ export interface paths {
             parameters: {
                 query?: {
                     /**
-                     * @description Include related resources. Available relationships: breadcrumb, owners, parent, subject, subjectSharingSettings
+                     * @description Include related resources. Available relationships: breadcrumb, owners, parent, sharingSummary, subject
                      * @example breadcrumb.children.subject
                      */
                     include?: string[];
                     /** @description Comma-separated direct relationships to return as linkage only, without related content. */
-                    includeLinkage?: ("breadcrumb" | "owners" | "parent" | "subject" | "subjectSharingSettings")[];
+                    includeLinkage?: ("breadcrumb" | "owners" | "parent" | "sharingSummary" | "subject")[];
                     /**
                      * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: breadcrumb.children.subject
                      * @example breadcrumb.children.subject
@@ -8089,7 +8386,7 @@ export interface paths {
         head?: never;
         /**
          * Update parent relationship ("to-one").
-         * @description Moves the item to the supplied parent folder, replacing its previous parent. To move to the top level, supply the root folder explicitly; null data is rejected. Returns the new parent linkage.
+         * @description Moves the item to the supplied parent folder, replacing its previous parent. To move to the top level, supply the root folder explicitly; null data is rejected. The caller needs at least COLLABORATOR on the new parent. Within the item's tree they need OWNER on the item or COLLABORATOR on the folder holding it; only its creator moves it into another user's tree. Returns the new parent linkage.
          */
         patch: {
             parameters: {
@@ -8136,6 +8433,70 @@ export interface paths {
         };
         trace?: never;
     };
+    "/folderItems/{id}/relationships/sharingSummary": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get sharingSummary relationship ("to-one").
+         * @description Retrieves sharingSummary relationship.
+         */
+        get: {
+            parameters: {
+                query?: {
+                    /**
+                     * @description Include related resources. Available relationships: sharingSummary
+                     * @example sharingSummary.subject
+                     */
+                    include?: string[];
+                    /**
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: sharingSummary.subject
+                     * @example sharingSummary.subject
+                     */
+                    replaceMedia?: string;
+                };
+                header?: never;
+                path: {
+                    /**
+                     * @description Folder item id
+                     * @example e3226624-355b-48f8-aa93-db42532caa66
+                     */
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/vnd.api+json": components["schemas"]["FolderItems_SharingSummary_Single_Relationship_Data_Document"];
+                    };
+                };
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/folderItems/{id}/relationships/subject": {
         parameters: {
             query?: never;
@@ -8180,70 +8541,6 @@ export interface paths {
                     };
                     content: {
                         "application/vnd.api+json": components["schemas"]["FolderItems_Subject_Single_Relationship_Data_Document"];
-                    };
-                };
-                400: components["responses"]["Default400Response"];
-                404: components["responses"]["Default404Response"];
-                405: components["responses"]["Default405Response"];
-                406: components["responses"]["Default406Response"];
-                415: components["responses"]["Default415Response"];
-                429: components["responses"]["Default429Response"];
-                500: components["responses"]["Default500Response"];
-                503: components["responses"]["Default503Response"];
-            };
-        };
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/folderItems/{id}/relationships/subjectSharingSettings": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /**
-         * Get subjectSharingSettings relationship ("to-one").
-         * @description Retrieves subjectSharingSettings relationship.
-         */
-        get: {
-            parameters: {
-                query?: {
-                    /**
-                     * @description Include related resources. Available relationships: subjectSharingSettings
-                     * @example subjectSharingSettings.subject
-                     */
-                    include?: string[];
-                    /**
-                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: subjectSharingSettings.subject
-                     * @example subjectSharingSettings.subject
-                     */
-                    replaceMedia?: string;
-                };
-                header?: never;
-                path: {
-                    /**
-                     * @description Folder item id
-                     * @example e3226624-355b-48f8-aa93-db42532caa66
-                     */
-                    id: string;
-                };
-                cookie?: never;
-            };
-            requestBody?: never;
-            responses: {
-                /** @description Successful response */
-                200: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/vnd.api+json": components["schemas"]["FolderItems_SubjectSharingSettings_Single_Relationship_Data_Document"];
                     };
                 };
                 400: components["responses"]["Default400Response"];
@@ -8993,8 +9290,8 @@ export interface paths {
         get: {
             parameters: {
                 query: {
-                    /** @description Exact group name (case-sensitive) (e.g. `Everyone`) */
-                    "filter[name]": string;
+                    /** @description Group ID. The built-in Everyone group has the case-sensitive ID `everyone`. */
+                    "filter[id]": string[];
                 };
                 header?: never;
                 path?: never;
@@ -9046,8 +9343,8 @@ export interface paths {
                 header?: never;
                 path: {
                     /**
-                     * @description Group ID
-                     * @example 5x4uRI6Lowv
+                     * @description Group ID. The built-in Everyone group has the case-sensitive ID `everyone`.
+                     * @example everyone
                      */
                     id: string;
                 };
@@ -9270,10 +9567,10 @@ export interface paths {
                 query: {
                     /** @description One of: tracks, videos, albums, playlists, userCollectionTracks (e.g. `tracks`) */
                     "filter[type]": ("tracks" | "videos" | "albums" | "playlists" | "userCollectionTracks")[];
+                    /** @description One of: PENDING, STORED, FAILED (e.g. `PENDING`) */
+                    "filter[clientStorageState]"?: ("PENDING" | "STORED" | "FAILED")[];
                     /** @description Offline item id (e.g. `1234`) */
                     "filter[id]"?: string[];
-                    /** @description One of: PENDING, STORED, FAILED (e.g. `PENDING`) */
-                    "filter[state]"?: ("PENDING" | "STORED" | "FAILED")[];
                     /**
                      * @description Include related resources. Available relationships: offlineInventory
                      * @example offlineInventory
@@ -12500,7 +12797,7 @@ export interface paths {
                      */
                     countryCode?: string;
                     /** @description Filter playlist items by a free-text query (e.g. `halo`) */
-                    "filter[query]"?: string;
+                    "filter[self][matchesQuery]"?: string;
                     /**
                      * @description Include related resources. Available relationships: items
                      * @example items
@@ -13628,6 +13925,138 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/reactionSummaries": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get multiple reactionSummaries.
+         * @description Returns one current summary per accessible subject, for up to 20 subjects. Duplicates are returned once. Inaccessible or missing subjects are omitted. Empty supported subjects still have a summary. IDs remain stable as counts change.
+         */
+        get: {
+            parameters: {
+                query: {
+                    /** @description Subjects whose counts to return. */
+                    "filter[subject]": string[];
+                    /**
+                     * @description ISO 3166-1 alpha-2 country code
+                     * @example US
+                     */
+                    countryCode?: string;
+                    /**
+                     * @description Include related resources. Available relationships: subject
+                     * @example subject.author.albums
+                     */
+                    include?: string[];
+                    /** @description Comma-separated direct relationships to return as linkage only, without related content. */
+                    includeLinkage?: "subject"[];
+                    /**
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: subject.author.albums
+                     * @example subject.author.albums
+                     */
+                    replaceMedia?: string;
+                    /** @description Share code used as a bearer credential for the resource. */
+                    shareCode?: string;
+                };
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/vnd.api+json": components["schemas"]["ReactionSummaries_Multi_Resource_Data_Document"];
+                    };
+                };
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/reactionSummaries/{id}/relationships/subject": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get subject relationship ("to-one").
+         * @description Retrieves subject relationship.
+         */
+        get: {
+            parameters: {
+                query?: {
+                    /**
+                     * @description Include related resources. Available relationships: subject
+                     * @example subject.author.albums
+                     */
+                    include?: string[];
+                    /**
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: subject.author.albums
+                     * @example subject.author.albums
+                     */
+                    replaceMedia?: string;
+                    /** @description Share code used as a bearer credential for the resource. */
+                    shareCode?: string;
+                };
+                header?: never;
+                path: {
+                    /** @description Opaque identifier of one subject's current summary */
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/vnd.api+json": components["schemas"]["ReactionSummaries_Subject_Single_Relationship_Data_Document"];
+                    };
+                };
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/reactions": {
         parameters: {
             query?: never;
@@ -13637,32 +14066,22 @@ export interface paths {
         };
         /**
          * Get multiple reactions.
-         * @description Retrieves multiple reactions by available filters, or without if applicable.
+         * @description Lists reactions on a source file or comment, newest first.
          */
         get: {
             parameters: {
-                query?: {
+                query: {
+                    /** @description The subject whose reactions to return. */
+                    "filter[subject]": string;
                     /** @description Filter by emoji (e.g. `👍`) */
                     "filter[emoji]"?: string[];
                     /**
-                     * @deprecated
-                     * @description Deprecated: use filter[subject]. Filter by subject resource ID (e.g. `12345`)
-                     */
-                    "filter[subject.id]"?: string[];
-                    /**
-                     * @deprecated
-                     * @description Deprecated: use filter[subject]. Filter by subject resource type (e.g. `albums`)
-                     */
-                    "filter[subject.type]"?: ("albums" | "tracks" | "artists" | "videos" | "playlists" | "comments" | "trackSourceFiles")[];
-                    /** @description The subject whose reactions to return. Use either subject or the deprecated subject.id and subject.type pair. */
-                    "filter[subject]"?: string;
-                    /**
-                     * @description Include related resources. Available relationships: author, ownerProfiles, owners
+                     * @description Include related resources. Available relationships: author, owners, subject
                      * @example author.albums
                      */
                     include?: string[];
                     /** @description Comma-separated direct relationships to return as linkage only, without related content. */
-                    includeLinkage?: ("author" | "ownerProfiles" | "owners")[];
+                    includeLinkage?: ("author" | "owners" | "subject")[];
                     /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
                     "page[cursor]"?: string;
                     /**
@@ -13670,9 +14089,6 @@ export interface paths {
                      * @example author.albums
                      */
                     replaceMedia?: string;
-                    stats?: "ALL" | "COUNTS_BY_TYPE" | "TOTAL_COUNT";
-                    statsOnly?: boolean;
-                    viewerContext?: string;
                 };
                 header?: never;
                 path?: never;
@@ -13702,7 +14118,7 @@ export interface paths {
         put?: never;
         /**
          * Create single reaction.
-         * @description Creates a new reaction.
+         * @description Adds the caller's emoji reaction on a subject and exact time offsets. Omit both offsets for the whole subject, provide startOffset for a point, or both for a section. Offsets are supported only on source files and must be nonnegative, with endOffset at or after startOffset. Each user can add different emojis at the same position or section. Repeating the same emoji returns the existing reaction with its UUID and creation time unchanged.
          */
         post: {
             parameters: {
@@ -13771,7 +14187,7 @@ export interface paths {
                 path: {
                     /**
                      * @description Reaction Id
-                     * @example nejMcAhh5N8S3EQ4LaqysVdI0cZZ
+                     * @example 550e8400-e29b-41d4-a716-446655440000
                      */
                     id: string;
                 };
@@ -13834,7 +14250,7 @@ export interface paths {
                 path: {
                     /**
                      * @description Reaction Id
-                     * @example nejMcAhh5N8S3EQ4LaqysVdI0cZZ
+                     * @example 550e8400-e29b-41d4-a716-446655440000
                      */
                     id: string;
                 };
@@ -13849,68 +14265,6 @@ export interface paths {
                     };
                     content: {
                         "application/vnd.api+json": components["schemas"]["Reactions_Author_Single_Relationship_Data_Document"];
-                    };
-                };
-                400: components["responses"]["Default400Response"];
-                404: components["responses"]["Default404Response"];
-                405: components["responses"]["Default405Response"];
-                406: components["responses"]["Default406Response"];
-                415: components["responses"]["Default415Response"];
-                429: components["responses"]["Default429Response"];
-                500: components["responses"]["Default500Response"];
-                503: components["responses"]["Default503Response"];
-            };
-        };
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/reactions/{id}/relationships/ownerProfiles": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /**
-         * Get ownerProfiles relationship ("to-many").
-         * @deprecated
-         * @description Deprecated. Use author for attribution.
-         */
-        get: {
-            parameters: {
-                query?: {
-                    /**
-                     * @description Include related resources. Available relationships: ownerProfiles
-                     * @example ownerProfiles
-                     */
-                    include?: string[];
-                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
-                    "page[cursor]"?: string;
-                };
-                header?: never;
-                path: {
-                    /**
-                     * @description Reaction Id
-                     * @example nejMcAhh5N8S3EQ4LaqysVdI0cZZ
-                     */
-                    id: string;
-                };
-                cookie?: never;
-            };
-            requestBody?: never;
-            responses: {
-                /** @description Successful response */
-                200: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/vnd.api+json": components["schemas"]["Reactions_OwnerProfiles_Multi_Relationship_Data_Document"];
                     };
                 };
                 400: components["responses"]["Default400Response"];
@@ -13957,7 +14311,7 @@ export interface paths {
                 path: {
                     /**
                      * @description Reaction Id
-                     * @example nejMcAhh5N8S3EQ4LaqysVdI0cZZ
+                     * @example 550e8400-e29b-41d4-a716-446655440000
                      */
                     id: string;
                 };
@@ -13992,6 +14346,522 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/reactions/{id}/relationships/subject": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get subject relationship ("to-one").
+         * @description Retrieves subject relationship.
+         */
+        get: {
+            parameters: {
+                query?: {
+                    /**
+                     * @description Include related resources. Available relationships: subject
+                     * @example subject.author.albums
+                     */
+                    include?: string[];
+                    /**
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: subject.author.albums
+                     * @example subject.author.albums
+                     */
+                    replaceMedia?: string;
+                };
+                header?: never;
+                path: {
+                    /**
+                     * @description Reaction Id
+                     * @example 550e8400-e29b-41d4-a716-446655440000
+                     */
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/vnd.api+json": components["schemas"]["Reactions_Subject_Single_Relationship_Data_Document"];
+                    };
+                };
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/resourceGrantInvitations": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get multiple resourceGrantInvitations.
+         * @description Retrieves multiple resourceGrantInvitations by available filters, or without if applicable.
+         */
+        get: {
+            parameters: {
+                query?: {
+                    /** @description Invitation code (e.g. `42179b73-6f0c-405c-b926-2fdb45363c44`) */
+                    "filter[code]"?: string;
+                    /** @description Album, track or folder owned by the caller. Selects undeleted, unexpired invitations on the resource or its ancestors; used-up ones are included. Each keeps its own subject. Cannot be combined with other filters. Missing or non-owned resources and subjects without a live access node return no records. Ordered by expiry then ID; at most 20 invitations per page. Also accepts `folders:me`. */
+                    "filter[self][appliesTo]"?: string;
+                    /**
+                     * @description Include related resources. Available relationships: owners, previewGrant, subject
+                     * @example previewGrant.subject
+                     */
+                    include?: string[];
+                    /** @description Comma-separated direct relationships to return as linkage only, without related content. */
+                    includeLinkage?: ("owners" | "previewGrant" | "subject")[];
+                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
+                    "page[cursor]"?: string;
+                    /**
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: previewGrant.subject
+                     * @example previewGrant.subject
+                     */
+                    replaceMedia?: string;
+                };
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/vnd.api+json": components["schemas"]["ResourceGrantInvitations_Multi_Resource_Data_Document"];
+                    };
+                };
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
+            };
+        };
+        put?: never;
+        /**
+         * Create single resourceGrantInvitation.
+         * @description Creates a new resourceGrantInvitation.
+         */
+        post: {
+            parameters: {
+                query?: never;
+                header?: {
+                    /** @description Unique idempotency key for safe retry of mutation requests. If the same caller repeats a key with the same method, path, query and payload, the original response is replayed. If the request differs, a 422 error is returned. */
+                    "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
+                };
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/vnd.api+json": components["schemas"]["ResourceGrantInvitationsCreateOperation_Payload"];
+                };
+            };
+            responses: {
+                /** @description Successful response */
+                201: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/vnd.api+json": components["schemas"]["ResourceGrantInvitations_Create_Single_Resource_Data_Document"];
+                    };
+                };
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                409: components["responses"]["Idempotency409Response"];
+                415: components["responses"]["Default415Response"];
+                422: components["responses"]["Idempotency422Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/resourceGrantInvitations/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get single resourceGrantInvitation.
+         * @description Retrieves single resourceGrantInvitation by id.
+         */
+        get: {
+            parameters: {
+                query?: {
+                    /**
+                     * @description Include related resources. Available relationships: owners, previewGrant, subject
+                     * @example previewGrant.subject
+                     */
+                    include?: string[];
+                    /** @description Comma-separated direct relationships to return as linkage only, without related content. */
+                    includeLinkage?: ("owners" | "previewGrant" | "subject")[];
+                    /**
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: previewGrant.subject
+                     * @example previewGrant.subject
+                     */
+                    replaceMedia?: string;
+                };
+                header?: never;
+                path: {
+                    /**
+                     * @description Invitation id
+                     * @example e0163a07-8eee-4d30-ae44-75d44b1e47b0
+                     */
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/vnd.api+json": components["schemas"]["ResourceGrantInvitations_Single_Resource_Data_Document"];
+                    };
+                };
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
+            };
+        };
+        put?: never;
+        post?: never;
+        /**
+         * Delete single resourceGrantInvitation.
+         * @description Delete the invitation, ending redemption and its preview.
+         */
+        delete: {
+            parameters: {
+                query?: {
+                    /** @description Also revoke the grants redemptions issued; access from other sources stays. Defaults to false. */
+                    revokeGrants?: boolean;
+                };
+                header?: {
+                    /** @description Unique idempotency key for safe retry of mutation requests. If the same caller repeats a key with the same method, path, query and payload, the original response is replayed. If the request differs, a 422 error is returned. */
+                    "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
+                };
+                path: {
+                    /**
+                     * @description Invitation id
+                     * @example e0163a07-8eee-4d30-ae44-75d44b1e47b0
+                     */
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/vnd.api+json": components["schemas"]["Mutation_Response_Document"];
+                    };
+                };
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                409: components["responses"]["Idempotency409Response"];
+                415: components["responses"]["Default415Response"];
+                422: components["responses"]["Idempotency422Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
+            };
+        };
+        options?: never;
+        head?: never;
+        /**
+         * Update single resourceGrantInvitation.
+         * @description Set, change or remove the password, or turn the preview on or off. Users who redeemed keep their grants.
+         */
+        patch: {
+            parameters: {
+                query?: never;
+                header?: {
+                    /** @description Unique idempotency key for safe retry of mutation requests. If the same caller repeats a key with the same method, path, query and payload, the original response is replayed. If the request differs, a 422 error is returned. */
+                    "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
+                };
+                path: {
+                    /**
+                     * @description Invitation id
+                     * @example e0163a07-8eee-4d30-ae44-75d44b1e47b0
+                     */
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/vnd.api+json": components["schemas"]["ResourceGrantInvitationsUpdateOperation_Payload"];
+                };
+            };
+            responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/vnd.api+json": components["schemas"]["ResourceGrantInvitations_Update_Single_Resource_Data_Document"];
+                    };
+                };
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                409: components["responses"]["Idempotency409Response"];
+                415: components["responses"]["Default415Response"];
+                422: components["responses"]["Idempotency422Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
+            };
+        };
+        trace?: never;
+    };
+    "/resourceGrantInvitations/{id}/relationships/owners": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get owners relationship ("to-many").
+         * @description Retrieves owners relationship.
+         */
+        get: {
+            parameters: {
+                query?: {
+                    /**
+                     * @description Include related resources. Available relationships: owners
+                     * @example owners
+                     */
+                    include?: string[];
+                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
+                    "page[cursor]"?: string;
+                };
+                header?: never;
+                path: {
+                    /**
+                     * @description Invitation id
+                     * @example e0163a07-8eee-4d30-ae44-75d44b1e47b0
+                     */
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/vnd.api+json": components["schemas"]["ResourceGrantInvitations_Owners_Multi_Relationship_Data_Document"];
+                    };
+                };
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/resourceGrantInvitations/{id}/relationships/previewGrant": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get previewGrant relationship ("to-one").
+         * @description Retrieves previewGrant relationship.
+         */
+        get: {
+            parameters: {
+                query?: {
+                    /**
+                     * @description Include related resources. Available relationships: previewGrant
+                     * @example previewGrant.subject
+                     */
+                    include?: string[];
+                    /**
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: previewGrant.subject
+                     * @example previewGrant.subject
+                     */
+                    replaceMedia?: string;
+                };
+                header?: never;
+                path: {
+                    /**
+                     * @description Invitation id
+                     * @example e0163a07-8eee-4d30-ae44-75d44b1e47b0
+                     */
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/vnd.api+json": components["schemas"]["ResourceGrantInvitations_PreviewGrant_Single_Relationship_Data_Document"];
+                    };
+                };
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/resourceGrantInvitations/{id}/relationships/subject": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get subject relationship ("to-one").
+         * @description Retrieves subject relationship.
+         */
+        get: {
+            parameters: {
+                query?: {
+                    /**
+                     * @description Include related resources. Available relationships: subject
+                     * @example subject
+                     */
+                    include?: string[];
+                    /**
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: subject
+                     * @example subject
+                     */
+                    replaceMedia?: string;
+                };
+                header?: never;
+                path: {
+                    /**
+                     * @description Invitation id
+                     * @example e0163a07-8eee-4d30-ae44-75d44b1e47b0
+                     */
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/vnd.api+json": components["schemas"]["ResourceGrantInvitations_Subject_Single_Relationship_Data_Document"];
+                    };
+                };
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/resourceGrants": {
         parameters: {
             query?: never;
@@ -14001,24 +14871,26 @@ export interface paths {
         };
         /**
          * Get multiple resourceGrants.
-         * @description Lists stored grants from every source visible to the subject's owner or named user grantee, selected by subject or grantee, optionally restricted by assigned role. Requires subject or grantee.
+         * @description Retrieves multiple resourceGrants by available filters, or without if applicable.
          */
         get: {
             parameters: {
                 query?: {
-                    /** @description Filter by grantee. Also accepts `users:me`. */
+                    /** @description Filter by grantee. Use `groups:everyone` for the Everyone group. Also accepts `users:me`. */
                     "filter[grantee]"?: string;
                     /** @description One of: VIEWER, COLLABORATOR, OWNER (e.g. `VIEWER`) */
                     "filter[role]"?: "VIEWER" | "COLLABORATOR" | "OWNER";
-                    /** @description Filter by subject. Also accepts `folders:me`. */
+                    /** @description Album, track or folder whose grants are listed, including those on its ancestor folders and albums. Each grant keeps the subject it is stored on. Also accepts `folders:me`. */
+                    "filter[self][appliesTo]"?: string;
+                    /** @description Filter by subject. Required unless `filter[self][appliesTo]` is used. The subject's owner reads all its grants; other callers read only grants made directly to them. Also accepts `folders:me`. */
                     "filter[subject]"?: string;
                     /**
-                     * @description Include related resources. Available relationships: grantee, subject
+                     * @description Include related resources. Available relationships: grantee, invitation, subject
                      * @example grantee.artist.albums
                      */
                     include?: string[];
                     /** @description Comma-separated direct relationships to return as linkage only, without related content. */
-                    includeLinkage?: ("grantee" | "subject")[];
+                    includeLinkage?: ("grantee" | "invitation" | "subject")[];
                     /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
                     "page[cursor]"?: string;
                     /**
@@ -14055,7 +14927,7 @@ export interface paths {
         put?: never;
         /**
          * Create single resourceGrant.
-         * @description Creates a new resourceGrant.
+         * @description Create a direct grant from `role`, `subject` and `grantee`. Alternatively, redeem an invitation with only the `invitation` relationship: the caller receives the invitation's role on its subject, and the response is the caller's grant. Redeeming again returns the same grant. Every redemption, repeated ones included, needs a password-protected invitation's password and counts as a use of a limited invitation; password attempts are rate limited. The invitation's creator cannot redeem it.
          */
         post: {
             parameters: {
@@ -14083,13 +14955,14 @@ export interface paths {
                     };
                 };
                 400: components["responses"]["Default400Response"];
+                403: components["responses"]["ResourceGrantsCreateResource403Response"];
                 404: components["responses"]["Default404Response"];
                 405: components["responses"]["Default405Response"];
                 406: components["responses"]["Default406Response"];
                 409: components["responses"]["Idempotency409Response"];
                 415: components["responses"]["Default415Response"];
                 422: components["responses"]["Idempotency422Response"];
-                429: components["responses"]["Default429Response"];
+                429: components["responses"]["ResourceGrantsCreateResource429Response"];
                 500: components["responses"]["Default500Response"];
                 503: components["responses"]["Default503Response"];
             };
@@ -14115,12 +14988,12 @@ export interface paths {
             parameters: {
                 query?: {
                     /**
-                     * @description Include related resources. Available relationships: grantee, subject
+                     * @description Include related resources. Available relationships: grantee, invitation, subject
                      * @example grantee.artist.albums
                      */
                     include?: string[];
                     /** @description Comma-separated direct relationships to return as linkage only, without related content. */
-                    includeLinkage?: ("grantee" | "subject")[];
+                    includeLinkage?: ("grantee" | "invitation" | "subject")[];
                     /**
                      * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: grantee.artist.albums
                      * @example grantee.artist.albums
@@ -14306,6 +15179,67 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/resourceGrants/{id}/relationships/invitation": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get invitation relationship ("to-one").
+         * @description Retrieves invitation relationship.
+         */
+        get: {
+            parameters: {
+                query?: {
+                    /**
+                     * @description Include related resources. Available relationships: invitation
+                     * @example invitation.subject
+                     */
+                    include?: string[];
+                    /**
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: invitation.subject
+                     * @example invitation.subject
+                     */
+                    replaceMedia?: string;
+                };
+                header?: never;
+                path: {
+                    /** @description Opaque resource grant ID */
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/vnd.api+json": components["schemas"]["ResourceGrants_Invitation_Single_Relationship_Data_Document"];
+                    };
+                };
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/resourceGrants/{id}/relationships/subject": {
         parameters: {
             query?: never;
@@ -14367,318 +15301,6 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/resourceSharingSettings": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /**
-         * Get multiple resourceSharingSettings.
-         * @description Returns the sharing settings of up to 20 live access-core subjects. Subjects without a node, or that the caller does not own, return none.
-         */
-        get: {
-            parameters: {
-                query: {
-                    /** @description Filter by subject. Also accepts `folders:me`. */
-                    "filter[subject]": string[];
-                    /**
-                     * @description Include related resources. Available relationships: grants, shares, subject
-                     * @example grants.subject
-                     */
-                    include?: string[];
-                    /** @description Comma-separated direct relationships to return as linkage only, without related content. */
-                    includeLinkage?: ("grants" | "shares" | "subject")[];
-                    /**
-                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: grants.subject
-                     * @example grants.subject
-                     */
-                    replaceMedia?: string;
-                };
-                header?: never;
-                path?: never;
-                cookie?: never;
-            };
-            requestBody?: never;
-            responses: {
-                /** @description Successful response */
-                200: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/vnd.api+json": components["schemas"]["ResourceSharingSettings_Multi_Resource_Data_Document"];
-                    };
-                };
-                400: components["responses"]["Default400Response"];
-                404: components["responses"]["Default404Response"];
-                405: components["responses"]["Default405Response"];
-                406: components["responses"]["Default406Response"];
-                415: components["responses"]["Default415Response"];
-                429: components["responses"]["Default429Response"];
-                500: components["responses"]["Default500Response"];
-                503: components["responses"]["Default503Response"];
-            };
-        };
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/resourceSharingSettings/{id}": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /**
-         * Get single resourceSharingSetting.
-         * @description Retrieves single resourceSharingSetting by id.
-         */
-        get: {
-            parameters: {
-                query?: {
-                    /**
-                     * @description Include related resources. Available relationships: grants, shares, subject
-                     * @example grants.subject
-                     */
-                    include?: string[];
-                    /** @description Comma-separated direct relationships to return as linkage only, without related content. */
-                    includeLinkage?: ("grants" | "shares" | "subject")[];
-                    /**
-                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: grants.subject
-                     * @example grants.subject
-                     */
-                    replaceMedia?: string;
-                };
-                header?: never;
-                path: {
-                    /** @description Opaque resource sharing settings ID */
-                    id: string;
-                };
-                cookie?: never;
-            };
-            requestBody?: never;
-            responses: {
-                /** @description Successful response */
-                200: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/vnd.api+json": components["schemas"]["ResourceSharingSettings_Single_Resource_Data_Document"];
-                    };
-                };
-                400: components["responses"]["Default400Response"];
-                404: components["responses"]["Default404Response"];
-                405: components["responses"]["Default405Response"];
-                406: components["responses"]["Default406Response"];
-                415: components["responses"]["Default415Response"];
-                429: components["responses"]["Default429Response"];
-                500: components["responses"]["Default500Response"];
-                503: components["responses"]["Default503Response"];
-            };
-        };
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/resourceSharingSettings/{id}/relationships/grants": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /**
-         * Get grants relationship ("to-many").
-         * @description Each grantee's strongest grant on the subject or a folder or album above it: the strongest role, then the nearest grant, then a direct grant over a saved link's, then the oldest. The owner comes first, then groups, then users. A grant's subject is the node it is on.
-         */
-        get: {
-            parameters: {
-                query?: {
-                    /**
-                     * @description Include related resources. Available relationships: grants
-                     * @example grants.subject
-                     */
-                    include?: string[];
-                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
-                    "page[cursor]"?: string;
-                    /**
-                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: grants.subject
-                     * @example grants.subject
-                     */
-                    replaceMedia?: string;
-                };
-                header?: never;
-                path: {
-                    /** @description Opaque resource sharing settings ID */
-                    id: string;
-                };
-                cookie?: never;
-            };
-            requestBody?: never;
-            responses: {
-                /** @description Successful response */
-                200: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/vnd.api+json": components["schemas"]["ResourceSharingSettings_Grants_Multi_Relationship_Data_Document"];
-                    };
-                };
-                400: components["responses"]["Default400Response"];
-                404: components["responses"]["Default404Response"];
-                405: components["responses"]["Default405Response"];
-                406: components["responses"]["Default406Response"];
-                415: components["responses"]["Default415Response"];
-                429: components["responses"]["Default429Response"];
-                500: components["responses"]["Default500Response"];
-                503: components["responses"]["Default503Response"];
-            };
-        };
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/resourceSharingSettings/{id}/relationships/shares": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /**
-         * Get shares relationship ("to-many").
-         * @description The active share links on the subject or an album above it, or a folder above it whose link can be saved, next to expire first.
-         */
-        get: {
-            parameters: {
-                query?: {
-                    /**
-                     * @description Include related resources. Available relationships: shares
-                     * @example shares.sharedResources
-                     */
-                    include?: string[];
-                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
-                    "page[cursor]"?: string;
-                    /**
-                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: shares.sharedResources
-                     * @example shares.sharedResources
-                     */
-                    replaceMedia?: string;
-                };
-                header?: never;
-                path: {
-                    /** @description Opaque resource sharing settings ID */
-                    id: string;
-                };
-                cookie?: never;
-            };
-            requestBody?: never;
-            responses: {
-                /** @description Successful response */
-                200: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/vnd.api+json": components["schemas"]["ResourceSharingSettings_Shares_Multi_Relationship_Data_Document"];
-                    };
-                };
-                400: components["responses"]["Default400Response"];
-                404: components["responses"]["Default404Response"];
-                405: components["responses"]["Default405Response"];
-                406: components["responses"]["Default406Response"];
-                415: components["responses"]["Default415Response"];
-                429: components["responses"]["Default429Response"];
-                500: components["responses"]["Default500Response"];
-                503: components["responses"]["Default503Response"];
-            };
-        };
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/resourceSharingSettings/{id}/relationships/subject": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /**
-         * Get subject relationship ("to-one").
-         * @description Retrieves subject relationship.
-         */
-        get: {
-            parameters: {
-                query?: {
-                    /**
-                     * @description Include related resources. Available relationships: subject
-                     * @example subject
-                     */
-                    include?: string[];
-                    /**
-                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: subject
-                     * @example subject
-                     */
-                    replaceMedia?: string;
-                };
-                header?: never;
-                path: {
-                    /** @description Opaque resource sharing settings ID */
-                    id: string;
-                };
-                cookie?: never;
-            };
-            requestBody?: never;
-            responses: {
-                /** @description Successful response */
-                200: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/vnd.api+json": components["schemas"]["ResourceSharingSettings_Subject_Single_Relationship_Data_Document"];
-                    };
-                };
-                400: components["responses"]["Default400Response"];
-                404: components["responses"]["Default404Response"];
-                405: components["responses"]["Default405Response"];
-                406: components["responses"]["Default406Response"];
-                415: components["responses"]["Default415Response"];
-                429: components["responses"]["Default429Response"];
-                500: components["responses"]["Default500Response"];
-                503: components["responses"]["Default503Response"];
-            };
-        };
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
     "/savedShares": {
         parameters: {
             query?: never;
@@ -14690,7 +15312,7 @@ export interface paths {
         put?: never;
         /**
          * Create single savedShare.
-         * @description Redeem an active share with VOUCHER access mode for its offered role. A share without VOUCHER mode returns 403.
+         * @description Redeem an active share with VOUCHER access mode for its offered role. A share without VOUCHER mode returns 403. Every save, repeated ones included, needs a password-protected share's password and counts as a use of a limited share; password attempts are rate limited.
          */
         post: {
             parameters: {
@@ -14718,13 +15340,14 @@ export interface paths {
                     };
                 };
                 400: components["responses"]["Default400Response"];
+                403: components["responses"]["SavedSharesCreateResource403Response"];
                 404: components["responses"]["Default404Response"];
                 405: components["responses"]["Default405Response"];
                 406: components["responses"]["Default406Response"];
                 409: components["responses"]["Idempotency409Response"];
                 415: components["responses"]["Default415Response"];
                 422: components["responses"]["Idempotency422Response"];
-                429: components["responses"]["Default429Response"];
+                429: components["responses"]["SavedSharesCreateResource429Response"];
                 500: components["responses"]["Default500Response"];
                 503: components["responses"]["Default503Response"];
             };
@@ -15684,9 +16307,11 @@ export interface paths {
          */
         get: {
             parameters: {
-                query: {
+                query?: {
                     /** @description A share code (e.g. `xyz`) */
-                    "filter[code]": string[];
+                    "filter[code]"?: string[];
+                    /** @description Album, track or folder owned by the caller. Selects undeleted, unexpired links on the resource or an ancestor album, and VOUCHER-enabled links on an ancestor folder. Exhausted links are included. Each link keeps its own sharedResources. Cannot be combined with other filters. Missing or non-owned resources and subjects without a live access node return no records. Ordered by expiry then share ID; at most 20 links per page. Also accepts `folders:me`. */
+                    "filter[self][appliesTo]"?: string;
                     /**
                      * @description Include related resources. Available relationships: owners, sharedResources
                      * @example sharedResources
@@ -15694,6 +16319,8 @@ export interface paths {
                     include?: string[];
                     /** @description Comma-separated direct relationships to return as linkage only, without related content. */
                     includeLinkage?: ("owners" | "sharedResources")[];
+                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
+                    "page[cursor]"?: string;
                     /**
                      * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: sharedResources
                      * @example sharedResources
@@ -15881,7 +16508,53 @@ export interface paths {
         };
         options?: never;
         head?: never;
-        patch?: never;
+        /**
+         * Update single share.
+         * @description Set, change or remove the share's password. Setting one also removes BEARER access; removing one leaves the access modes unchanged. Existing savers keep their access.
+         */
+        patch: {
+            parameters: {
+                query?: never;
+                header?: {
+                    /** @description Unique idempotency key for safe retry of mutation requests. If the same caller repeats a key with the same method, path, query and payload, the original response is replayed. If the request differs, a 422 error is returned. */
+                    "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
+                };
+                path: {
+                    /**
+                     * @description Share id
+                     * @example a468bee88def
+                     */
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/vnd.api+json": components["schemas"]["SharesUpdateOperation_Payload"];
+                };
+            };
+            responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/vnd.api+json": components["schemas"]["Shares_Update_Single_Resource_Data_Document"];
+                    };
+                };
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                409: components["responses"]["Idempotency409Response"];
+                415: components["responses"]["Default415Response"];
+                422: components["responses"]["Idempotency422Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
+            };
+        };
         trace?: never;
     };
     "/shares/{id}/relationships/owners": {
@@ -15991,6 +16664,129 @@ export interface paths {
                     };
                     content: {
                         "application/vnd.api+json": components["schemas"]["Shares_SharedResources_Multi_Relationship_Data_Document"];
+                    };
+                };
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/sharingSummaries": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get multiple sharingSummaries.
+         * @description Returns one current summary per distinct owned subject, for up to 20 subjects. Live subjects with no sharing return false flags. Missing or inaccessible subjects are omitted. IDs remain stable as sharing changes.
+         */
+        get: {
+            parameters: {
+                query: {
+                    /** @description Filter by subject. Also accepts `folders:me`. */
+                    "filter[subject]": string[];
+                    /**
+                     * @description Include related resources. Available relationships: subject
+                     * @example subject
+                     */
+                    include?: string[];
+                    /** @description Comma-separated direct relationships to return as linkage only, without related content. */
+                    includeLinkage?: "subject"[];
+                    /**
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: subject
+                     * @example subject
+                     */
+                    replaceMedia?: string;
+                };
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/vnd.api+json": components["schemas"]["SharingSummaries_Multi_Resource_Data_Document"];
+                    };
+                };
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/sharingSummaries/{id}/relationships/subject": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get subject relationship ("to-one").
+         * @description Retrieves subject relationship.
+         */
+        get: {
+            parameters: {
+                query?: {
+                    /**
+                     * @description Include related resources. Available relationships: subject
+                     * @example subject
+                     */
+                    include?: string[];
+                    /**
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: subject
+                     * @example subject
+                     */
+                    replaceMedia?: string;
+                };
+                header?: never;
+                path: {
+                    /** @description Opaque sharing summary ID */
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/vnd.api+json": components["schemas"]["SharingSummaries_Subject_Single_Relationship_Data_Document"];
                     };
                 };
                 400: components["responses"]["Default400Response"];
@@ -16756,7 +17552,7 @@ export interface paths {
                     /** @description Only items with this origin (e.g. `TIDAL`) */
                     "filter[origin]"?: "TIDAL" | "OTHER";
                     /** @description Word-prefix match on item titles, descriptions and abbreviations, and on variation names, SKUs and UPCs (e.g. `tee`) */
-                    "filter[query]"?: string;
+                    "filter[self][matchesQuery]"?: string;
                     /**
                      * @description Include related resources. Available relationships: artworks, owners, variations
                      * @example artworks
@@ -17663,6 +18459,287 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/studioHomeEventTiles/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get single studioHomeEventTile.
+         * @description Retrieves single studioHomeEventTile by id.
+         */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    /**
+                     * @description Studio Home event tile id. Use `me` for the authenticated user's resource
+                     * @example me
+                     */
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/vnd.api+json": components["schemas"]["StudioHomeEventTiles_Single_Resource_Data_Document"];
+                    };
+                };
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/studioHomeInsightTiles/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get single studioHomeInsightTile.
+         * @description Retrieves single studioHomeInsightTile by id.
+         */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    /**
+                     * @description Studio Home insight tile id. Use `me` for the authenticated user's resource
+                     * @example me
+                     */
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/vnd.api+json": components["schemas"]["StudioHomeInsightTiles_Single_Resource_Data_Document"];
+                    };
+                };
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/studioHomeMerchTiles/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get single studioHomeMerchTile.
+         * @description Retrieves single studioHomeMerchTile by id.
+         */
+        get: {
+            parameters: {
+                query?: {
+                    /**
+                     * @description Include related resources. Available relationships: items
+                     * @example items
+                     */
+                    include?: string[];
+                    /** @description Comma-separated direct relationships to return as linkage only, without related content. */
+                    includeLinkage?: "items"[];
+                };
+                header?: never;
+                path: {
+                    /**
+                     * @description Studio Home merch tile id. Use `me` for the authenticated user's resource
+                     * @example me
+                     */
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/vnd.api+json": components["schemas"]["StudioHomeMerchTiles_Single_Resource_Data_Document"];
+                    };
+                };
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/studioHomeMerchTiles/{id}/relationships/items": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get items relationship ("to-many").
+         * @description The seller's catalog items, in title order; empty until the latest merch guidelines are accepted. A page can be short or empty and still have a next cursor.
+         */
+        get: {
+            parameters: {
+                query?: {
+                    /**
+                     * @description Include related resources. Available relationships: items
+                     * @example items
+                     */
+                    include?: string[];
+                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
+                    "page[cursor]"?: string;
+                };
+                header?: never;
+                path: {
+                    /**
+                     * @description Studio Home merch tile id. Use `me` for the authenticated user's resource
+                     * @example me
+                     */
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/vnd.api+json": components["schemas"]["StudioHomeMerchTiles_Items_Multi_Relationship_Data_Document"];
+                    };
+                };
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/studioHomeMusicTiles/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get single studioHomeMusicTile.
+         * @description Retrieves single studioHomeMusicTile by id.
+         */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    /**
+                     * @description Studio Home music tile id. Use `me` for the authenticated user's resource
+                     * @example me
+                     */
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/vnd.api+json": components["schemas"]["StudioHomeMusicTiles_Single_Resource_Data_Document"];
+                    };
+                };
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/subscriptionPriceChangeDecisions": {
         parameters: {
             query?: never;
@@ -18354,10 +19431,15 @@ export interface paths {
         get: {
             parameters: {
                 query?: {
-                    /** @description Include related resources. Available relationships: owners */
+                    /**
+                     * @description Include related resources. Available relationships: commentSummary, owners, reactionSummary
+                     * @example commentSummary
+                     */
                     include?: string[];
                     /** @description Comma-separated direct relationships to return as linkage only, without related content. */
-                    includeLinkage?: "owners"[];
+                    includeLinkage?: ("commentSummary" | "owners" | "reactionSummary")[];
+                    /** @description Share code used as a bearer credential for the resource. */
+                    shareCode?: string;
                 };
                 header?: never;
                 path: {
@@ -18378,6 +19460,67 @@ export interface paths {
                     };
                     content: {
                         "application/vnd.api+json": components["schemas"]["TrackSourceFiles_Single_Resource_Data_Document"];
+                    };
+                };
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/trackSourceFiles/{id}/relationships/commentSummary": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get commentSummary relationship ("to-one").
+         * @description Retrieves commentSummary relationship.
+         */
+        get: {
+            parameters: {
+                query?: {
+                    /**
+                     * @description Include related resources. Available relationships: commentSummary
+                     * @example commentSummary
+                     */
+                    include?: string[];
+                    /** @description Share code used as a bearer credential for the resource. */
+                    shareCode?: string;
+                };
+                header?: never;
+                path: {
+                    /**
+                     * @description Track source file id
+                     * @example a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11
+                     */
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/vnd.api+json": components["schemas"]["TrackSourceFiles_CommentSummary_Single_Relationship_Data_Document"];
                     };
                 };
                 400: components["responses"]["Default400Response"];
@@ -18419,6 +19562,8 @@ export interface paths {
                     include?: string[];
                     /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
                     "page[cursor]"?: string;
+                    /** @description Share code used as a bearer credential for the resource. */
+                    shareCode?: string;
                 };
                 header?: never;
                 path: {
@@ -18439,6 +19584,67 @@ export interface paths {
                     };
                     content: {
                         "application/vnd.api+json": components["schemas"]["TrackSourceFiles_Owners_Multi_Relationship_Data_Document"];
+                    };
+                };
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/trackSourceFiles/{id}/relationships/reactionSummary": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get reactionSummary relationship ("to-one").
+         * @description Retrieves reactionSummary relationship.
+         */
+        get: {
+            parameters: {
+                query?: {
+                    /**
+                     * @description Include related resources. Available relationships: reactionSummary
+                     * @example reactionSummary
+                     */
+                    include?: string[];
+                    /** @description Share code used as a bearer credential for the resource. */
+                    shareCode?: string;
+                };
+                header?: never;
+                path: {
+                    /**
+                     * @description Track source file id
+                     * @example a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11
+                     */
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/vnd.api+json": components["schemas"]["TrackSourceFiles_ReactionSummary_Single_Relationship_Data_Document"];
                     };
                 };
                 400: components["responses"]["Default400Response"];
@@ -18817,7 +20023,7 @@ export interface paths {
         head?: never;
         /**
          * Update single track.
-         * @description Updates existing track.
+         * @description Updates existing track. A COLLABORATOR on the track may update it; changing accessType or isrc needs OWNER.
          */
         patch: {
             parameters: {
@@ -18939,7 +20145,7 @@ export interface paths {
         head?: never;
         /**
          * Update albums relationship ("to-many").
-         * @description Moves the uploaded track to the supplied album, replacing its previous album association. Exactly one album is required; empty data cannot clear it. Returns an acknowledgement.
+         * @description Moves the uploaded track to the supplied album, replacing its previous album association. Exactly one album is required; empty data cannot clear it. The caller needs COLLABORATOR on the track and the album. The album must be in the same user's folders as the track (409 otherwise). Returns an acknowledgement.
          */
         patch: {
             parameters: {
@@ -19061,7 +20267,7 @@ export interface paths {
         head?: never;
         /**
          * Update artists relationship ("to-many").
-         * @description Sets the track's artists, replacing the current list. Artists are listed in the order given. Provide 1 to 10 distinct artists. You can add your own artist profile and the profiles of users who have owner or collaborator access to the track or its album. Only the track's owner can change its artists. Returns an acknowledgement.
+         * @description Sets the track's artists, replacing the current list. Artists are listed in the order given. Provide 1 to 10 distinct artists. You can add your own artist profile and the profiles of users who have owner or collaborator access to the track or its album. Owners and collaborators can change its artists. Returns an acknowledgement.
          */
         patch: {
             parameters: {
@@ -20267,6 +21473,7 @@ export interface paths {
                     };
                 };
                 400: components["responses"]["Default400Response"];
+                403: components["responses"]["UsageRulesCreateResource403Response"];
                 404: components["responses"]["Default404Response"];
                 405: components["responses"]["Default405Response"];
                 406: components["responses"]["Default406Response"];
@@ -20423,7 +21630,7 @@ export interface paths {
             parameters: {
                 query?: {
                     /** @description Filter albums by a free-text query matched against the album title and artist names. Internal clients only (e.g. `love`) */
-                    "filter[query]"?: string;
+                    "filter[self][matchesQuery]"?: string;
                     /**
                      * @description Include related resources. Available relationships: items
                      * @example items
@@ -20723,7 +21930,7 @@ export interface paths {
             parameters: {
                 query?: {
                     /** @description Filter artists by a free-text query matched against the artist name. Internal clients only (e.g. `love`) */
-                    "filter[query]"?: string;
+                    "filter[self][matchesQuery]"?: string;
                     /**
                      * @description Include related resources. Available relationships: items
                      * @example items.albums
@@ -21565,7 +22772,7 @@ export interface paths {
                 query?: {
                     collectionView?: "FLAT" | "FOLDERS";
                     /** @description Filter playlists by a free-text query. Returns matching playlists only (no mixes or folders), including playlists inside folders. Cannot be combined with collectionView=FOLDERS. Internal clients only (e.g. `summer`) */
-                    "filter[query]"?: string;
+                    "filter[self][matchesQuery]"?: string;
                     /**
                      * @description Include related resources. Available relationships: items
                      * @example items.items
@@ -22145,7 +23352,7 @@ export interface paths {
             parameters: {
                 query?: {
                     /** @description Filter tracks by a free-text query matched against the track title, artist names and album title. Internal clients only (e.g. `love`) */
-                    "filter[query]"?: string;
+                    "filter[self][matchesQuery]"?: string;
                     /**
                      * @description Include related resources. Available relationships: items
                      * @example items
@@ -22445,7 +23652,7 @@ export interface paths {
             parameters: {
                 query?: {
                     /** @description Filter videos by a free-text query matched against the video title and artist names. Internal clients only (e.g. `love`) */
-                    "filter[query]"?: string;
+                    "filter[self][matchesQuery]"?: string;
                     /**
                      * @description Include related resources. Available relationships: items
                      * @example items
@@ -22851,6 +24058,213 @@ export interface paths {
                 503: components["responses"]["Default503Response"];
             };
         };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/userDataExports": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get multiple userDataExports.
+         * @description Lists the authenticated user's exports, newest first.
+         */
+        get: {
+            parameters: {
+                query: {
+                    /** @description The authenticated user; exports of other users are never listed. Also accepts `me`. */
+                    "filter[owners.id]": string[];
+                    /** @description Include related resources. Available relationships: owners */
+                    include?: string[];
+                    /** @description Comma-separated direct relationships to return as linkage only, without related content. */
+                    includeLinkage?: "owners"[];
+                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
+                    "page[cursor]"?: string;
+                };
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/vnd.api+json": components["schemas"]["UserDataExports_Multi_Resource_Data_Document"];
+                    };
+                };
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
+            };
+        };
+        put?: never;
+        /**
+         * Create single userDataExport.
+         * @description Requests an export of the selected data types of the authenticated user's data, or returns the export already in progress as it was requested.
+         */
+        post: {
+            parameters: {
+                query?: never;
+                header?: {
+                    /** @description Unique idempotency key for safe retry of mutation requests. If the same caller repeats a key with the same method, path, query and payload, the original response is replayed. If the request differs, a 422 error is returned. */
+                    "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
+                };
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/vnd.api+json": components["schemas"]["UserDataExportsCreateOperation_Payload"];
+                };
+            };
+            responses: {
+                /** @description Successful response */
+                201: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/vnd.api+json": components["schemas"]["UserDataExports_Create_Single_Resource_Data_Document"];
+                    };
+                };
+                400: components["responses"]["UserDataExportsCreateResource400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                409: components["responses"]["UserDataExportsCreateResource409Response"];
+                415: components["responses"]["Default415Response"];
+                422: components["responses"]["Idempotency422Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/userDataExports/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get single userDataExport.
+         * @description Retrieves single userDataExport by id.
+         */
+        get: {
+            parameters: {
+                query?: {
+                    /** @description Include related resources. Available relationships: owners */
+                    include?: string[];
+                    /** @description Comma-separated direct relationships to return as linkage only, without related content. */
+                    includeLinkage?: "owners"[];
+                };
+                header?: never;
+                path: {
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/vnd.api+json": components["schemas"]["UserDataExports_Single_Resource_Data_Document"];
+                    };
+                };
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/userDataExports/{id}/relationships/owners": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get owners relationship ("to-many").
+         * @description Retrieves owners relationship.
+         */
+        get: {
+            parameters: {
+                query?: {
+                    /**
+                     * @description Include related resources. Available relationships: owners
+                     * @example owners
+                     */
+                    include?: string[];
+                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
+                    "page[cursor]"?: string;
+                };
+                header?: never;
+                path: {
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/vnd.api+json": components["schemas"]["UserDataExports_Owners_Multi_Relationship_Data_Document"];
+                    };
+                };
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
+            };
+        };
+        put?: never;
+        post?: never;
         delete?: never;
         options?: never;
         head?: never;
@@ -25861,15 +27275,15 @@ export interface paths {
                     /** @description Original subjects to look up. Also accepts `folders:me`. */
                     "filter[subject]": string[];
                     /**
-                     * @description Include related resources. Available relationships: subject, viewer
-                     * @example subject
+                     * @description Include related resources. Available relationships: comments, reactions, subject, viewer
+                     * @example comments.author.albums
                      */
                     include?: string[];
                     /** @description Comma-separated direct relationships to return as linkage only, without related content. */
-                    includeLinkage?: ("subject" | "viewer")[];
+                    includeLinkage?: ("comments" | "reactions" | "subject" | "viewer")[];
                     /**
-                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: subject
-                     * @example subject
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: comments.author.albums
+                     * @example comments.author.albums
                      */
                     replaceMedia?: string;
                 };
@@ -25921,15 +27335,15 @@ export interface paths {
             parameters: {
                 query?: {
                     /**
-                     * @description Include related resources. Available relationships: subject, viewer
-                     * @example subject
+                     * @description Include related resources. Available relationships: comments, reactions, subject, viewer
+                     * @example comments.author.albums
                      */
                     include?: string[];
                     /** @description Comma-separated direct relationships to return as linkage only, without related content. */
-                    includeLinkage?: ("subject" | "viewer")[];
+                    includeLinkage?: ("comments" | "reactions" | "subject" | "viewer")[];
                     /**
-                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: subject
-                     * @example subject
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: comments.author.albums
+                     * @example comments.author.albums
                      */
                     replaceMedia?: string;
                 };
@@ -25949,6 +27363,132 @@ export interface paths {
                     };
                     content: {
                         "application/vnd.api+json": components["schemas"]["ViewerContexts_Single_Resource_Data_Document"];
+                    };
+                };
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/viewerContexts/{id}/relationships/comments": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get comments relationship ("to-many").
+         * @description Returns the viewer's comments on the subject.
+         */
+        get: {
+            parameters: {
+                query?: {
+                    /**
+                     * @description Include related resources. Available relationships: comments
+                     * @example comments.author.albums
+                     */
+                    include?: string[];
+                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
+                    "page[cursor]"?: string;
+                    /**
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: comments.author.albums
+                     * @example comments.author.albums
+                     */
+                    replaceMedia?: string;
+                };
+                header?: never;
+                path: {
+                    /** @description Opaque identifier of one authenticated viewer and original subject pair */
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/vnd.api+json": components["schemas"]["ViewerContexts_Comments_Multi_Relationship_Data_Document"];
+                    };
+                };
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/viewerContexts/{id}/relationships/reactions": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get reactions relationship ("to-many").
+         * @description Returns the viewer's reactions on the subject.
+         */
+        get: {
+            parameters: {
+                query?: {
+                    /**
+                     * @description Include related resources. Available relationships: reactions
+                     * @example reactions.author.albums
+                     */
+                    include?: string[];
+                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
+                    "page[cursor]"?: string;
+                    /**
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: reactions.author.albums
+                     * @example reactions.author.albums
+                     */
+                    replaceMedia?: string;
+                };
+                header?: never;
+                path: {
+                    /** @description Opaque identifier of one authenticated viewer and original subject pair */
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/vnd.api+json": components["schemas"]["ViewerContexts_Reactions_Multi_Relationship_Data_Document"];
                     };
                 };
                 400: components["responses"]["Default400Response"];
@@ -26335,6 +27875,11 @@ export interface components {
              * @description Explicit content. Deprecated: use 'explicit' instead. This field will be removed in a future version.
              */
             explicitLyrics?: boolean;
+            /**
+             * @description Whether the album is published to everyone.
+             * @example true
+             */
+            published?: boolean;
             /** Format: date */
             releaseDate?: string;
             title?: string;
@@ -27512,6 +29057,12 @@ export interface components {
              */
             numberOfFollowers?: number;
             /**
+             * Format: int32
+             * @description Number of artists in the following relationship
+             * @example 48
+             */
+            numberOfFollowing?: number;
+            /**
              * @description Ownership type of the artist profile. LABEL: label-managed profile, USER: user-created profile, MIXED: claimed profile with both label and user content. May be null during rollout/backfill.
              * @enum {string}
              */
@@ -27982,6 +29533,7 @@ export interface components {
                 code: "REQUIRED_TERMS_NOT_ACCEPTED";
                 /** @example Latest terms and conditions must be accepted */
                 detail?: string;
+                meta?: components["schemas"]["MissingTermsMeta"];
                 /** @example 403 */
                 status: string;
             }[];
@@ -28243,6 +29795,11 @@ export interface components {
             type: "clients";
         };
         ClientsUpdateOperation_Payload_Data_Attributes: {
+            /**
+             * @description Client preset defining default OAuth settings and supported audio formats.
+             * @enum {string}
+             */
+            clientPreset?: "STANDARD_THIRD_PARTY" | "TIDAL_CONNECT_CD" | "TIDAL_CONNECT_HIRES" | "TIDAL_CONNECT_CD_WITH_ATMOS" | "TIDAL_CONNECT_HIRES_WITH_ATMOS";
             description?: string;
             name?: string;
             redirectUris?: string[];
@@ -28251,6 +29808,11 @@ export interface components {
         Clients_Attributes: {
             /** @enum {string} */
             accessTier: "THIRD_PARTY" | "THIRD_PARTY_PROD" | "PARTNER" | "INTERNAL";
+            /**
+             * @description Client preset defining default OAuth settings and supported audio formats.
+             * @enum {string}
+             */
+            clientPreset: "STANDARD_THIRD_PARTY" | "TIDAL_CONNECT_CD" | "TIDAL_CONNECT_HIRES" | "TIDAL_CONNECT_CD_WITH_ATMOS" | "TIDAL_CONNECT_HIRES_WITH_ATMOS";
             clientSecret?: string;
             /** Format: date-time */
             createdAt?: string;
@@ -28329,7 +29891,7 @@ export interface components {
         CollaborationInviteRedemptions_Attributes: {
             /**
              * Format: date-time
-             * @description Datetime the invite was redeemed (ISO 8601)
+             * @description Time of this redemption (ISO 8601). Redeeming the invite again returns the same id with the time of that request.
              */
             redeemedAt: string;
         };
@@ -28429,8 +29991,41 @@ export interface components {
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
-        /** @description The viewer has at least one existing comment on the subject; deleted historical comments do not count. Reserved; not currently populated and omitted from responses. Omission does not indicate that the relation is absent. */
-        Commented: Record<string, never>;
+        CommentSummaries_Attributes: {
+            /**
+             * Format: int64
+             * @description Number of existing comments directly targeting the subject. For a source file this counts root comments; for a comment this counts its direct replies.
+             */
+            totalCount: number;
+        };
+        CommentSummaries_Multi_Resource_Data_Document: {
+            data: components["schemas"]["CommentSummaries_Resource_Object"][];
+            included?: components["schemas"]["Included"];
+            links: components["schemas"]["Links"];
+        };
+        CommentSummaries_Relationships: {
+            subject?: components["schemas"]["CommentSummaries_Subject_Single_Relationship_Data_Document"];
+        };
+        CommentSummaries_Resource_Object: {
+            attributes?: components["schemas"]["CommentSummaries_Attributes"];
+            /**
+             * @description Resource id
+             * @example 12345
+             */
+            id: string;
+            relationships?: components["schemas"]["CommentSummaries_Relationships"];
+            /**
+             * @description Resource type (enum property replaced by openapi-typescript)
+             * @enum {string}
+             */
+            type: "commentSummaries";
+        };
+        /** @description Target resource types: `comments`, `trackSourceFiles`. */
+        CommentSummaries_Subject_Single_Relationship_Data_Document: {
+            data?: components["schemas"]["Resource_Identifier"] | (never | null);
+            included?: components["schemas"]["Included"];
+            links: components["schemas"]["Links"];
+        };
         CommentsCreateOperation_Payload: {
             data: components["schemas"]["CommentsCreateOperation_Payload_Data"];
         };
@@ -28441,22 +30036,15 @@ export interface components {
             type: "comments";
         };
         CommentsCreateOperation_Payload_Data_Attributes: {
-            endTime?: string;
+            /** @description End offset from the beginning of the source file (ISO 8601 duration). */
+            endOffset?: string;
             /** @description The comment message content */
             message: string;
-            startTime?: string;
+            /** @description Start offset from the beginning of the source file (ISO 8601 duration). */
+            startOffset?: string;
         };
         CommentsCreateOperation_Payload_Data_Relationships: {
-            parentComment?: components["schemas"]["CommentsCreateOperation_Payload_Data_Relationships_ParentComment"];
             subject: components["schemas"]["CommentsCreateOperation_Payload_Data_Relationships_Subject"];
-        };
-        CommentsCreateOperation_Payload_Data_Relationships_ParentComment: {
-            data: components["schemas"]["CommentsCreateOperation_Payload_Data_Relationships_ParentComment_Data"] | (never | null);
-        };
-        CommentsCreateOperation_Payload_Data_Relationships_ParentComment_Data: {
-            id: string;
-            /** @enum {string} */
-            type: "comments";
         };
         CommentsCreateOperation_Payload_Data_Relationships_Subject: {
             data: components["schemas"]["CommentsCreateOperation_Payload_Data_Relationships_Subject_Data"];
@@ -28464,7 +30052,7 @@ export interface components {
         CommentsCreateOperation_Payload_Data_Relationships_Subject_Data: {
             id: string;
             /** @enum {string} */
-            type: "albums" | "tracks" | "trackSourceFiles";
+            type: "trackSourceFiles" | "comments";
         };
         CommentsUpdateOperation_Payload: {
             data: components["schemas"]["CommentsUpdateOperation_Payload_Data"];
@@ -28476,10 +30064,12 @@ export interface components {
             type: "comments";
         };
         CommentsUpdateOperation_Payload_Data_Attributes: {
-            endTime?: string;
+            /** @description End offset from the beginning of the source file (ISO 8601 duration). */
+            endOffset?: string;
             /** @description The comment message content */
             message?: string;
-            startTime?: string;
+            /** @description Start offset from the beginning of the source file (ISO 8601 duration). */
+            startOffset?: string;
         };
         Comments_Attributes: {
             /**
@@ -28489,21 +30079,16 @@ export interface components {
              */
             createdAt: string;
             /**
-             * @description End time offset for timestamped comments (ISO 8601 duration)
+             * @description End offset from the beginning of the source file (ISO 8601 duration)
              * @example PT2M
              */
-            endTime?: string;
+            endOffset?: string;
             /**
              * Format: date-time
              * @description Datetime when the comment was last modified (ISO 8601)
              * @example 2025-11-17T12:54:48.606Z
              */
             lastModifiedAt: string;
-            /**
-             * Format: int32
-             * @description Number of likes on this comment
-             */
-            likeCount: number;
             /** @description The comment message content */
             message: string;
             /**
@@ -28512,18 +30097,19 @@ export interface components {
              */
             moderationStatus: "NOT_MODERATED" | "FLAGGED" | "TAKEN_DOWN" | "OK" | "ERROR";
             /**
-             * Format: int32
-             * @description Number of replies to this comment
-             */
-            replyCount: number;
-            /**
-             * @description Start time offset for timestamped comments (ISO 8601 duration)
+             * @description Start offset from the beginning of the source file (ISO 8601 duration)
              * @example PT1M30S
              */
-            startTime?: string;
+            startOffset?: string;
         };
         /** @description Target resource types: `artists`. */
         Comments_Author_Single_Relationship_Data_Document: {
+            data?: components["schemas"]["Resource_Identifier"] | (never | null);
+            included?: components["schemas"]["Included"];
+            links: components["schemas"]["Links"];
+        };
+        /** @description Target resource types: `commentSummaries`. */
+        Comments_CommentSummary_Single_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"] | (never | null);
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
@@ -28543,16 +30129,19 @@ export interface components {
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
-        /** @description Target resource types: `comments`. */
-        Comments_ParentComment_Single_Relationship_Data_Document: {
+        /** @description Target resource types: `reactionSummaries`. */
+        Comments_ReactionSummary_Single_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"] | (never | null);
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
         Comments_Relationships: {
             author?: components["schemas"]["Comments_Author_Single_Relationship_Data_Document"];
+            commentSummary?: components["schemas"]["Comments_CommentSummary_Single_Relationship_Data_Document"];
             owners?: components["schemas"]["Comments_Owners_Multi_Relationship_Data_Document"];
-            parentComment?: components["schemas"]["Comments_ParentComment_Single_Relationship_Data_Document"];
+            reactionSummary?: components["schemas"]["Comments_ReactionSummary_Single_Relationship_Data_Document"];
+            rootSubject?: components["schemas"]["Comments_RootSubject_Single_Relationship_Data_Document"];
+            subject?: components["schemas"]["Comments_Subject_Single_Relationship_Data_Document"];
         };
         Comments_Resource_Object: {
             attributes?: components["schemas"]["Comments_Attributes"];
@@ -28568,8 +30157,20 @@ export interface components {
              */
             type: "comments";
         };
+        /** @description Target resource types: `trackSourceFiles`. */
+        Comments_RootSubject_Single_Relationship_Data_Document: {
+            data?: components["schemas"]["Resource_Identifier"] | (never | null);
+            included?: components["schemas"]["Included"];
+            links: components["schemas"]["Links"];
+        };
         Comments_Single_Resource_Data_Document: {
             data: components["schemas"]["Comments_Resource_Object"];
+            included?: components["schemas"]["Included"];
+            links: components["schemas"]["Links"];
+        };
+        /** @description Target resource types: `comments`, `trackSourceFiles`. */
+        Comments_Subject_Single_Relationship_Data_Document: {
+            data?: components["schemas"]["Resource_Identifier"] | (never | null);
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
@@ -28745,18 +30346,6 @@ export interface components {
             data: components["schemas"]["Credits_Resource_Object"];
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
-        };
-        /** @description Current user's reaction */
-        CurrentUserReaction: {
-            /**
-             * Format: date-time
-             * @description When the reaction was created
-             */
-            createdAt?: string;
-            /** @description User's emoji reaction */
-            emoji?: string;
-            /** @description Reaction ID */
-            id?: string;
         };
         Default400ResponseBody: {
             errors: {
@@ -28960,7 +30549,7 @@ export interface components {
              */
             viewAllLayout?: "GRID" | "LIST" | "UNKNOWN";
         };
-        /** @description Target resource types: `albums`, `artistStreamsStatistics`, `artists`, `playlists`, `tracks`, `videos`. */
+        /** @description Target resource types: `albums`, `artistStreamsStatistics`, `artists`, `playlists`, `squareItems`, `studioHomeEventTiles`, `studioHomeInsightTiles`, `studioHomeMerchTiles`, `studioHomeMusicTiles`, `tracks`, `videos`. */
         DynamicModules_Items_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["DynamicModules_Items_Resource_Identifier"][];
             included?: components["schemas"]["Included"];
@@ -29068,20 +30657,12 @@ export interface components {
              * @example 12345
              */
             id: string;
-            meta?: components["schemas"]["DynamicPages_Resource_Object_Meta"];
             relationships?: components["schemas"]["DynamicPages_Relationships"];
             /**
              * @description Resource type (enum property replaced by openapi-typescript)
              * @enum {string}
              */
             type: "dynamicPages";
-        };
-        DynamicPages_Resource_Object_Meta: {
-            /**
-             * @description Reason why data has been redacted on this page
-             * @enum {string}
-             */
-            redactionReason?: "NO_BIRTHDAY" | "MINOR";
         };
         DynamicPages_Subject_Resource_Identifier: {
             /**
@@ -29105,6 +30686,14 @@ export interface components {
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
+        /** @description The viewer's effective role on the subject, from a grant or an implicit role such as an album's VIEWER through a grant on one of its tracks. Populated for owned albums, tracks and folders; omitted for other subjects. Share codes do not count. */
+        EffectiveRole: {
+            /**
+             * @description Effective role.
+             * @enum {string}
+             */
+            role: "VIEWER" | "COLLABORATOR" | "OWNER";
+        };
         Error_Object: {
             /** @description application-specific error code */
             code?: string;
@@ -29112,6 +30701,7 @@ export interface components {
             detail?: string;
             /** @description unique identifier for this particular occurrence of the problem */
             id?: string;
+            meta?: components["schemas"]["MetaObject"];
             source?: components["schemas"]["Error_Object_Source"];
             /** @description HTTP status code applicable to this problem */
             status?: string;
@@ -29298,8 +30888,8 @@ export interface components {
             breadcrumb?: components["schemas"]["FolderItems_Breadcrumb_Multi_Relationship_Data_Document"];
             owners?: components["schemas"]["FolderItems_Owners_Multi_Relationship_Data_Document"];
             parent?: components["schemas"]["FolderItems_Parent_Single_Relationship_Data_Document"];
+            sharingSummary?: components["schemas"]["FolderItems_SharingSummary_Single_Relationship_Data_Document"];
             subject?: components["schemas"]["FolderItems_Subject_Single_Relationship_Data_Document"];
-            subjectSharingSettings?: components["schemas"]["FolderItems_SubjectSharingSettings_Single_Relationship_Data_Document"];
         };
         FolderItems_Resource_Object: {
             attributes?: components["schemas"]["FolderItems_Attributes"];
@@ -29315,14 +30905,14 @@ export interface components {
              */
             type: "folderItems";
         };
-        FolderItems_Single_Resource_Data_Document: {
-            data: components["schemas"]["FolderItems_Resource_Object"];
+        /** @description Target resource types: `sharingSummaries`. */
+        FolderItems_SharingSummary_Single_Relationship_Data_Document: {
+            data?: components["schemas"]["Resource_Identifier"] | (never | null);
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
-        /** @description Target resource types: `resourceSharingSettings`. */
-        FolderItems_SubjectSharingSettings_Single_Relationship_Data_Document: {
-            data?: components["schemas"]["Resource_Identifier"] | (never | null);
+        FolderItems_Single_Resource_Data_Document: {
+            data: components["schemas"]["FolderItems_Resource_Object"];
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
@@ -29518,14 +31108,6 @@ export interface components {
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
-        /** @description The viewer's effective role for the subject. Populated for albums, tracks and folders; omitted for other subject types. */
-        Grantee: {
-            /**
-             * @description Effective role.
-             * @enum {string}
-             */
-            role: "VIEWER" | "COLLABORATOR" | "OWNER";
-        };
         Groups_Attributes: {
             /**
              * @description Group name
@@ -29584,7 +31166,7 @@ export interface components {
         };
         /** @description The viewer has the original subject in their normal collection. Present as an empty object when known present, otherwise omitted. Includes owned and saved playlists and saved mixes across folders; excludes Save for Later. */
         InCollection: Record<string, never>;
-        Included: (components["schemas"]["AcceptedTerms_Resource_Object"] | components["schemas"]["AlbumStatistics_Resource_Object"] | components["schemas"]["Albums_Resource_Object"] | components["schemas"]["Appreciations_Resource_Object"] | components["schemas"]["ArtistBiographies_Resource_Object"] | components["schemas"]["ArtistClaimStatuses_Resource_Object"] | components["schemas"]["ArtistClaims_Resource_Object"] | components["schemas"]["ArtistRoles_Resource_Object"] | components["schemas"]["ArtistSalesStatistics_Resource_Object"] | components["schemas"]["ArtistStreamsStatistics_Resource_Object"] | components["schemas"]["Artists_Resource_Object"] | components["schemas"]["ArtworkLibraries_Resource_Object"] | components["schemas"]["Artworks_Resource_Object"] | components["schemas"]["ChangeEventStreams_Resource_Object"] | components["schemas"]["ClientCertificates_Resource_Object"] | components["schemas"]["Clients_Resource_Object"] | components["schemas"]["CollaborationInviteRedemptions_Resource_Object"] | components["schemas"]["CollaborationInvites_Resource_Object"] | components["schemas"]["Comments_Resource_Object"] | components["schemas"]["ContentClaims_Resource_Object"] | components["schemas"]["Credits_Resource_Object"] | components["schemas"]["Downloads_Resource_Object"] | components["schemas"]["DspSharingLinks_Resource_Object"] | components["schemas"]["DynamicModules_Resource_Object"] | components["schemas"]["DynamicPages_Resource_Object"] | components["schemas"]["FolderItems_Resource_Object"] | components["schemas"]["Folders_Resource_Object"] | components["schemas"]["Genres_Resource_Object"] | components["schemas"]["Groups_Resource_Object"] | components["schemas"]["Installations_Resource_Object"] | components["schemas"]["Lyrics_Resource_Object"] | components["schemas"]["ManualArtistClaims_Resource_Object"] | components["schemas"]["OfflineTasks_Resource_Object"] | components["schemas"]["PlayQueues_Resource_Object"] | components["schemas"]["PlaylistGenerationSchedules_Resource_Object"] | components["schemas"]["PlaylistGenerations_Resource_Object"] | components["schemas"]["Playlists_Resource_Object"] | components["schemas"]["PriceConfigurations_Resource_Object"] | components["schemas"]["ProviderOwners_Resource_Object"] | components["schemas"]["ProviderProductInfos_Resource_Object"] | components["schemas"]["Providers_Resource_Object"] | components["schemas"]["Purchases_Resource_Object"] | components["schemas"]["Reactions_Resource_Object"] | components["schemas"]["ResourceGrants_Resource_Object"] | components["schemas"]["ResourceSharingSettings_Resource_Object"] | components["schemas"]["SavedShares_Resource_Object"] | components["schemas"]["Scopes_Resource_Object"] | components["schemas"]["SearchHistoryEntries_Resource_Object"] | components["schemas"]["SearchResults_Resource_Object"] | components["schemas"]["SearchSuggestions_Resource_Object"] | components["schemas"]["Shares_Resource_Object"] | components["schemas"]["SquareConnections_Resource_Object"] | components["schemas"]["SquareItemVariationPhysicalCounts_Resource_Object"] | components["schemas"]["SquareItemVariations_Resource_Object"] | components["schemas"]["SquareItems_Resource_Object"] | components["schemas"]["SquareSites_Resource_Object"] | components["schemas"]["StripeConnections_Resource_Object"] | components["schemas"]["StripeDashboardLinks_Resource_Object"] | components["schemas"]["SubscriptionPriceChangeDecisions_Resource_Object"] | components["schemas"]["TemporaryUserTokens_Resource_Object"] | components["schemas"]["Terms_Resource_Object"] | components["schemas"]["TrackFiles_Resource_Object"] | components["schemas"]["TrackManifests_Resource_Object"] | components["schemas"]["TrackSourceFiles_Resource_Object"] | components["schemas"]["TrackStatistics_Resource_Object"] | components["schemas"]["Tracks_Resource_Object"] | components["schemas"]["TracksMetadataStatus_Resource_Object"] | components["schemas"]["UsageRules_Resource_Object"] | components["schemas"]["UserCollectionAlbums_Resource_Object"] | components["schemas"]["UserCollectionArtists_Resource_Object"] | components["schemas"]["UserCollectionFolders_Resource_Object"] | components["schemas"]["UserCollectionPlaylists_Resource_Object"] | components["schemas"]["UserCollectionSaveForLaters_Resource_Object"] | components["schemas"]["UserCollectionTracks_Resource_Object"] | components["schemas"]["UserCollectionVideos_Resource_Object"] | components["schemas"]["UserDailyMixes_Resource_Object"] | components["schemas"]["UserDataExportRequests_Resource_Object"] | components["schemas"]["UserDiscoveryMixes_Resource_Object"] | components["schemas"]["UserFeedItems_Resource_Object"] | components["schemas"]["UserFeeds_Resource_Object"] | components["schemas"]["UserNewReleaseMixes_Resource_Object"] | components["schemas"]["UserOfflineMixes_Resource_Object"] | components["schemas"]["UserPlaybackStates_Resource_Object"] | components["schemas"]["UserRecommendationBlocks_Resource_Object"] | components["schemas"]["UserReports_Resource_Object"] | components["schemas"]["UserSubscriptionPriceChanges_Resource_Object"] | components["schemas"]["Users_Resource_Object"] | components["schemas"]["VideoManifests_Resource_Object"] | components["schemas"]["Videos_Resource_Object"] | components["schemas"]["ViewerContexts_Resource_Object"])[];
+        Included: (components["schemas"]["AcceptedTerms_Resource_Object"] | components["schemas"]["AlbumStatistics_Resource_Object"] | components["schemas"]["Albums_Resource_Object"] | components["schemas"]["Appreciations_Resource_Object"] | components["schemas"]["ArtistBiographies_Resource_Object"] | components["schemas"]["ArtistClaimStatuses_Resource_Object"] | components["schemas"]["ArtistClaims_Resource_Object"] | components["schemas"]["ArtistRoles_Resource_Object"] | components["schemas"]["ArtistSalesStatistics_Resource_Object"] | components["schemas"]["ArtistStreamsStatistics_Resource_Object"] | components["schemas"]["Artists_Resource_Object"] | components["schemas"]["ArtworkLibraries_Resource_Object"] | components["schemas"]["Artworks_Resource_Object"] | components["schemas"]["ChangeEventStreams_Resource_Object"] | components["schemas"]["ClientCertificates_Resource_Object"] | components["schemas"]["Clients_Resource_Object"] | components["schemas"]["CollaborationInviteRedemptions_Resource_Object"] | components["schemas"]["CollaborationInvites_Resource_Object"] | components["schemas"]["CommentSummaries_Resource_Object"] | components["schemas"]["Comments_Resource_Object"] | components["schemas"]["ContentClaims_Resource_Object"] | components["schemas"]["Credits_Resource_Object"] | components["schemas"]["Downloads_Resource_Object"] | components["schemas"]["DspSharingLinks_Resource_Object"] | components["schemas"]["DynamicModules_Resource_Object"] | components["schemas"]["DynamicPages_Resource_Object"] | components["schemas"]["FolderItems_Resource_Object"] | components["schemas"]["Folders_Resource_Object"] | components["schemas"]["Genres_Resource_Object"] | components["schemas"]["Groups_Resource_Object"] | components["schemas"]["Installations_Resource_Object"] | components["schemas"]["Lyrics_Resource_Object"] | components["schemas"]["ManualArtistClaims_Resource_Object"] | components["schemas"]["OfflineTasks_Resource_Object"] | components["schemas"]["PlayQueues_Resource_Object"] | components["schemas"]["PlaylistGenerationSchedules_Resource_Object"] | components["schemas"]["PlaylistGenerations_Resource_Object"] | components["schemas"]["Playlists_Resource_Object"] | components["schemas"]["PriceConfigurations_Resource_Object"] | components["schemas"]["ProviderOwners_Resource_Object"] | components["schemas"]["ProviderProductInfos_Resource_Object"] | components["schemas"]["Providers_Resource_Object"] | components["schemas"]["Purchases_Resource_Object"] | components["schemas"]["ReactionSummaries_Resource_Object"] | components["schemas"]["Reactions_Resource_Object"] | components["schemas"]["ResourceGrantInvitations_Resource_Object"] | components["schemas"]["ResourceGrants_Resource_Object"] | components["schemas"]["SavedShares_Resource_Object"] | components["schemas"]["Scopes_Resource_Object"] | components["schemas"]["SearchHistoryEntries_Resource_Object"] | components["schemas"]["SearchResults_Resource_Object"] | components["schemas"]["SearchSuggestions_Resource_Object"] | components["schemas"]["Shares_Resource_Object"] | components["schemas"]["SharingSummaries_Resource_Object"] | components["schemas"]["SquareConnections_Resource_Object"] | components["schemas"]["SquareItemVariationPhysicalCounts_Resource_Object"] | components["schemas"]["SquareItemVariations_Resource_Object"] | components["schemas"]["SquareItems_Resource_Object"] | components["schemas"]["SquareSites_Resource_Object"] | components["schemas"]["StripeConnections_Resource_Object"] | components["schemas"]["StripeDashboardLinks_Resource_Object"] | components["schemas"]["StudioHomeEventTiles_Resource_Object"] | components["schemas"]["StudioHomeInsightTiles_Resource_Object"] | components["schemas"]["StudioHomeMerchTiles_Resource_Object"] | components["schemas"]["StudioHomeMusicTiles_Resource_Object"] | components["schemas"]["SubscriptionPriceChangeDecisions_Resource_Object"] | components["schemas"]["TemporaryUserTokens_Resource_Object"] | components["schemas"]["Terms_Resource_Object"] | components["schemas"]["TrackFiles_Resource_Object"] | components["schemas"]["TrackManifests_Resource_Object"] | components["schemas"]["TrackSourceFiles_Resource_Object"] | components["schemas"]["TrackStatistics_Resource_Object"] | components["schemas"]["Tracks_Resource_Object"] | components["schemas"]["TracksMetadataStatus_Resource_Object"] | components["schemas"]["UsageRules_Resource_Object"] | components["schemas"]["UserCollectionAlbums_Resource_Object"] | components["schemas"]["UserCollectionArtists_Resource_Object"] | components["schemas"]["UserCollectionFolders_Resource_Object"] | components["schemas"]["UserCollectionPlaylists_Resource_Object"] | components["schemas"]["UserCollectionSaveForLaters_Resource_Object"] | components["schemas"]["UserCollectionTracks_Resource_Object"] | components["schemas"]["UserCollectionVideos_Resource_Object"] | components["schemas"]["UserDailyMixes_Resource_Object"] | components["schemas"]["UserDataExportRequests_Resource_Object"] | components["schemas"]["UserDataExports_Resource_Object"] | components["schemas"]["UserDiscoveryMixes_Resource_Object"] | components["schemas"]["UserFeedItems_Resource_Object"] | components["schemas"]["UserFeeds_Resource_Object"] | components["schemas"]["UserNewReleaseMixes_Resource_Object"] | components["schemas"]["UserOfflineMixes_Resource_Object"] | components["schemas"]["UserPlaybackStates_Resource_Object"] | components["schemas"]["UserRecommendationBlocks_Resource_Object"] | components["schemas"]["UserReports_Resource_Object"] | components["schemas"]["UserSubscriptionPriceChanges_Resource_Object"] | components["schemas"]["Users_Resource_Object"] | components["schemas"]["VideoManifests_Resource_Object"] | components["schemas"]["Videos_Resource_Object"] | components["schemas"]["ViewerContexts_Resource_Object"])[];
         InstallationsCreateOperation_Payload: {
             data: components["schemas"]["InstallationsCreateOperation_Payload_Data"];
         };
@@ -29948,6 +31530,10 @@ export interface components {
              * @enum {string}
              */
             type: "manualArtistClaims";
+        };
+        MetaObject: Record<string, never>;
+        MissingTermsMeta: {
+            missingTermsTypes: ("DEVELOPER" | "UPLOAD_MARKETPLACE" | "MERCH_GUIDELINES" | "TIDAL_CONNECT_DEVELOPER")[];
         };
         Mutation_Response_Document: {
             links: components["schemas"]["Links"];
@@ -31472,21 +33058,44 @@ export interface components {
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
-        /** @description The viewer has a current reaction to the subject, with its emoji. Reserved; not currently populated and omitted from responses. Omission does not indicate that the relation is absent. */
-        Reaction: {
-            emoji: string;
-        };
-        /** @description Reaction statistics */
-        ReactionStats: {
-            /** @description Count of reactions by type */
-            countsByType?: {
+        ReactionSummaries_Attributes: {
+            /** @description Complete reaction counts keyed by emoji for source files and comments. An empty object means no reactions. */
+            countsByEmoji: {
                 [key: string]: number;
             };
             /**
-             * Format: int32
-             * @description Total number of reactions
+             * Format: int64
+             * @description Number of current reactions across all emojis and time offsets, including whole-subject reactions. A user can contribute more than one reaction.
              */
-            totalCount?: number;
+            totalCount: number;
+        };
+        ReactionSummaries_Multi_Resource_Data_Document: {
+            data: components["schemas"]["ReactionSummaries_Resource_Object"][];
+            included?: components["schemas"]["Included"];
+            links: components["schemas"]["Links"];
+        };
+        ReactionSummaries_Relationships: {
+            subject?: components["schemas"]["ReactionSummaries_Subject_Single_Relationship_Data_Document"];
+        };
+        ReactionSummaries_Resource_Object: {
+            attributes?: components["schemas"]["ReactionSummaries_Attributes"];
+            /**
+             * @description Resource id
+             * @example 12345
+             */
+            id: string;
+            relationships?: components["schemas"]["ReactionSummaries_Relationships"];
+            /**
+             * @description Resource type (enum property replaced by openapi-typescript)
+             * @enum {string}
+             */
+            type: "reactionSummaries";
+        };
+        /** @description Target resource types: `comments`, `trackSourceFiles`. */
+        ReactionSummaries_Subject_Single_Relationship_Data_Document: {
+            data?: components["schemas"]["Resource_Identifier"] | (never | null);
+            included?: components["schemas"]["Included"];
+            links: components["schemas"]["Links"];
         };
         ReactionsCreateOperation_Payload: {
             data: components["schemas"]["ReactionsCreateOperation_Payload_Data"];
@@ -31499,6 +33108,16 @@ export interface components {
         };
         ReactionsCreateOperation_Payload_Data_Attributes: {
             emoji: string;
+            /**
+             * @description Section end offset (ISO 8601 duration), at or after startOffset. Requires startOffset; omitted for a point reaction.
+             * @example PT15S
+             */
+            endOffset?: string;
+            /**
+             * @description Nonnegative source-file offset (ISO 8601 duration); omitted for the whole subject.
+             * @example PT10S
+             */
+            startOffset?: string;
         };
         ReactionsCreateOperation_Payload_Data_Relationships: {
             subject: components["schemas"]["ReactionsCreateOperation_Payload_Data_Relationships_Subject"];
@@ -31509,7 +33128,7 @@ export interface components {
         ReactionsCreateOperation_Payload_Data_Relationships_Subject_Data: {
             id: string;
             /** @enum {string} */
-            type: "albums" | "tracks" | "artists" | "videos" | "playlists" | "comments" | "trackSourceFiles";
+            type: "trackSourceFiles" | "comments";
         };
         Reactions_Attributes: {
             /**
@@ -31520,6 +33139,16 @@ export interface components {
             createdAt: string;
             /** @description The type of reaction representing an emoji */
             emoji: string;
+            /**
+             * @description End offset of a source-file section. Omitted for a point or whole-subject reaction.
+             * @example PT15S
+             */
+            endOffset?: string;
+            /**
+             * @description Source-file offset (ISO 8601 duration). Omitted for the whole subject.
+             * @example PT10S
+             */
+            startOffset?: string;
         };
         /** @description Target resource types: `artists`. */
         Reactions_Author_Single_Relationship_Data_Document: {
@@ -31535,18 +33164,6 @@ export interface components {
             data: components["schemas"]["Reactions_Resource_Object"][];
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
-            meta?: components["schemas"]["Reactions_Multi_Resource_Data_Document_Meta"];
-        };
-        /** @description Reaction response metadata with stats and current user reaction */
-        Reactions_Multi_Resource_Data_Document_Meta: {
-            currentUserReaction?: components["schemas"]["CurrentUserReaction"];
-            stats?: components["schemas"]["ReactionStats"];
-        };
-        /** @description Target resource types: `artists`. */
-        Reactions_OwnerProfiles_Multi_Relationship_Data_Document: {
-            data?: components["schemas"]["Resource_Identifier"][];
-            included?: components["schemas"]["Included"];
-            links: components["schemas"]["Links"];
         };
         /** @description Target resource types: `users`. */
         Reactions_Owners_Multi_Relationship_Data_Document: {
@@ -31556,9 +33173,8 @@ export interface components {
         };
         Reactions_Relationships: {
             author?: components["schemas"]["Reactions_Author_Single_Relationship_Data_Document"];
-            /** @deprecated */
-            ownerProfiles?: components["schemas"]["Reactions_OwnerProfiles_Multi_Relationship_Data_Document"];
             owners?: components["schemas"]["Reactions_Owners_Multi_Relationship_Data_Document"];
+            subject?: components["schemas"]["Reactions_Subject_Single_Relationship_Data_Document"];
         };
         Reactions_Resource_Object: {
             attributes?: components["schemas"]["Reactions_Attributes"];
@@ -31574,6 +33190,12 @@ export interface components {
              */
             type: "reactions";
         };
+        /** @description Target resource types: `comments`, `trackSourceFiles`. */
+        Reactions_Subject_Single_Relationship_Data_Document: {
+            data?: components["schemas"]["Resource_Identifier"] | (never | null);
+            included?: components["schemas"]["Included"];
+            links: components["schemas"]["Links"];
+        };
         /** @description Relationship identifier before contextual replacement projection. */
         Replacement_Original_Identifier: {
             /** @example 12345 */
@@ -31587,23 +33209,231 @@ export interface components {
             /** @enum {string} */
             status: "ORIGINAL" | "REPLACED" | "NOT_REPLACED";
         };
+        ResourceGrantInvitationsCreateOperation_Payload: {
+            data: components["schemas"]["ResourceGrantInvitationsCreateOperation_Payload_Data"];
+        };
+        ResourceGrantInvitationsCreateOperation_Payload_Data: {
+            attributes: components["schemas"]["ResourceGrantInvitationsCreateOperation_Payload_Data_Attributes"];
+            relationships: components["schemas"]["ResourceGrantInvitationsCreateOperation_Payload_Data_Relationships"];
+            /** @enum {string} */
+            type: "resourceGrantInvitations";
+        };
+        ResourceGrantInvitationsCreateOperation_Payload_Data_Attributes: {
+            /**
+             * Format: date-time
+             * @description Time redemption ends; must be in the future and at most a year away. Defaults to seven days after creation.
+             * @example 2021-07-08T00:00:00Z
+             */
+            expiresAt?: string | null;
+            /**
+             * Format: int32
+             * @description Number of redemptions permitted, repeated ones included. Unlimited when omitted or null.
+             */
+            maxUses?: number | null;
+            /**
+             * Format: password
+             * @description Password a user must send to redeem. Never returned. Must be printable ASCII characters. Playlist invitations cannot have one; 400.
+             */
+            password?: string;
+            /** @description Whether previewGrant gives VIEWER access to the subject, whatever the role, until the invitation expires. Defaults to false. */
+            preview?: boolean | null;
+            /**
+             * @description Role a redemption grants.
+             * @enum {string}
+             */
+            role: "VIEWER" | "COLLABORATOR";
+        };
+        ResourceGrantInvitationsCreateOperation_Payload_Data_Relationships: {
+            subject: components["schemas"]["ResourceGrantInvitationsCreateOperation_Payload_Data_Relationships_Subject"];
+        };
+        ResourceGrantInvitationsCreateOperation_Payload_Data_Relationships_Subject: {
+            data: components["schemas"]["ResourceGrantInvitationsCreateOperation_Payload_Data_Relationships_Subject_Data"];
+        };
+        ResourceGrantInvitationsCreateOperation_Payload_Data_Relationships_Subject_Data: {
+            id: string;
+            /** @enum {string} */
+            type: "albums" | "tracks" | "folders" | "playlists";
+        };
+        ResourceGrantInvitationsUpdateOperation_Payload: {
+            data: components["schemas"]["ResourceGrantInvitationsUpdateOperation_Payload_Data"];
+        };
+        ResourceGrantInvitationsUpdateOperation_Payload_Data: {
+            attributes: components["schemas"]["ResourceGrantInvitationsUpdateOperation_Payload_Data_Attributes"];
+            id: string;
+            /** @enum {string} */
+            type: "resourceGrantInvitations";
+        };
+        ResourceGrantInvitationsUpdateOperation_Payload_Data_Attributes: {
+            password?: string | (never | null);
+            /** @description Whether previewGrant gives VIEWER access to the subject, whatever the role, until the invitation expires. Omitted leaves it unchanged. */
+            preview?: boolean;
+        };
+        ResourceGrantInvitations_Attributes: {
+            /** @description Code that identifies the invitation to its recipients. */
+            code: string;
+            /**
+             * Format: date-time
+             * @description Time the invitation was created.
+             * @example 2021-07-01T00:00:00Z
+             */
+            createdAt: string;
+            /**
+             * Format: date-time
+             * @description Time redemption ends; issued grants remain.
+             */
+            expiresAt: string;
+            /**
+             * Format: int32
+             * @description Number of redemptions permitted. Absent when unlimited.
+             */
+            maxUses?: number;
+            /**
+             * Format: password
+             * @description Password a user must send to redeem. Write-only: never returned.
+             */
+            password?: string;
+            /** @description Whether redemption requires a password. Only the owner and users with a role on the subject see a protected invitation's subject; others get null linkage. */
+            passwordProtected: boolean;
+            /** @description Whether previewGrant gives VIEWER access to the subject until the invitation expires. */
+            preview: boolean;
+            redemptionLink?: components["schemas"]["Link_Object"];
+            /**
+             * @description Role a redemption grants.
+             * @enum {string}
+             */
+            role: "VIEWER" | "COLLABORATOR";
+            /**
+             * Format: int32
+             * @description Number of redemptions so far, repeated ones included. Absent when maxUses is.
+             */
+            useCount?: number;
+        };
+        ResourceGrantInvitations_Create_Single_Resource_Data_Document: {
+            data: components["schemas"]["ResourceGrantInvitations_Resource_Object"];
+            links: components["schemas"]["Links"];
+        };
+        ResourceGrantInvitations_Multi_Resource_Data_Document: {
+            data: components["schemas"]["ResourceGrantInvitations_Resource_Object"][];
+            included?: components["schemas"]["Included"];
+            links: components["schemas"]["Links"];
+        };
+        /** @description Target resource types: `users`. */
+        ResourceGrantInvitations_Owners_Multi_Relationship_Data_Document: {
+            data?: components["schemas"]["Resource_Identifier"][];
+            included?: components["schemas"]["Included"];
+            links: components["schemas"]["Links"];
+        };
+        /** @description Target resource types: `resourceGrants`. */
+        ResourceGrantInvitations_PreviewGrant_Single_Relationship_Data_Document: {
+            data?: components["schemas"]["Resource_Identifier"] | (never | null);
+            included?: components["schemas"]["Included"];
+            links: components["schemas"]["Links"];
+        };
+        ResourceGrantInvitations_Relationships: {
+            owners?: components["schemas"]["ResourceGrantInvitations_Owners_Multi_Relationship_Data_Document"];
+            previewGrant?: components["schemas"]["ResourceGrantInvitations_PreviewGrant_Single_Relationship_Data_Document"];
+            subject?: components["schemas"]["ResourceGrantInvitations_Subject_Single_Relationship_Data_Document"];
+        };
+        ResourceGrantInvitations_Resource_Object: {
+            attributes?: components["schemas"]["ResourceGrantInvitations_Attributes"];
+            /**
+             * @description Resource id
+             * @example 12345
+             */
+            id: string;
+            relationships?: components["schemas"]["ResourceGrantInvitations_Relationships"];
+            /**
+             * @description Resource type (enum property replaced by openapi-typescript)
+             * @enum {string}
+             */
+            type: "resourceGrantInvitations";
+        };
+        ResourceGrantInvitations_Single_Resource_Data_Document: {
+            data: components["schemas"]["ResourceGrantInvitations_Resource_Object"];
+            included?: components["schemas"]["Included"];
+            links: components["schemas"]["Links"];
+        };
+        ResourceGrantInvitations_Subject_Resource_Identifier: {
+            /**
+             * @description Resource id
+             * @example 12345
+             */
+            id: string;
+            meta?: components["schemas"]["ResourceGrantInvitations_Subject_Resource_Identifier_Meta"];
+            /**
+             * @description Resource type
+             * @example tracks
+             */
+            type: string;
+        };
+        ResourceGrantInvitations_Subject_Resource_Identifier_Meta: {
+            replacement?: components["schemas"]["Replacement_Provenance"];
+        };
+        /** @description Target resource types: `albums`, `folders`, `playlists`, `tracks`. */
+        ResourceGrantInvitations_Subject_Single_Relationship_Data_Document: {
+            data?: components["schemas"]["ResourceGrantInvitations_Subject_Resource_Identifier"] | (never | null);
+            included?: components["schemas"]["Included"];
+            links: components["schemas"]["Links"];
+        };
+        ResourceGrantInvitations_Update_Single_Resource_Data_Document: {
+            data: components["schemas"]["ResourceGrantInvitations_Resource_Object"];
+            links: components["schemas"]["Links"];
+        };
         ResourceGrantsCreateOperation_Payload: {
             data: components["schemas"]["ResourceGrantsCreateOperation_Payload_Data"];
+            meta?: components["schemas"]["ResourceGrantsCreateOperation_Payload_Meta"];
         };
         ResourceGrantsCreateOperation_Payload_Data: {
-            attributes: components["schemas"]["ResourceGrantsCreateOperation_Payload_Data_Attributes"];
+            attributes?: components["schemas"]["ResourceGrantsCreateOperation_Payload_Data_Attributes"];
             relationships: components["schemas"]["ResourceGrantsCreateOperation_Payload_Data_Relationships"];
             /** @enum {string} */
             type: "resourceGrants";
         };
+        /** @description Required for a direct grant; omitted when redeeming. */
         ResourceGrantsCreateOperation_Payload_Data_Attributes: {
             /** @enum {string} */
             role: "VIEWER" | "COLLABORATOR";
         };
+        /** @description Either `subject` and `grantee` for a direct grant, or only `invitation` to redeem it. */
         ResourceGrantsCreateOperation_Payload_Data_Relationships: {
-            grantee: components["schemas"]["ResourceGrantsGranteeLinkage"];
-            subject: components["schemas"]["ResourceGrantsSubjectLinkage"];
+            grantee?: components["schemas"]["ResourceGrantsGranteeLinkage"];
+            invitation?: components["schemas"]["ResourceGrantsInvitationLinkage"];
+            subject?: components["schemas"]["ResourceGrantsSubjectLinkage"];
         };
+        ResourceGrantsCreateOperation_Payload_Meta: {
+            /**
+             * Format: password
+             * @description Password of a password-protected invitation. Ignored for other invitations.
+             */
+            password?: string;
+        };
+        ResourceGrantsCreateResource403ResponseBody: {
+            errors: {
+                /**
+                 * @example SHARE_PASSWORD_INVALID
+                 * @enum {string}
+                 */
+                code: "SHARE_PASSWORD_INVALID" | "SHARE_PASSWORD_REQUIRED" | "UNAUTHORIZED";
+                /** @example This invitation can no longer be accepted */
+                detail?: string;
+                /** @example 403 */
+                status: string;
+            }[];
+        };
+        ResourceGrantsCreateResource429ResponseBody: {
+            errors: {
+                /**
+                 * @example SHARE_PASSWORD_ATTEMPTS_EXCEEDED
+                 * @enum {string}
+                 */
+                code: "SHARE_PASSWORD_ATTEMPTS_EXCEEDED";
+                /** @example Too many invitation password attempts; try again later */
+                detail?: string;
+                /** @example 429 */
+                status: string;
+            }[];
+        };
+        /** @description A grant recipient. Identify the Everyone group with `type` set to `groups` and `id` set to `everyone`; only albums can be granted to it. */
         ResourceGrantsGrantee: {
             id: string;
             /** @enum {string} */
@@ -31612,10 +33442,19 @@ export interface components {
         ResourceGrantsGranteeLinkage: {
             data: components["schemas"]["ResourceGrantsGrantee"];
         };
+        /** @description The invitation whose redemption issued the grant. */
+        ResourceGrantsInvitation: {
+            id: string;
+            /** @enum {string} */
+            type: "resourceGrantInvitations";
+        };
+        ResourceGrantsInvitationLinkage: {
+            data: components["schemas"]["ResourceGrantsInvitation"];
+        };
         ResourceGrantsSubject: {
             id: string;
             /** @enum {string} */
-            type: "albums" | "tracks" | "folders";
+            type: "albums" | "tracks" | "folders" | "playlists";
         };
         ResourceGrantsSubjectLinkage: {
             data: components["schemas"]["ResourceGrantsSubject"];
@@ -31634,6 +33473,13 @@ export interface components {
             role: "VIEWER" | "COLLABORATOR";
         };
         ResourceGrants_Attributes: {
+            /** @description Code of a bearer grant: whoever presents it as `shareCode` holds the role on the subject and everything below it. */
+            code?: string;
+            /**
+             * Format: date-time
+             * @description Time a bearer grant stops applying.
+             */
+            expiresAt?: string;
             /** @enum {string} */
             role: "VIEWER" | "COLLABORATOR" | "OWNER";
         };
@@ -31647,6 +33493,12 @@ export interface components {
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
+        /** @description Target resource types: `resourceGrantInvitations`. */
+        ResourceGrants_Invitation_Single_Relationship_Data_Document: {
+            data?: components["schemas"]["Resource_Identifier"] | (never | null);
+            included?: components["schemas"]["Included"];
+            links: components["schemas"]["Links"];
+        };
         ResourceGrants_Multi_Resource_Data_Document: {
             data: components["schemas"]["ResourceGrants_Resource_Object"][];
             included?: components["schemas"]["Included"];
@@ -31654,6 +33506,7 @@ export interface components {
         };
         ResourceGrants_Relationships: {
             grantee?: components["schemas"]["ResourceGrants_Grantee_Single_Relationship_Data_Document"];
+            invitation?: components["schemas"]["ResourceGrants_Invitation_Single_Relationship_Data_Document"];
             subject?: components["schemas"]["ResourceGrants_Subject_Single_Relationship_Data_Document"];
         };
         ResourceGrants_Resource_Object: {
@@ -31691,7 +33544,7 @@ export interface components {
         ResourceGrants_Subject_Resource_Identifier_Meta: {
             replacement?: components["schemas"]["Replacement_Provenance"];
         };
-        /** @description Target resource types: `albums`, `folders`, `tracks`. */
+        /** @description Target resource types: `albums`, `folders`, `playlists`, `tracks`. */
         ResourceGrants_Subject_Single_Relationship_Data_Document: {
             data?: components["schemas"]["ResourceGrants_Subject_Resource_Identifier"] | (never | null);
             included?: components["schemas"]["Included"];
@@ -31699,75 +33552,6 @@ export interface components {
         };
         ResourceGrants_Update_Single_Resource_Data_Document: {
             data: components["schemas"]["ResourceGrants_Resource_Object"];
-            links: components["schemas"]["Links"];
-        };
-        ResourceSharingSettings_Attributes: {
-            /** @description Whether anyone but the owner has a grant, or an active share link exists, on the subject or above it. */
-            shared: boolean;
-            /** @description Whether a folder or album above the subject is shared, so the subject stays shared whatever is set on it. */
-            sharedViaParent: boolean;
-        };
-        /** @description Target resource types: `resourceGrants`. */
-        ResourceSharingSettings_Grants_Multi_Relationship_Data_Document: {
-            data?: components["schemas"]["Resource_Identifier"][];
-            included?: components["schemas"]["Included"];
-            links: components["schemas"]["Links"];
-        };
-        ResourceSharingSettings_Multi_Resource_Data_Document: {
-            data: components["schemas"]["ResourceSharingSettings_Resource_Object"][];
-            included?: components["schemas"]["Included"];
-            links: components["schemas"]["Links"];
-        };
-        ResourceSharingSettings_Relationships: {
-            grants?: components["schemas"]["ResourceSharingSettings_Grants_Multi_Relationship_Data_Document"];
-            shares?: components["schemas"]["ResourceSharingSettings_Shares_Multi_Relationship_Data_Document"];
-            subject?: components["schemas"]["ResourceSharingSettings_Subject_Single_Relationship_Data_Document"];
-        };
-        ResourceSharingSettings_Resource_Object: {
-            attributes?: components["schemas"]["ResourceSharingSettings_Attributes"];
-            /**
-             * @description Resource id
-             * @example 12345
-             */
-            id: string;
-            relationships?: components["schemas"]["ResourceSharingSettings_Relationships"];
-            /**
-             * @description Resource type (enum property replaced by openapi-typescript)
-             * @enum {string}
-             */
-            type: "resourceSharingSettings";
-        };
-        /** @description Target resource types: `shares`. */
-        ResourceSharingSettings_Shares_Multi_Relationship_Data_Document: {
-            data?: components["schemas"]["Resource_Identifier"][];
-            included?: components["schemas"]["Included"];
-            links: components["schemas"]["Links"];
-        };
-        ResourceSharingSettings_Single_Resource_Data_Document: {
-            data: components["schemas"]["ResourceSharingSettings_Resource_Object"];
-            included?: components["schemas"]["Included"];
-            links: components["schemas"]["Links"];
-        };
-        ResourceSharingSettings_Subject_Resource_Identifier: {
-            /**
-             * @description Resource id
-             * @example 12345
-             */
-            id: string;
-            meta?: components["schemas"]["ResourceSharingSettings_Subject_Resource_Identifier_Meta"];
-            /**
-             * @description Resource type
-             * @example tracks
-             */
-            type: string;
-        };
-        ResourceSharingSettings_Subject_Resource_Identifier_Meta: {
-            replacement?: components["schemas"]["Replacement_Provenance"];
-        };
-        /** @description Target resource types: `albums`, `folders`, `tracks`. */
-        ResourceSharingSettings_Subject_Single_Relationship_Data_Document: {
-            data?: components["schemas"]["ResourceSharingSettings_Subject_Resource_Identifier"] | (never | null);
-            included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
         Resource_Identifier: {
@@ -31800,6 +33584,7 @@ export interface components {
         SavedForLater: Record<string, never>;
         SavedSharesCreateOperation_Payload: {
             data: components["schemas"]["SavedSharesCreateOperation_Payload_Data"];
+            meta?: components["schemas"]["SavedSharesCreateOperation_Payload_Meta"];
         };
         SavedSharesCreateOperation_Payload_Data: {
             relationships: components["schemas"]["SavedSharesCreateOperation_Payload_Data_Relationships"];
@@ -31817,10 +33602,43 @@ export interface components {
             /** @enum {string} */
             type: "shares";
         };
+        SavedSharesCreateOperation_Payload_Meta: {
+            /**
+             * Format: password
+             * @description Password of a password-protected share. Ignored for other shares.
+             */
+            password?: string;
+        };
+        SavedSharesCreateResource403ResponseBody: {
+            errors: {
+                /**
+                 * @example SHARE_PASSWORD_INVALID
+                 * @enum {string}
+                 */
+                code: "SHARE_PASSWORD_INVALID" | "SHARE_PASSWORD_REQUIRED" | "UNAUTHORIZED";
+                /** @example This share does not permit redemption */
+                detail?: string;
+                /** @example 403 */
+                status: string;
+            }[];
+        };
+        SavedSharesCreateResource429ResponseBody: {
+            errors: {
+                /**
+                 * @example SHARE_PASSWORD_ATTEMPTS_EXCEEDED
+                 * @enum {string}
+                 */
+                code: "SHARE_PASSWORD_ATTEMPTS_EXCEEDED";
+                /** @example Too many share password attempts; try again later */
+                detail?: string;
+                /** @example 429 */
+                status: string;
+            }[];
+        };
         SavedShares_Attributes: {
             /**
              * Format: date-time
-             * @description Datetime of saved share creation (ISO 8601)
+             * @description Time of this save (ISO 8601). Saving the share again returns the same id with the time of that request.
              */
             createdAt: string;
         };
@@ -32135,8 +33953,6 @@ export interface components {
             type: "shares";
         };
         SharesCreateOperation_Payload_Data_Attributes: {
-            /** @description Ways this share may be used to obtain access. BEARER permits access by presenting its code while active. VOUCHER permits redemption for a stored grant. Defaults to both modes for every role. Playlist shares must include VOUCHER; bearer-only playlist shares are rejected with 400. */
-            accessModes?: ("BEARER" | "VOUCHER")[];
             /**
              * Format: date-time
              * @description Time bearer access and acceptance expire; must be in the future and at most a year away. Defaults to seven days after creation when omitted or null.
@@ -32145,9 +33961,14 @@ export interface components {
             expiresAt?: string | null;
             /**
              * Format: int32
-             * @description Number of users other than the owner who may save the share. Only a save counts as a use, and a used-up share also stops bearer access. Requires the VOUCHER access mode. Omit or send null for unlimited saves.
+             * @description Number of saves the share permits. Every save counts as a use, and a used-up share also stops bearer access. Omit or send null for unlimited saves.
              */
             maxUses?: number | null;
+            /**
+             * Format: password
+             * @description Password a user must send to save the share. Never returned. Must be printable ASCII characters. A protected share permits no bearer access. A password on a playlist share is rejected with 400.
+             */
+            password?: string;
             /**
              * @description Role offered by the share.
              * @enum {string}
@@ -32165,8 +33986,23 @@ export interface components {
             /** @enum {string} */
             type: "tracks" | "albums" | "playlists" | "folders";
         };
+        SharesUpdateOperation_Payload: {
+            data: components["schemas"]["SharesUpdateOperation_Payload_Data"];
+        };
+        SharesUpdateOperation_Payload_Data: {
+            attributes: components["schemas"]["SharesUpdateOperation_Payload_Data_Attributes"];
+            id: string;
+            /** @enum {string} */
+            type: "shares";
+        };
+        SharesUpdateOperation_Payload_Data_Attributes: {
+            password?: string | (never | null);
+        };
         Shares_Attributes: {
-            /** @description Ways this share may be used to obtain access. BEARER permits access by presenting its code while active. VOUCHER permits an authenticated user to redeem it for a stored grant. Multiple modes may be enabled. */
+            /**
+             * @deprecated
+             * @description Ways this share may be used to obtain access, decided by the server. Deprecated: clients must not rely on it.
+             */
             accessModes: ("BEARER" | "VOUCHER")[];
             /** @description Share code */
             code: string;
@@ -32185,9 +34021,16 @@ export interface components {
             externalLinks?: components["schemas"]["External_Link"][];
             /**
              * Format: int32
-             * @description Number of users other than the owner who may save the share. Absent when unlimited.
+             * @description Number of saves the share permits. Absent when unlimited.
              */
             maxUses?: number;
+            /**
+             * Format: password
+             * @description Password a user must send to save the share. Write-only: never returned.
+             */
+            password?: string;
+            /** @description Whether saving the share requires a password. A protected share never permits BEARER access, and only its owner and users with a role on its shared resource see that resource. */
+            passwordProtected: boolean;
             /**
              * @description Role offered on the shared resource.
              * @enum {string}
@@ -32195,7 +34038,7 @@ export interface components {
             role: "VIEWER" | "COLLABORATOR";
             /**
              * Format: int32
-             * @description Number of users other than the owner who have saved the share. Once it reaches maxUses, bearer access and acceptance end. Absent when maxUses is.
+             * @description Number of saves so far, repeated saves included. Once it reaches maxUses, bearer access and acceptance end. Absent when maxUses is.
              */
             useCount?: number;
         };
@@ -32259,6 +34102,60 @@ export interface components {
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
+        Shares_Update_Single_Resource_Data_Document: {
+            data: components["schemas"]["Shares_Resource_Object"];
+            links: components["schemas"]["Links"];
+        };
+        SharingSummaries_Attributes: {
+            /** @description Whether a live grant to another user, an unexpired bearer grant or an applicable undeleted, unexpired share exists on the subject or an ancestor. Everyone grants do not count. Ancestor folder links require VOUCHER; exhausted links still count. */
+            shared: boolean;
+            /** @description The same sharing check restricted to ancestor folders and albums. Descendants never contribute. */
+            sharedViaParent: boolean;
+        };
+        SharingSummaries_Multi_Resource_Data_Document: {
+            data: components["schemas"]["SharingSummaries_Resource_Object"][];
+            included?: components["schemas"]["Included"];
+            links: components["schemas"]["Links"];
+        };
+        SharingSummaries_Relationships: {
+            subject?: components["schemas"]["SharingSummaries_Subject_Single_Relationship_Data_Document"];
+        };
+        SharingSummaries_Resource_Object: {
+            attributes?: components["schemas"]["SharingSummaries_Attributes"];
+            /**
+             * @description Resource id
+             * @example 12345
+             */
+            id: string;
+            relationships?: components["schemas"]["SharingSummaries_Relationships"];
+            /**
+             * @description Resource type (enum property replaced by openapi-typescript)
+             * @enum {string}
+             */
+            type: "sharingSummaries";
+        };
+        SharingSummaries_Subject_Resource_Identifier: {
+            /**
+             * @description Resource id
+             * @example 12345
+             */
+            id: string;
+            meta?: components["schemas"]["SharingSummaries_Subject_Resource_Identifier_Meta"];
+            /**
+             * @description Resource type
+             * @example tracks
+             */
+            type: string;
+        };
+        SharingSummaries_Subject_Resource_Identifier_Meta: {
+            replacement?: components["schemas"]["Replacement_Provenance"];
+        };
+        /** @description Target resource types: `albums`, `folders`, `tracks`. */
+        SharingSummaries_Subject_Single_Relationship_Data_Document: {
+            data?: components["schemas"]["SharingSummaries_Subject_Resource_Identifier"] | (never | null);
+            included?: components["schemas"]["Included"];
+            links: components["schemas"]["Links"];
+        };
         /** @description Publication target supplied on creation; reads use publishedInSelectedSite */
         Site: {
             id: string;
@@ -32299,6 +34196,7 @@ export interface components {
                 code: "REQUIRED_TERMS_NOT_ACCEPTED";
                 /** @example Latest terms and conditions must be accepted */
                 detail?: string;
+                meta?: components["schemas"]["MissingTermsMeta"];
                 /** @example 403 */
                 status: string;
             }[];
@@ -32312,6 +34210,7 @@ export interface components {
                 code: "REQUIRED_TERMS_NOT_ACCEPTED";
                 /** @example Latest terms and conditions must be accepted */
                 detail?: string;
+                meta?: components["schemas"]["MissingTermsMeta"];
                 /** @example 403 */
                 status: string;
             }[];
@@ -32334,6 +34233,7 @@ export interface components {
                 code: "REQUIRED_TERMS_NOT_ACCEPTED";
                 /** @example Latest terms and conditions must be accepted */
                 detail?: string;
+                meta?: components["schemas"]["MissingTermsMeta"];
                 /** @example 403 */
                 status: string;
             }[];
@@ -32360,6 +34260,7 @@ export interface components {
                 code: "REQUIRED_TERMS_NOT_ACCEPTED";
                 /** @example Latest terms and conditions must be accepted */
                 detail?: string;
+                meta?: components["schemas"]["MissingTermsMeta"];
                 /** @example 403 */
                 status: string;
             }[];
@@ -32478,6 +34379,7 @@ export interface components {
                 code: "REQUIRED_TERMS_NOT_ACCEPTED";
                 /** @example Latest terms and conditions must be accepted */
                 detail?: string;
+                meta?: components["schemas"]["MissingTermsMeta"];
                 /** @example 403 */
                 status: string;
             }[];
@@ -32528,6 +34430,7 @@ export interface components {
                 code: "REQUIRED_TERMS_NOT_ACCEPTED";
                 /** @example Latest terms and conditions must be accepted */
                 detail?: string;
+                meta?: components["schemas"]["MissingTermsMeta"];
                 /** @example 403 */
                 status: string;
             }[];
@@ -32577,6 +34480,7 @@ export interface components {
                 code: "REQUIRED_TERMS_NOT_ACCEPTED";
                 /** @example Latest terms and conditions must be accepted */
                 detail?: string;
+                meta?: components["schemas"]["MissingTermsMeta"];
                 /** @example 403 */
                 status: string;
             }[];
@@ -32663,6 +34567,7 @@ export interface components {
                 code: "REQUIRED_TERMS_NOT_ACCEPTED";
                 /** @example Latest terms and conditions must be accepted */
                 detail?: string;
+                meta?: components["schemas"]["MissingTermsMeta"];
                 /** @example 403 */
                 status: string;
             }[];
@@ -32689,6 +34594,7 @@ export interface components {
                 code: "REQUIRED_TERMS_NOT_ACCEPTED";
                 /** @example Latest terms and conditions must be accepted */
                 detail?: string;
+                meta?: components["schemas"]["MissingTermsMeta"];
                 /** @example 403 */
                 status: string;
             }[];
@@ -32715,6 +34621,7 @@ export interface components {
                 code: "REQUIRED_TERMS_NOT_ACCEPTED";
                 /** @example Latest terms and conditions must be accepted */
                 detail?: string;
+                meta?: components["schemas"]["MissingTermsMeta"];
                 /** @example 403 */
                 status: string;
             }[];
@@ -32769,6 +34676,7 @@ export interface components {
                 code: "REQUIRED_TERMS_NOT_ACCEPTED";
                 /** @example Latest terms and conditions must be accepted */
                 detail?: string;
+                meta?: components["schemas"]["MissingTermsMeta"];
                 /** @example 403 */
                 status: string;
             }[];
@@ -32932,6 +34840,7 @@ export interface components {
                 code: "REQUIRED_TERMS_NOT_ACCEPTED";
                 /** @example Latest terms and conditions must be accepted */
                 detail?: string;
+                meta?: components["schemas"]["MissingTermsMeta"];
                 /** @example 403 */
                 status: string;
             }[];
@@ -32995,6 +34904,7 @@ export interface components {
                 code: "REQUIRED_TERMS_NOT_ACCEPTED";
                 /** @example Latest terms and conditions must be accepted */
                 detail?: string;
+                meta?: components["schemas"]["MissingTermsMeta"];
                 /** @example 403 */
                 status: string;
             }[];
@@ -33021,6 +34931,7 @@ export interface components {
                 code: "REQUIRED_TERMS_NOT_ACCEPTED";
                 /** @example Latest terms and conditions must be accepted */
                 detail?: string;
+                meta?: components["schemas"]["MissingTermsMeta"];
                 /** @example 403 */
                 status: string;
             }[];
@@ -33047,6 +34958,7 @@ export interface components {
                 code: "REQUIRED_TERMS_NOT_ACCEPTED";
                 /** @example Latest terms and conditions must be accepted */
                 detail?: string;
+                meta?: components["schemas"]["MissingTermsMeta"];
                 /** @example 403 */
                 status: string;
             }[];
@@ -33096,6 +35008,7 @@ export interface components {
                 code: "REQUIRED_TERMS_NOT_ACCEPTED";
                 /** @example Latest terms and conditions must be accepted */
                 detail?: string;
+                meta?: components["schemas"]["MissingTermsMeta"];
                 /** @example 403 */
                 status: string;
             }[];
@@ -33122,6 +35035,7 @@ export interface components {
                 code: "REQUIRED_TERMS_NOT_ACCEPTED";
                 /** @example Latest terms and conditions must be accepted */
                 detail?: string;
+                meta?: components["schemas"]["MissingTermsMeta"];
                 /** @example 403 */
                 status: string;
             }[];
@@ -33169,6 +35083,7 @@ export interface components {
                 code: "REQUIRED_TERMS_NOT_ACCEPTED";
                 /** @example Latest terms and conditions must be accepted */
                 detail?: string;
+                meta?: components["schemas"]["MissingTermsMeta"];
                 /** @example 403 */
                 status: string;
             }[];
@@ -33302,6 +35217,7 @@ export interface components {
                 code: "REQUIRED_TERMS_NOT_ACCEPTED";
                 /** @example Latest terms and conditions must be accepted */
                 detail?: string;
+                meta?: components["schemas"]["MissingTermsMeta"];
                 /** @example 403 */
                 status: string;
             }[];
@@ -33328,6 +35244,7 @@ export interface components {
                 code: "REQUIRED_TERMS_NOT_ACCEPTED";
                 /** @example Latest terms and conditions must be accepted */
                 detail?: string;
+                meta?: components["schemas"]["MissingTermsMeta"];
                 /** @example 403 */
                 status: string;
             }[];
@@ -33374,6 +35291,7 @@ export interface components {
                 code: "REQUIRED_TERMS_NOT_ACCEPTED";
                 /** @example Latest terms and conditions must be accepted */
                 detail?: string;
+                meta?: components["schemas"]["MissingTermsMeta"];
                 /** @example 403 */
                 status: string;
             }[];
@@ -33553,6 +35471,109 @@ export interface components {
              * @enum {string}
              */
             type: "stripeDashboardLinks";
+        };
+        StudioHomeEventTiles_Attributes: {
+            /** @description Terms types the user must accept before using this tile; empty when none are missing. */
+            requiredTerms: ("DEVELOPER" | "UPLOAD_MARKETPLACE" | "MERCH_GUIDELINES" | "TIDAL_CONNECT_DEVELOPER")[];
+        };
+        StudioHomeEventTiles_Resource_Object: {
+            attributes?: components["schemas"]["StudioHomeEventTiles_Attributes"];
+            /**
+             * @description Resource id
+             * @example 12345
+             */
+            id: string;
+            /**
+             * @description Resource type (enum property replaced by openapi-typescript)
+             * @enum {string}
+             */
+            type: "studioHomeEventTiles";
+        };
+        StudioHomeEventTiles_Single_Resource_Data_Document: {
+            data: components["schemas"]["StudioHomeEventTiles_Resource_Object"];
+            included?: components["schemas"]["Included"];
+            links: components["schemas"]["Links"];
+        };
+        StudioHomeInsightTiles_Attributes: {
+            /** @description Terms types the user must accept before using this tile; empty when none are missing. */
+            requiredTerms: ("DEVELOPER" | "UPLOAD_MARKETPLACE" | "MERCH_GUIDELINES" | "TIDAL_CONNECT_DEVELOPER")[];
+        };
+        StudioHomeInsightTiles_Resource_Object: {
+            attributes?: components["schemas"]["StudioHomeInsightTiles_Attributes"];
+            /**
+             * @description Resource id
+             * @example 12345
+             */
+            id: string;
+            /**
+             * @description Resource type (enum property replaced by openapi-typescript)
+             * @enum {string}
+             */
+            type: "studioHomeInsightTiles";
+        };
+        StudioHomeInsightTiles_Single_Resource_Data_Document: {
+            data: components["schemas"]["StudioHomeInsightTiles_Resource_Object"];
+            included?: components["schemas"]["Included"];
+            links: components["schemas"]["Links"];
+        };
+        StudioHomeMerchTiles_Attributes: {
+            /**
+             * @description Terms types the seller must accept before managing merch; empty when none are missing.
+             * @example [
+             *       "MERCH_GUIDELINES"
+             *     ]
+             */
+            requiredTerms: ("DEVELOPER" | "UPLOAD_MARKETPLACE" | "MERCH_GUIDELINES" | "TIDAL_CONNECT_DEVELOPER")[];
+        };
+        /** @description Target resource types: `squareItems`. */
+        StudioHomeMerchTiles_Items_Multi_Relationship_Data_Document: {
+            data?: components["schemas"]["Resource_Identifier"][];
+            included?: components["schemas"]["Included"];
+            links: components["schemas"]["Links"];
+        };
+        StudioHomeMerchTiles_Relationships: {
+            items?: components["schemas"]["StudioHomeMerchTiles_Items_Multi_Relationship_Data_Document"];
+        };
+        StudioHomeMerchTiles_Resource_Object: {
+            attributes?: components["schemas"]["StudioHomeMerchTiles_Attributes"];
+            /**
+             * @description Resource id
+             * @example 12345
+             */
+            id: string;
+            relationships?: components["schemas"]["StudioHomeMerchTiles_Relationships"];
+            /**
+             * @description Resource type (enum property replaced by openapi-typescript)
+             * @enum {string}
+             */
+            type: "studioHomeMerchTiles";
+        };
+        StudioHomeMerchTiles_Single_Resource_Data_Document: {
+            data: components["schemas"]["StudioHomeMerchTiles_Resource_Object"];
+            included?: components["schemas"]["Included"];
+            links: components["schemas"]["Links"];
+        };
+        StudioHomeMusicTiles_Attributes: {
+            /** @description Terms types the user must accept before using this tile; empty when none are missing. */
+            requiredTerms: ("DEVELOPER" | "UPLOAD_MARKETPLACE" | "MERCH_GUIDELINES" | "TIDAL_CONNECT_DEVELOPER")[];
+        };
+        StudioHomeMusicTiles_Resource_Object: {
+            attributes?: components["schemas"]["StudioHomeMusicTiles_Attributes"];
+            /**
+             * @description Resource id
+             * @example 12345
+             */
+            id: string;
+            /**
+             * @description Resource type (enum property replaced by openapi-typescript)
+             * @enum {string}
+             */
+            type: "studioHomeMusicTiles";
+        };
+        StudioHomeMusicTiles_Single_Resource_Data_Document: {
+            data: components["schemas"]["StudioHomeMusicTiles_Resource_Object"];
+            included?: components["schemas"]["Included"];
+            links: components["schemas"]["Links"];
         };
         SubscriptionPriceChangeDecisionsCreateOperation_Payload: {
             data: components["schemas"]["SubscriptionPriceChangeDecisionsCreateOperation_Payload_Data"];
@@ -33904,15 +35925,21 @@ export interface components {
         TrackSourceFiles_Attributes: {
             downloadLink?: components["schemas"]["Link_Object"];
             /** @description MD5 hash of file to be uploaded */
-            md5Hash: string;
+            md5Hash?: string;
             processing?: components["schemas"]["SourceProcessing"];
             /**
              * Format: int64
              * @description File size of the track in bytes
              */
-            size: number;
-            status: components["schemas"]["File_Status"];
+            size?: number;
+            status?: components["schemas"]["File_Status"];
             uploadLink?: components["schemas"]["File_Upload_Link"];
+        };
+        /** @description Target resource types: `commentSummaries`. */
+        TrackSourceFiles_CommentSummary_Single_Relationship_Data_Document: {
+            data?: components["schemas"]["Resource_Identifier"] | (never | null);
+            included?: components["schemas"]["Included"];
+            links: components["schemas"]["Links"];
         };
         TrackSourceFiles_Create_Single_Resource_Data_Document: {
             data: components["schemas"]["TrackSourceFiles_Resource_Object"];
@@ -33924,8 +35951,16 @@ export interface components {
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
+        /** @description Target resource types: `reactionSummaries`. */
+        TrackSourceFiles_ReactionSummary_Single_Relationship_Data_Document: {
+            data?: components["schemas"]["Resource_Identifier"] | (never | null);
+            included?: components["schemas"]["Included"];
+            links: components["schemas"]["Links"];
+        };
         TrackSourceFiles_Relationships: {
+            commentSummary?: components["schemas"]["TrackSourceFiles_CommentSummary_Single_Relationship_Data_Document"];
             owners?: components["schemas"]["TrackSourceFiles_Owners_Multi_Relationship_Data_Document"];
+            reactionSummary?: components["schemas"]["TrackSourceFiles_ReactionSummary_Single_Relationship_Data_Document"];
         };
         TrackSourceFiles_Resource_Object: {
             attributes?: components["schemas"]["TrackSourceFiles_Attributes"];
@@ -34471,6 +36506,16 @@ export interface components {
             /** @enum {string} */
             type: "tracks" | "albums" | "videos";
         };
+        UsageRulesCreateResource403ResponseBody: {
+            errors: {
+                /** @example UNAUTHORIZED */
+                code?: string;
+                /** @example An active seller connection is required for paid usage rules */
+                detail?: string;
+                /** @example 403 */
+                status?: string;
+            }[];
+        };
         UsageRules_Attributes: {
             /** @description Country code (ISO 3166-1 alpha-2) */
             countryCode: string;
@@ -34535,7 +36580,7 @@ export interface components {
                  * @enum {string}
                  */
                 code: "UNAUTHORIZED";
-                /** @example filter[query] requires INTERNAL access tier */
+                /** @example filter[self][matchesQuery] requires INTERNAL access tier */
                 detail?: string;
                 /** @example 403 */
                 status: string;
@@ -34672,7 +36717,7 @@ export interface components {
                  * @enum {string}
                  */
                 code: "UNAUTHORIZED";
-                /** @example filter[query] requires INTERNAL access tier */
+                /** @example filter[self][matchesQuery] requires INTERNAL access tier */
                 detail?: string;
                 /** @example 403 */
                 status: string;
@@ -34944,7 +36989,7 @@ export interface components {
                  * @enum {string}
                  */
                 code: "UNAUTHORIZED";
-                /** @example filter[query] requires INTERNAL access tier */
+                /** @example filter[self][matchesQuery] requires INTERNAL access tier */
                 detail?: string;
                 /** @example 403 */
                 status: string;
@@ -35199,7 +37244,7 @@ export interface components {
                  * @enum {string}
                  */
                 code: "UNAUTHORIZED";
-                /** @example filter[query] requires INTERNAL access tier */
+                /** @example filter[self][matchesQuery] requires INTERNAL access tier */
                 detail?: string;
                 /** @example 403 */
                 status: string;
@@ -35336,7 +37381,7 @@ export interface components {
                  * @enum {string}
                  */
                 code: "UNAUTHORIZED";
-                /** @example filter[query] requires INTERNAL access tier */
+                /** @example filter[self][matchesQuery] requires INTERNAL access tier */
                 detail?: string;
                 /** @example 403 */
                 status: string;
@@ -35517,6 +37562,114 @@ export interface components {
              * @enum {string}
              */
             type: "userDataExportRequests";
+        };
+        UserDataExportsCreateOperation_Payload: {
+            data: components["schemas"]["UserDataExportsCreateOperation_Payload_Data"];
+            meta?: components["schemas"]["UserDataExportsCreateOperation_Payload_Meta"];
+        };
+        UserDataExportsCreateOperation_Payload_Data: {
+            attributes?: components["schemas"]["UserDataExportsCreateOperation_Payload_Data_Attributes"];
+            /** @enum {string} */
+            type: "userDataExports";
+        };
+        UserDataExportsCreateOperation_Payload_Data_Attributes: {
+            /** @description Data types to export. Every data type when absent; when present, at least one is required. */
+            dataTypes?: ("ALBUMS" | "ARTISTS" | "ARTIST_CLAIMS" | "BIOGRAPHY" | "BLOCKED_ITEMS" | "CHILDREN_ACCOUNTS" | "FOLDERS" | "LOGIN_LOCATION" | "MIXES" | "NOTIFICATION" | "PAYMENT" | "PLAYLISTS" | "SEARCHES" | "STREAMS" | "SUBSCRIPTION_EVENTS" | "TRACKS" | "USER" | "USER_CLIENT" | "UPLOADS" | "VIDEOS")[];
+        };
+        UserDataExportsCreateOperation_Payload_Meta: {
+            /**
+             * @description Language of the email sent when the export is ready. English when absent, malformed or not translated.
+             * @example nb-NO
+             */
+            locale?: string;
+        };
+        UserDataExportsCreateResource400ResponseBody: {
+            errors: {
+                /**
+                 * @example DATA_TYPES_NOT_AVAILABLE
+                 * @enum {string}
+                 */
+                code: "DATA_TYPES_NOT_AVAILABLE";
+                /** @example One or more of the selected data types are not available */
+                detail?: string;
+                /** @example 400 */
+                status: string;
+            }[];
+        };
+        UserDataExportsCreateResource409ResponseBody: {
+            errors: {
+                /**
+                 * @example DATA_EXPORT_REQUESTED_TOO_RECENTLY
+                 * @enum {string}
+                 */
+                code: "DATA_EXPORT_REQUESTED_TOO_RECENTLY" | "DATA_EXPORT_REQUEST_IN_PROGRESS" | "IDEMPOTENT_REQUEST_IN_PROGRESS";
+                /** @example Another data export request is being handled; try again shortly */
+                detail?: string;
+                /** @example 409 */
+                status: string;
+            }[];
+        };
+        UserDataExports_Attributes: {
+            /**
+             * Format: date-time
+             * @description When the export was requested
+             */
+            createdAt: string;
+            /** @description Kinds of data the export contains, as picked when requesting it */
+            dataTypes: ("ALBUMS" | "ARTISTS" | "ARTIST_CLAIMS" | "BIOGRAPHY" | "BLOCKED_ITEMS" | "CHILDREN_ACCOUNTS" | "FOLDERS" | "LOGIN_LOCATION" | "MIXES" | "NOTIFICATION" | "PAYMENT" | "PLAYLISTS" | "SEARCHES" | "STREAMS" | "SUBSCRIPTION_EVENTS" | "TRACKS" | "USER" | "USER_CLIENT" | "UPLOADS" | "VIDEOS")[];
+            downloadLink?: components["schemas"]["Link_Object"];
+            /**
+             * Format: date-time
+             * @description When the export and its download stop being available; absent until it is ready
+             */
+            expiresAt?: string;
+            /**
+             * Format: date-time
+             * @description When the export became ready; absent until then
+             */
+            readyAt?: string;
+            /**
+             * @description Lifecycle state of a user data export. New values may be added at any time.
+             * @enum {string}
+             */
+            status: "PENDING" | "PROCESSING" | "OK" | "ERROR" | "EXPIRED" | "CANCELLED";
+        };
+        UserDataExports_Create_Single_Resource_Data_Document: {
+            data: components["schemas"]["UserDataExports_Resource_Object"];
+            links: components["schemas"]["Links"];
+        };
+        UserDataExports_Multi_Resource_Data_Document: {
+            data: components["schemas"]["UserDataExports_Resource_Object"][];
+            included?: components["schemas"]["Included"];
+            links: components["schemas"]["Links"];
+        };
+        /** @description Target resource types: `users`. */
+        UserDataExports_Owners_Multi_Relationship_Data_Document: {
+            data?: components["schemas"]["Resource_Identifier"][];
+            included?: components["schemas"]["Included"];
+            links: components["schemas"]["Links"];
+        };
+        UserDataExports_Relationships: {
+            owners?: components["schemas"]["UserDataExports_Owners_Multi_Relationship_Data_Document"];
+        };
+        UserDataExports_Resource_Object: {
+            attributes?: components["schemas"]["UserDataExports_Attributes"];
+            /**
+             * @description Resource id
+             * @example 12345
+             */
+            id: string;
+            relationships?: components["schemas"]["UserDataExports_Relationships"];
+            /**
+             * @description Resource type (enum property replaced by openapi-typescript)
+             * @enum {string}
+             */
+            type: "userDataExports";
+        };
+        UserDataExports_Single_Resource_Data_Document: {
+            data: components["schemas"]["UserDataExports_Resource_Object"];
+            included?: components["schemas"]["Included"];
+            links: components["schemas"]["Links"];
         };
         UserDiscoveryMixes_Attributes: Record<string, never>;
         /** @description Target resource types: `playlists`. */
@@ -36685,21 +38838,33 @@ export interface components {
             links: components["schemas"]["Links"];
         };
         ViewerContexts_Attributes: {
-            hasCommentedOn?: components["schemas"]["Commented"];
+            hasEffectiveRole?: components["schemas"]["EffectiveRole"];
             hasInCollection?: components["schemas"]["InCollection"];
             hasPurchased?: components["schemas"]["Purchased"];
-            hasReactedTo?: components["schemas"]["Reaction"];
             hasSavedForLater?: components["schemas"]["SavedForLater"];
             isFollowedBy?: components["schemas"]["FollowedBy"];
             isFollowing?: components["schemas"]["Following"];
-            isGranteeOf?: components["schemas"]["Grantee"];
+        };
+        /** @description Target resource types: `comments`. */
+        ViewerContexts_Comments_Multi_Relationship_Data_Document: {
+            data?: components["schemas"]["Resource_Identifier"][];
+            included?: components["schemas"]["Included"];
+            links: components["schemas"]["Links"];
         };
         ViewerContexts_Multi_Resource_Data_Document: {
             data: components["schemas"]["ViewerContexts_Resource_Object"][];
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
+        /** @description Target resource types: `reactions`. */
+        ViewerContexts_Reactions_Multi_Relationship_Data_Document: {
+            data?: components["schemas"]["Resource_Identifier"][];
+            included?: components["schemas"]["Included"];
+            links: components["schemas"]["Links"];
+        };
         ViewerContexts_Relationships: {
+            comments?: components["schemas"]["ViewerContexts_Comments_Multi_Relationship_Data_Document"];
+            reactions?: components["schemas"]["ViewerContexts_Reactions_Multi_Relationship_Data_Document"];
             subject?: components["schemas"]["ViewerContexts_Subject_Single_Relationship_Data_Document"];
             viewer?: components["schemas"]["ViewerContexts_Viewer_Single_Relationship_Data_Document"];
         };
@@ -36738,7 +38903,7 @@ export interface components {
         ViewerContexts_Subject_Resource_Identifier_Meta: {
             replacement?: components["schemas"]["Replacement_Provenance"];
         };
-        /** @description Target resource types: `albums`, `artists`, `folders`, `playlists`, `tracks`, `videos`. */
+        /** @description Target resource types: `albums`, `artists`, `comments`, `folders`, `playlists`, `trackSourceFiles`, `tracks`, `videos`. */
         ViewerContexts_Subject_Single_Relationship_Data_Document: {
             data?: components["schemas"]["ViewerContexts_Subject_Resource_Identifier"] | (never | null);
             included?: components["schemas"]["Included"];
@@ -37034,6 +39199,42 @@ export interface components {
             };
             content: {
                 "application/vnd.api+json": components["schemas"]["PlaylistsItemsAddMultiDataRelationshipWithResponse409ResponseBody"];
+            };
+        };
+        /** @description This invitation can no longer be accepted; The invitation is password protected; send its password; The invitation password is incorrect */
+        ResourceGrantsCreateResource403Response: {
+            headers: {
+                [name: string]: unknown;
+            };
+            content: {
+                "application/vnd.api+json": components["schemas"]["ResourceGrantsCreateResource403ResponseBody"];
+            };
+        };
+        /** @description Too many invitation password attempts; try again later */
+        ResourceGrantsCreateResource429Response: {
+            headers: {
+                [name: string]: unknown;
+            };
+            content: {
+                "application/vnd.api+json": components["schemas"]["ResourceGrantsCreateResource429ResponseBody"];
+            };
+        };
+        /** @description This share does not permit redemption; This share can no longer be accepted; The share is password protected; send its password; The share password is incorrect */
+        SavedSharesCreateResource403Response: {
+            headers: {
+                [name: string]: unknown;
+            };
+            content: {
+                "application/vnd.api+json": components["schemas"]["SavedSharesCreateResource403ResponseBody"];
+            };
+        };
+        /** @description Too many share password attempts; try again later */
+        SavedSharesCreateResource429Response: {
+            headers: {
+                [name: string]: unknown;
+            };
+            content: {
+                "application/vnd.api+json": components["schemas"]["SavedSharesCreateResource429ResponseBody"];
             };
         };
         /** @description Latest terms and conditions must be accepted */
@@ -37450,6 +39651,15 @@ export interface components {
                 "application/vnd.api+json": components["schemas"]["TrackManifestsReadById404ResponseBody"];
             };
         };
+        /** @description An active seller connection is required for paid usage rules */
+        UsageRulesCreateResource403Response: {
+            headers: {
+                [name: string]: unknown;
+            };
+            content: {
+                "application/vnd.api+json": components["schemas"]["UsageRulesCreateResource403ResponseBody"];
+            };
+        };
         /** @description Collection item limit reached; Collection already contains one or more items; Request already in progress for this idempotency key */
         UserCollectionAlbumsItemsAddMultiDataRelationshipWithResponse409Response: {
             headers: {
@@ -37459,7 +39669,7 @@ export interface components {
                 "application/vnd.api+json": components["schemas"]["UserCollectionAlbumsItemsAddMultiDataRelationshipWithResponse409ResponseBody"];
             };
         };
-        /** @description filter[query] requires INTERNAL access tier */
+        /** @description filter[self][matchesQuery] requires INTERNAL access tier */
         UserCollectionAlbumsItemsReadMultiDataRelationship403Response: {
             headers: {
                 [name: string]: unknown;
@@ -37477,7 +39687,7 @@ export interface components {
                 "application/vnd.api+json": components["schemas"]["UserCollectionArtistsItemsAddMultiDataRelationshipWithResponse409ResponseBody"];
             };
         };
-        /** @description filter[query] requires INTERNAL access tier */
+        /** @description filter[self][matchesQuery] requires INTERNAL access tier */
         UserCollectionArtistsItemsReadMultiDataRelationship403Response: {
             headers: {
                 [name: string]: unknown;
@@ -37504,7 +39714,7 @@ export interface components {
                 "application/vnd.api+json": components["schemas"]["UserCollectionPlaylistsItemsAddMultiDataRelationshipWithResponse409ResponseBody"];
             };
         };
-        /** @description filter[query] requires INTERNAL access tier */
+        /** @description filter[self][matchesQuery] requires INTERNAL access tier */
         UserCollectionPlaylistsItemsReadMultiDataRelationship403Response: {
             headers: {
                 [name: string]: unknown;
@@ -37531,7 +39741,7 @@ export interface components {
                 "application/vnd.api+json": components["schemas"]["UserCollectionTracksItemsAddMultiDataRelationshipWithResponse409ResponseBody"];
             };
         };
-        /** @description filter[query] requires INTERNAL access tier */
+        /** @description filter[self][matchesQuery] requires INTERNAL access tier */
         UserCollectionTracksItemsReadMultiDataRelationship403Response: {
             headers: {
                 [name: string]: unknown;
@@ -37549,13 +39759,31 @@ export interface components {
                 "application/vnd.api+json": components["schemas"]["UserCollectionVideosItemsAddMultiDataRelationshipWithResponse409ResponseBody"];
             };
         };
-        /** @description filter[query] requires INTERNAL access tier */
+        /** @description filter[self][matchesQuery] requires INTERNAL access tier */
         UserCollectionVideosItemsReadMultiDataRelationship403Response: {
             headers: {
                 [name: string]: unknown;
             };
             content: {
                 "application/vnd.api+json": components["schemas"]["UserCollectionVideosItemsReadMultiDataRelationship403ResponseBody"];
+            };
+        };
+        /** @description One or more of the selected data types are not available */
+        UserDataExportsCreateResource400Response: {
+            headers: {
+                [name: string]: unknown;
+            };
+            content: {
+                "application/vnd.api+json": components["schemas"]["UserDataExportsCreateResource400ResponseBody"];
+            };
+        };
+        /** @description Another data export request is being handled; try again shortly; A data export was prepared recently; wait before requesting another; Request already in progress for this idempotency key */
+        UserDataExportsCreateResource409Response: {
+            headers: {
+                [name: string]: unknown;
+            };
+            content: {
+                "application/vnd.api+json": components["schemas"]["UserDataExportsCreateResource409ResponseBody"];
             };
         };
         /** @description Recommendation block limit reached; Request already in progress for this idempotency key */
