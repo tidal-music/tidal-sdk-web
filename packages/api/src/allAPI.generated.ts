@@ -18525,7 +18525,20 @@ export interface paths {
          */
         get: {
             parameters: {
-                query?: never;
+                query?: {
+                    /**
+                     * @description Include related resources. Available relationships: items
+                     * @example items.topTracks
+                     */
+                    include?: string[];
+                    /** @description Comma-separated direct relationships to return as linkage only, without related content. */
+                    includeLinkage?: "items"[];
+                    /**
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: items.topTracks
+                     * @example items.topTracks
+                     */
+                    replaceMedia?: string;
+                };
                 header?: never;
                 path: {
                     /**
@@ -18545,6 +18558,72 @@ export interface paths {
                     };
                     content: {
                         "application/vnd.api+json": components["schemas"]["StudioHomeInsightTiles_Single_Resource_Data_Document"];
+                    };
+                };
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/studioHomeInsightTiles/{id}/relationships/items": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get items relationship ("to-many").
+         * @description The streams statistics of the user's artist over the last 28 days.
+         */
+        get: {
+            parameters: {
+                query?: {
+                    /**
+                     * @description Include related resources. Available relationships: items
+                     * @example items.topTracks
+                     */
+                    include?: string[];
+                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
+                    "page[cursor]"?: string;
+                    /**
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: items.topTracks
+                     * @example items.topTracks
+                     */
+                    replaceMedia?: string;
+                };
+                header?: never;
+                path: {
+                    /**
+                     * @description Studio Home insight tile id. Use `me` for the authenticated user's resource
+                     * @example me
+                     */
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/vnd.api+json": components["schemas"]["StudioHomeInsightTiles_Items_Multi_Relationship_Data_Document"];
                     };
                 };
                 400: components["responses"]["Default400Response"];
@@ -18700,7 +18779,20 @@ export interface paths {
          */
         get: {
             parameters: {
-                query?: never;
+                query?: {
+                    /**
+                     * @description Include related resources. Available relationships: items
+                     * @example items
+                     */
+                    include?: string[];
+                    /** @description Comma-separated direct relationships to return as linkage only, without related content. */
+                    includeLinkage?: "items"[];
+                    /**
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: items
+                     * @example items
+                     */
+                    replaceMedia?: string;
+                };
                 header?: never;
                 path: {
                     /**
@@ -18720,6 +18812,72 @@ export interface paths {
                     };
                     content: {
                         "application/vnd.api+json": components["schemas"]["StudioHomeMusicTiles_Single_Resource_Data_Document"];
+                    };
+                };
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/studioHomeMusicTiles/{id}/relationships/items": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get items relationship ("to-many").
+         * @description The user's uploaded albums, newest first.
+         */
+        get: {
+            parameters: {
+                query?: {
+                    /**
+                     * @description Include related resources. Available relationships: items
+                     * @example items
+                     */
+                    include?: string[];
+                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
+                    "page[cursor]"?: string;
+                    /**
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: items
+                     * @example items
+                     */
+                    replaceMedia?: string;
+                };
+                header?: never;
+                path: {
+                    /**
+                     * @description Studio Home music tile id. Use `me` for the authenticated user's resource
+                     * @example me
+                     */
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/vnd.api+json": components["schemas"]["StudioHomeMusicTiles_Items_Multi_Relationship_Data_Document"];
                     };
                 };
                 400: components["responses"]["Default400Response"];
@@ -35498,6 +35656,15 @@ export interface components {
             /** @description Terms types the user must accept before using this tile; empty when none are missing. */
             requiredTerms: ("DEVELOPER" | "UPLOAD_MARKETPLACE" | "MERCH_GUIDELINES" | "TIDAL_CONNECT_DEVELOPER")[];
         };
+        /** @description Target resource types: `artistStreamsStatistics`. */
+        StudioHomeInsightTiles_Items_Multi_Relationship_Data_Document: {
+            data?: components["schemas"]["Resource_Identifier"][];
+            included?: components["schemas"]["Included"];
+            links: components["schemas"]["Links"];
+        };
+        StudioHomeInsightTiles_Relationships: {
+            items?: components["schemas"]["StudioHomeInsightTiles_Items_Multi_Relationship_Data_Document"];
+        };
         StudioHomeInsightTiles_Resource_Object: {
             attributes?: components["schemas"]["StudioHomeInsightTiles_Attributes"];
             /**
@@ -35505,6 +35672,7 @@ export interface components {
              * @example 12345
              */
             id: string;
+            relationships?: components["schemas"]["StudioHomeInsightTiles_Relationships"];
             /**
              * @description Resource type (enum property replaced by openapi-typescript)
              * @enum {string}
@@ -35557,6 +35725,31 @@ export interface components {
             /** @description Terms types the user must accept before using this tile; empty when none are missing. */
             requiredTerms: ("DEVELOPER" | "UPLOAD_MARKETPLACE" | "MERCH_GUIDELINES" | "TIDAL_CONNECT_DEVELOPER")[];
         };
+        /** @description Target resource types: `albums`. */
+        StudioHomeMusicTiles_Items_Multi_Relationship_Data_Document: {
+            data?: components["schemas"]["StudioHomeMusicTiles_Items_Resource_Identifier"][];
+            included?: components["schemas"]["Included"];
+            links: components["schemas"]["Links"];
+        };
+        StudioHomeMusicTiles_Items_Resource_Identifier: {
+            /**
+             * @description Resource id
+             * @example 12345
+             */
+            id: string;
+            meta?: components["schemas"]["StudioHomeMusicTiles_Items_Resource_Identifier_Meta"];
+            /**
+             * @description Resource type
+             * @example tracks
+             */
+            type: string;
+        };
+        StudioHomeMusicTiles_Items_Resource_Identifier_Meta: {
+            replacement?: components["schemas"]["Replacement_Provenance"];
+        };
+        StudioHomeMusicTiles_Relationships: {
+            items?: components["schemas"]["StudioHomeMusicTiles_Items_Multi_Relationship_Data_Document"];
+        };
         StudioHomeMusicTiles_Resource_Object: {
             attributes?: components["schemas"]["StudioHomeMusicTiles_Attributes"];
             /**
@@ -35564,6 +35757,7 @@ export interface components {
              * @example 12345
              */
             id: string;
+            relationships?: components["schemas"]["StudioHomeMusicTiles_Relationships"];
             /**
              * @description Resource type (enum property replaced by openapi-typescript)
              * @enum {string}
