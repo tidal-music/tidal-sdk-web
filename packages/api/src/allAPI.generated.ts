@@ -8014,6 +8014,8 @@ export interface paths {
                      * @example breadcrumb.children.subject
                      */
                     replaceMedia?: string;
+                    /** @description Share code used as a bearer credential for the resource. */
+                    shareCode?: string;
                 };
                 header?: never;
                 path?: never;
@@ -8114,6 +8116,8 @@ export interface paths {
                      * @example breadcrumb.children.subject
                      */
                     replaceMedia?: string;
+                    /** @description Share code used as a bearer credential for the resource. */
+                    shareCode?: string;
                 };
                 header?: never;
                 path: {
@@ -8154,7 +8158,10 @@ export interface paths {
          */
         delete: {
             parameters: {
-                query?: never;
+                query?: {
+                    /** @description Share code used as a bearer credential for the resource. */
+                    shareCode?: string;
+                };
                 header?: {
                     /** @description Unique idempotency key for safe retry of mutation requests. If the same caller repeats a key with the same method, path, query and payload, the original response is replayed. If the request differs, a 422 error is returned. */
                     "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
@@ -8222,6 +8229,8 @@ export interface paths {
                      * @example breadcrumb.children.subject
                      */
                     replaceMedia?: string;
+                    /** @description Share code used as a bearer credential for the resource. */
+                    shareCode?: string;
                 };
                 header?: never;
                 path: {
@@ -8283,6 +8292,8 @@ export interface paths {
                     include?: string[];
                     /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
                     "page[cursor]"?: string;
+                    /** @description Share code used as a bearer credential for the resource. */
+                    shareCode?: string;
                 };
                 header?: never;
                 path: {
@@ -8347,6 +8358,8 @@ export interface paths {
                      * @example parent.children.subject
                      */
                     replaceMedia?: string;
+                    /** @description Share code used as a bearer credential for the resource. */
+                    shareCode?: string;
                 };
                 header?: never;
                 path: {
@@ -8390,7 +8403,10 @@ export interface paths {
          */
         patch: {
             parameters: {
-                query?: never;
+                query?: {
+                    /** @description Share code used as a bearer credential for the resource. */
+                    shareCode?: string;
+                };
                 header?: {
                     /** @description Unique idempotency key for safe retry of mutation requests. If the same caller repeats a key with the same method, path, query and payload, the original response is replayed. If the request differs, a 422 error is returned. */
                     "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
@@ -8457,6 +8473,8 @@ export interface paths {
                      * @example sharingSummary.subject
                      */
                     replaceMedia?: string;
+                    /** @description Share code used as a bearer credential for the resource. */
+                    shareCode?: string;
                 };
                 header?: never;
                 path: {
@@ -8521,6 +8539,8 @@ export interface paths {
                      * @example subject
                      */
                     replaceMedia?: string;
+                    /** @description Share code used as a bearer credential for the resource. */
+                    shareCode?: string;
                 };
                 header?: never;
                 path: {
@@ -18659,12 +18679,12 @@ export interface paths {
             parameters: {
                 query?: {
                     /**
-                     * @description Include related resources. Available relationships: items
+                     * @description Include related resources. Available relationships: items, squareConnection
                      * @example items
                      */
                     include?: string[];
                     /** @description Comma-separated direct relationships to return as linkage only, without related content. */
-                    includeLinkage?: "items"[];
+                    includeLinkage?: ("items" | "squareConnection")[];
                 };
                 header?: never;
                 path: {
@@ -18746,6 +18766,65 @@ export interface paths {
                     };
                     content: {
                         "application/vnd.api+json": components["schemas"]["StudioHomeMerchTiles_Items_Multi_Relationship_Data_Document"];
+                    };
+                };
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/studioHomeMerchTiles/{id}/relationships/squareConnection": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get squareConnection relationship ("to-one").
+         * @description The seller's Square connection; empty when they have none.
+         */
+        get: {
+            parameters: {
+                query?: {
+                    /**
+                     * @description Include related resources. Available relationships: squareConnection
+                     * @example squareConnection
+                     */
+                    include?: string[];
+                };
+                header?: never;
+                path: {
+                    /**
+                     * @description Studio Home merch tile id. Use `me` for the authenticated user's resource
+                     * @example me
+                     */
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/vnd.api+json": components["schemas"]["StudioHomeMerchTiles_SquareConnection_Single_Relationship_Data_Document"];
                     };
                 };
                 400: components["responses"]["Default400Response"];
@@ -34424,7 +34503,7 @@ export interface components {
             }[];
         };
         SquareConnections_Attributes: {
-            /** @description Per-feature capability statuses for this Square connection. Every capability the connection offers is listed with a status carrying more than mere presence: SITES is GRANTED when the Square Online sites scopes are granted, or REQUIRES_REAUTH when the connection exists but its credential lacks them (the seller must reconnect Square via POST /squareConnections). Because a connection always offers the sites feature, SITES is always present here. Extensible — only SITES is defined today. Absent only when the connection has no sites state (e.g. no approved Square credential). Client rule: if SITES != GRANTED prompt reconnect; else if selectedSite.data is null show the site picker; else the selected site is shown to buyers. */
+            /** @description Per-feature capability statuses for this Square connection: GRANTED when the feature's Square scopes are granted, or REQUIRES_REAUTH when the seller must reconnect Square to use it. */
             capabilities?: components["schemas"]["SquareConnections_Capability"][];
             /**
              * Format: date-time
@@ -35701,6 +35780,7 @@ export interface components {
         };
         StudioHomeMerchTiles_Relationships: {
             items?: components["schemas"]["StudioHomeMerchTiles_Items_Multi_Relationship_Data_Document"];
+            squareConnection?: components["schemas"]["StudioHomeMerchTiles_SquareConnection_Single_Relationship_Data_Document"];
         };
         StudioHomeMerchTiles_Resource_Object: {
             attributes?: components["schemas"]["StudioHomeMerchTiles_Attributes"];
@@ -35718,6 +35798,12 @@ export interface components {
         };
         StudioHomeMerchTiles_Single_Resource_Data_Document: {
             data: components["schemas"]["StudioHomeMerchTiles_Resource_Object"];
+            included?: components["schemas"]["Included"];
+            links: components["schemas"]["Links"];
+        };
+        /** @description Target resource types: `squareConnections`. */
+        StudioHomeMerchTiles_SquareConnection_Single_Relationship_Data_Document: {
+            data?: components["schemas"]["Resource_Identifier"] | (never | null);
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
