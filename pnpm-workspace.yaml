@@ -19,6 +19,6 @@ overrides:
   "minimatch@<4": 3.1.5
   "minimatch@>=5": 11.0.9
   "qs@>=6.7": 6.17.1
-  "rollup@>=4": 4.68.5
+  "rollup@>=4": 4.68.7
   "serialize-javascript": 7.1.4
   "tar-fs@>=3": 3.1.3
