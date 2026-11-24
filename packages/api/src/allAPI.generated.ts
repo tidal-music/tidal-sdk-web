@@ -15391,9 +15391,11 @@ export interface paths {
          */
         get: {
             parameters: {
-                query: {
-                    /** @description Filters scopes by their `requiredAccessTier`. (e.g. `THIRD_PARTY`) */
-                    "filter[requiredAccessTier]": ("THIRD_PARTY" | "THIRD_PARTY_PROD" | "PARTNER" | "INTERNAL")[];
+                query?: {
+                    /** @description Filters scopes by their required client access tier. (e.g. `THIRD_PARTY`) */
+                    "filter[requiredAccessTier]"?: ("THIRD_PARTY" | "THIRD_PARTY_PROD" | "PARTNER" | "INTERNAL")[];
+                    /** @description Selects scopes whose required access tier is satisfied by the client tier. (e.g. `PARTNER`) */
+                    "filter[requiredAccessTier][satisfiedBy]"?: "THIRD_PARTY" | "THIRD_PARTY_PROD" | "PARTNER" | "INTERNAL";
                 };
                 header?: never;
                 path?: never;
@@ -35808,8 +35810,22 @@ export interface components {
             links: components["schemas"]["Links"];
         };
         StudioHomeMusicTiles_Attributes: {
+            contentCounts: components["schemas"]["StudioHomeMusicTiles_Attributes_ContentCounts"];
             /** @description Terms types the user must accept before using this tile; empty when none are missing. */
             requiredTerms: ("DEVELOPER" | "UPLOAD_MARKETPLACE" | "MERCH_GUIDELINES" | "TIDAL_CONNECT_DEVELOPER")[];
+        };
+        /** @description Totals of the folders and albums in the user's uploads, at every folder level. */
+        StudioHomeMusicTiles_Attributes_ContentCounts: {
+            /**
+             * Format: int32
+             * @description Number of albums.
+             */
+            albums: number;
+            /**
+             * Format: int32
+             * @description Number of folders.
+             */
+            folders: number;
         };
         /** @description Target resource types: `albums`. */
         StudioHomeMusicTiles_Items_Multi_Relationship_Data_Document: {
