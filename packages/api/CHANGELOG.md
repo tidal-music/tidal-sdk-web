@@ -5,6 +5,20 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.60.0] - 2026-11-25
+
+### Added
+
+- Schema `Top_Level_Included`
+- 136 schemas `*_Multi_Relationship_Object`, e.g. `AcceptedTerms_Owners_Multi_Relationship_Object`
+- 72 schemas `*_Single_Relationship_Object`, e.g. `AcceptedTerms_Terms_Single_Relationship_Object`
+
+### Changed
+
+- Sync to new API definitions (version: 1.10.267)
+- `ArtistStreamsStatistics_SeriesPoint`: added property `followers`
+- `Folders_Attributes`: added property `numberOfChildren`
+
 ## [0.59.0] - 2026-11-25
 
 ### Changed
