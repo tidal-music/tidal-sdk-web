@@ -5,18 +5,27 @@
   ],
   "minimumReleaseAge": "2 days",
   "ignoreDeps": [],
-  "packageRules": [{
-    "description": "Group Npm packages",
-    "groupName": "Npm non-major dependencies",
-    "groupSlug": "npm-minor-patch",
-    "matchDatasources": [
-      "npm"
-    ],
-    "matchUpdateTypes": [
-      "minor",
-      "patch"
-    ]
-  }],
+  "packageRules": [
+    {
+      "description": "Group Npm packages",
+      "groupName": "Npm non-major dependencies",
+      "groupSlug": "npm-minor-patch",
+      "matchDatasources": [
+        "npm"
+      ],
+      "matchUpdateTypes": [
+        "minor",
+        "patch"
+      ]
+    },
+    {
+      "description": "minimatch 11 removed matchOne, which typedoc 0.28 still calls (docs build fails with 'mini.matchOne is not a function'). Keep the pnpm override on 10.x until typedoc supports 11.",
+      "matchPackageNames": [
+        "minimatch"
+      ],
+      "allowedVersions": "<11"
+    }
+  ],
   "schedule": [
     "every weekend"
   ]
