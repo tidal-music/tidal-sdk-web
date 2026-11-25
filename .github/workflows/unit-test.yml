@@ -10,7 +10,7 @@ jobs:
     name: Run Unit Tests
     steps:
       - uses: actions/checkout@v7
-      - uses: ./.github/actions/setup
+      - uses: $/.github/actions/setup
       - name: Prepare test user for player tests
         id: json
         run: |

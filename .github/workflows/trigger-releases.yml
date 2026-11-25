@@ -51,13 +51,13 @@ jobs:
     name: Run Lint Checks
     needs: [ check-changes ]
     if: ${{ needs.check-changes.outputs.modules != '' && toJson(fromJson(needs.check-changes.outputs.modules)) != '[]' }}
-    uses: ./.github/workflows/lint.yml
+    uses: $/.github/workflows/lint.yml
 
   trigger-unit-tests:
     name: Run Unit Tests
     needs: [ check-changes ]
     if: ${{ needs.check-changes.outputs.modules != '' && toJson(fromJson(needs.check-changes.outputs.modules)) != '[]' }}
-    uses: ./.github/workflows/unit-test.yml
+    uses: $/.github/workflows/unit-test.yml
     secrets: inherit
 
   trigger-releases:
@@ -68,7 +68,7 @@ jobs:
     strategy:
       matrix:
         module: ${{ fromJSON(needs.check-changes.outputs.modules) }}
-    uses: ./.github/workflows/create-release.yml
+    uses: $/.github/workflows/create-release.yml
     with:
         module: ${{ matrix.module }}
     secrets: inherit

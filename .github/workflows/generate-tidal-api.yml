@@ -48,7 +48,7 @@ jobs:
           pnpm install
       - name: Check for existing PR
         id: check_pr
-        uses: ./.github/actions/check-api-pr
+        uses: $/.github/actions/check-api-pr
 
       - name: Checkout PR branch if exists
         if: steps.check_pr.outputs.existing_pr == 'true'

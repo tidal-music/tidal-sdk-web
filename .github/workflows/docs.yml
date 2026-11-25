@@ -10,7 +10,7 @@ jobs:
     name: Build documentation
     steps:
       - uses: actions/checkout@v7
-      - uses: ./.github/actions/setup
+      - uses: $/.github/actions/setup
       - name: Typedoc
         run: |
           pnpm run docs

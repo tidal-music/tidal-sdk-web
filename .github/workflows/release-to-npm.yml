@@ -48,7 +48,7 @@ jobs:
         with:
           # Empty for release events, which check out the release tag as before.
           ref: ${{ inputs.sha }}
-      - uses: ./.github/actions/setup
+      - uses: $/.github/actions/setup
       - name: Publish unpublished packages
         if: ${{ github.event_name == 'release' }}
         run: pnpm publish --recursive --no-git-checks --access public

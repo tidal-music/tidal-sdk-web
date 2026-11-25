@@ -22,7 +22,7 @@ jobs:
 
       - name: Check for existing PR
         id: check_pr
-        uses: ./.github/actions/check-api-pr
+        uses: $/.github/actions/check-api-pr
 
       - name: Checkout PR branch if exists
         if: steps.check_pr.outputs.existing_pr == 'true'
@@ -79,7 +79,7 @@ jobs:
   regenerate-api:
     needs: check-api-spec
     if: needs.check-api-spec.outputs.changes_found == 'true'
-    uses: ./.github/workflows/generate-tidal-api.yml
+    uses: $/.github/workflows/generate-tidal-api.yml
     permissions:
       contents: write
       pull-requests: write
