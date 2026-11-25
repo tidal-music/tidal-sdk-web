@@ -283,7 +283,7 @@ jobs:
         id: create_pr
         if: ${{ steps.check_for_changes.outputs.CHANGES_DETECTED == 'true' && steps.commit_changes.outputs.commit_made == 'true' }}
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SPEC_VERSION: ${{ steps.check_for_changes.outputs.SPEC_VERSION }}
           CHANGED_FILE_COUNT: ${{ steps.check_for_changes.outputs.CHANGED_FILE_COUNT }}
           CHANGES_IN_GENERATED: ${{ steps.check_for_changes.outputs.CHANGES_IN_GENERATED }}
@@ -302,40 +302,40 @@ jobs:
           # Appended after echo -e so backslashes in the changelog text are kept as written.
           pr_body="${pr_body}"$'\n\n## Changelog entry\n\n'"${API_CHANGES}"
 
+          pr_data="$RUNNER_TEMP/pr-data.json"
+          pr_response="$RUNNER_TEMP/pr-response.json"
           if [ "$EXISTING_PR" == "true" ]; then
-            pr_data=$(jq -n --arg title "$pr_title" \
-                              --arg body "$pr_body" \
-                              '{title: $title, body: $body}')
-
-            curl -X PATCH \
-              -H "Authorization: token $GITHUB_TOKEN" \
-              -H "Accept: application/vnd.github.v3+json" \
-              -d "$pr_data" \
-              "https://api.github.com/repos/${REPO}/pulls/${PR_NUMBER}"
-
-            echo "Updated existing PR #${PR_NUMBER}"
-            echo "pr_number=$PR_NUMBER" >> "$GITHUB_OUTPUT"
+            method=PATCH
+            endpoint="repos/${REPO}/pulls/${PR_NUMBER}"
+            jq -n --arg title "$pr_title" --arg body "$pr_body" \
+              '{title: $title, body: $body}' > "$pr_data"
           else
-            pr_data=$(jq -n --arg title "$pr_title" \
-                              --arg head "$PR_HEAD_BRANCH" \
-                              --arg base "main" \
-                              --arg body "$pr_body" \
-                              '{title: $title, head: $head, base: $base, body: $body}')
+            method=POST
+            endpoint="repos/${REPO}/pulls"
+            jq -n --arg title "$pr_title" --arg head "$PR_HEAD_BRANCH" --arg base "main" --arg body "$pr_body" \
+              '{title: $title, head: $head, base: $base, body: $body}' > "$pr_data"
+          fi
 
-            response=$(curl -sS -X POST \
-              -H "Authorization: token $GITHUB_TOKEN" \
-              -H "Accept: application/vnd.github.v3+json" \
-              -d "$pr_data" \
-              "https://api.github.com/repos/${REPO}/pulls")
-
-            new_pr_number=$(echo "$response" | jq -r '.number // empty')
-            if [ -z "$new_pr_number" ]; then
-              echo "Failed to create PR: $response"
+          # gh api exits non-zero on an HTTP error and prints GitHub's message. Retry once
+          # because a transient failure here would leave a pushed branch without a PR.
+          for attempt in 1 2; do
+            if gh api --method "$method" "$endpoint" --input "$pr_data" > "$pr_response"; then
+              break
+            fi
+            echo "::warning::$method $endpoint failed (attempt $attempt): $(cat "$pr_response")"
+            if [ "$attempt" -eq 2 ]; then
               exit 1
             fi
-            echo "Created new PR #${new_pr_number}"
-            echo "pr_number=$new_pr_number" >> "$GITHUB_OUTPUT"
+            sleep 10
+          done
+
+          pr_number=$(jq -r '.number // empty' "$pr_response")
+          if [ -z "$pr_number" ]; then
+            echo "::error::No PR number in the response: $(cat "$pr_response")"
+            exit 1
           fi
+          echo "PR #${pr_number}: $(jq -r '.html_url' "$pr_response")"
+          echo "pr_number=$pr_number" >> "$GITHUB_OUTPUT"
 
       - name: Approve and enable auto-merge
         # The PR is opened by github-actions[bot], which can't approve its own PR, so a second
