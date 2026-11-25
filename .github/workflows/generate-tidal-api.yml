@@ -337,7 +337,7 @@ jobs:
           echo "PR #${pr_number}: $(jq -r '.html_url' "$pr_response")"
           echo "pr_number=$pr_number" >> "$GITHUB_OUTPUT"
 
-      - name: Approve and enable auto-merge
+      - name: Approve, enable auto-merge and start checks
         # The PR is opened by github-actions[bot], which can't approve its own PR, so a second
         # identity approves it. Auto-merge is enabled with that identity too: a merge done with
         # GITHUB_TOKEN would not start the release workflows on main.
@@ -363,3 +363,22 @@ jobs:
 
           gh pr review "$PR_NUMBER" --approve --body "Generated from the published TIDAL API spec. Approved automatically; it merges once the required checks pass."
           gh pr merge "$PR_NUMBER" --auto --squash
+
+          # GitHub doesn't start pull_request workflows for a push or PR made with GITHUB_TOKEN:
+          # the run is created as action_required, with no jobs, so the required checks never
+          # report and auto-merge waits forever. A re-run by a user with write access starts it.
+          head_sha=$(gh pr view "$PR_NUMBER" --json headRefOid --jq .headRefOid)
+          for attempt in $(seq 1 12); do
+            run_ids=$(gh api "repos/$GH_REPO/actions/runs?head_sha=${head_sha}&event=pull_request" \
+              --jq '.workflow_runs[] | select(.conclusion == "action_required") | .id')
+            [ -n "$run_ids" ] && break
+            sleep 5
+          done
+          if [ -z "$run_ids" ]; then
+            echo "No pull_request runs waiting for approval on ${head_sha}."
+            exit 0
+          fi
+          for run_id in $run_ids; do
+            echo "Starting pull_request run ${run_id} for ${head_sha}"
+            gh run rerun "$run_id"
+          done
