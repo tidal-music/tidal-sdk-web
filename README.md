@@ -57,3 +57,13 @@ And follow the prompts.
 5. Check in with your teammates, lead, the module's owner etc. to make sure the release is ready to go.
 
 6. Click `Publish` at the bottom of your draft release. This will trigger a workflow to tag the release commit and attach artifacts to the release. It will also trigger publishing the package to `Npm`, where it should appear under [@tidal-music Npm org](https://www.npmjs.com/org/tidal-music) shortly!
+
+### `@tidal-music/api` releases automatically
+
+The `api` module is generated from the [published TIDAL API spec](https://tidal-music.github.io/tidal-api-reference/), and nobody needs to step in to release it:
+
+1. Every night, `check-tidalapi-spec.yml` checks for spec changes. If there are any, it regenerates the types, bumps the minor version, and writes a changelog entry listing the endpoints and schemas that were added, changed or removed. It then opens a PR, or updates the open one.
+2. The PR is approved automatically and set to auto-merge, so it merges once the required checks pass.
+3. On merge, the draft release is created as usual. The package is then published to npm, and the release is published with the changelog entry as its notes.
+
+Auto-merge needs the `ACTIONS_PAT` org secret (from `tidal-tools`, which must have write access to this repo), and `Run Unit Tests / Run Unit Tests` must be a required status check on `main`. Without either, the PR is still opened but has to be approved and merged by hand.

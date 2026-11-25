@@ -17,7 +17,11 @@ on:
         default: 'false'
     secrets:
       token:
-        required: true
+        description: >-
+          Token for a user with write access to the repo (tidal-tools' ACTIONS_PAT).
+          It approves the API PR and turns on auto-merge, so the PR merges once the required checks pass.
+          Without it, the PR is opened as before and needs a human to approve and merge it.
+        required: false
 
 permissions:
   contents: write
@@ -155,29 +159,56 @@ jobs:
           tmp=$(mktemp)
           jq --arg v "$NEW_VERSION" '.version = $v' package.json > "$tmp" && mv "$tmp" package.json
 
-          export NEW_VERSION SPEC_VERSION
+          # Describe what changed in the spec since the last release (the spec on main),
+          # so the changelog and release notes say more than "synced". The script is read
+          # from main because an older PR branch may not have it yet.
+          CHANGES_FILE="$RUNNER_TEMP/api-changes.md"
+          BASE_SPEC="$RUNNER_TEMP/base-spec.json"
+          CHANGELOG_SCRIPT="$RUNNER_TEMP/api_spec_changelog.py"
+          if git show "main:$API_FOLDER/$SPEC_FILE" > "$BASE_SPEC" 2>/dev/null \
+            && git show "main:.github/scripts/api_spec_changelog.py" > "$CHANGELOG_SCRIPT" 2>/dev/null \
+            && python3 -I "$CHANGELOG_SCRIPT" "$BASE_SPEC" "$SPEC_FILE" > "$CHANGES_FILE"; then
+            echo "Generated changelog from spec diff"
+          else
+            echo "Could not diff against the spec on main - using a generic changelog entry"
+            printf '### Changed\n\n- Sync to new API definitions (version: %s)\n' "$SPEC_VERSION" > "$CHANGES_FILE"
+          fi
+          cat "$CHANGES_FILE"
+
+          export NEW_VERSION CHANGES_FILE
           python3 << 'PYEOF'
           import os, re
           from datetime import date
 
           version = os.environ['NEW_VERSION']
-          spec_version = os.environ['SPEC_VERSION']
           today = date.today().isoformat()
+
+          with open(os.environ['CHANGES_FILE']) as f:
+              changes = f.read().strip()
 
           with open('CHANGELOG.md', 'r') as f:
               content = f.read()
 
-          entry = f"## [{version}] - {today}\n\n### Changed\n\n- Sync to new API definitions (version: {spec_version})"
+          entry = f"## [{version}] - {today}\n\n{changes}"
 
+          # Replace the entry for this version if the open PR already added one, otherwise
+          # insert it above the newest entry. Use functions as replacements so backslashes
+          # in the generated text are not treated as escapes.
           pattern = re.compile(rf'## \[{re.escape(version)}\][\s\S]*?(?=\n## \[|$)')
           if pattern.search(content):
-              content = pattern.sub(entry, content)
+              content = pattern.sub(lambda _: entry + "\n", content, count=1)
           else:
-              content = re.sub(r'(## \[)', entry + '\n\n\\1', content, count=1)
+              content = re.sub(r'## \[', lambda m: entry + '\n\n' + m.group(0), content, count=1)
 
           with open('CHANGELOG.md', 'w') as f:
               f.write(content)
           PYEOF
+
+          {
+            echo 'CHANGES<<EOF_CHANGES'
+            cat "$CHANGES_FILE"
+            echo 'EOF_CHANGES'
+          } >> "$GITHUB_OUTPUT"
 
           echo "Updated to version $NEW_VERSION with API spec $SPEC_VERSION"
 
@@ -249,6 +280,7 @@ jobs:
           fi
 
       - name: Create or Update Pull Request
+        id: create_pr
         if: ${{ steps.check_for_changes.outputs.CHANGES_DETECTED == 'true' && steps.commit_changes.outputs.commit_made == 'true' }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -256,6 +288,7 @@ jobs:
           CHANGED_FILE_COUNT: ${{ steps.check_for_changes.outputs.CHANGED_FILE_COUNT }}
           CHANGES_IN_GENERATED: ${{ steps.check_for_changes.outputs.CHANGES_IN_GENERATED }}
           CHANGES_IN_SPEC: ${{ steps.check_for_changes.outputs.CHANGES_IN_SPEC }}
+          API_CHANGES: ${{ steps.bump_version.outputs.CHANGES }}
           EXISTING_PR: ${{ steps.check_pr.outputs.existing_pr }}
           PR_NUMBER: ${{ steps.check_pr.outputs.pr_number }}
           PR_HEAD_BRANCH: ${{ steps.prepare_git_and_define_branch_name.outputs.BRANCH_NAME }}
@@ -264,8 +297,10 @@ jobs:
           current_date=$(date)
           pr_title="Automatic Tidal API module update to v${SPEC_VERSION} - ${CHANGED_FILE_COUNT} files changed"
 
-          pr_body="Updated Tidal API to version **v${SPEC_VERSION}**\n\n**Changes in Generated file:**\n\n${CHANGES_IN_GENERATED}\n\n**Changes in Spec file:**\n\n${CHANGES_IN_SPEC}\n\nAutomatically generated on $current_date\n\nThis PR is automatically updated when API changes are detected."
+          pr_body="Updated Tidal API to version **v${SPEC_VERSION}**\n\n**Changes in Generated file:**\n\n${CHANGES_IN_GENERATED}\n\n**Changes in Spec file:**\n\n${CHANGES_IN_SPEC}\n\nAutomatically generated on $current_date\n\nThis PR is automatically updated when API changes are detected. It merges automatically once the required checks pass, and the release is then published to npm."
           pr_body=$(echo -e "$pr_body")
+          # Appended after echo -e so backslashes in the changelog text are kept as written.
+          pr_body="${pr_body}"$'\n\n## Changelog entry\n\n'"${API_CHANGES}"
 
           if [ "$EXISTING_PR" == "true" ]; then
             pr_data=$(jq -n --arg title "$pr_title" \
@@ -279,6 +314,7 @@ jobs:
               "https://api.github.com/repos/${REPO}/pulls/${PR_NUMBER}"
 
             echo "Updated existing PR #${PR_NUMBER}"
+            echo "pr_number=$PR_NUMBER" >> "$GITHUB_OUTPUT"
           else
             pr_data=$(jq -n --arg title "$pr_title" \
                               --arg head "$PR_HEAD_BRANCH" \
@@ -286,11 +322,44 @@ jobs:
                               --arg body "$pr_body" \
                               '{title: $title, head: $head, base: $base, body: $body}')
 
-            curl -X POST \
+            response=$(curl -sS -X POST \
               -H "Authorization: token $GITHUB_TOKEN" \
               -H "Accept: application/vnd.github.v3+json" \
               -d "$pr_data" \
-              "https://api.github.com/repos/${REPO}/pulls"
+              "https://api.github.com/repos/${REPO}/pulls")
 
-            echo "Created new PR"
+            new_pr_number=$(echo "$response" | jq -r '.number // empty')
+            if [ -z "$new_pr_number" ]; then
+              echo "Failed to create PR: $response"
+              exit 1
+            fi
+            echo "Created new PR #${new_pr_number}"
+            echo "pr_number=$new_pr_number" >> "$GITHUB_OUTPUT"
           fi
+
+      - name: Approve and enable auto-merge
+        # The PR is opened by github-actions[bot], which can't approve its own PR, so a second
+        # identity approves it. Auto-merge is enabled with that identity too: a merge done with
+        # GITHUB_TOKEN would not start the release workflows on main.
+        if: ${{ steps.check_for_changes.outputs.CHANGES_DETECTED == 'true' && steps.commit_changes.outputs.commit_made == 'true' }}
+        env:
+          GH_TOKEN: ${{ secrets.token }}
+          GH_REPO: ${{ github.repository }}
+          PR_NUMBER: ${{ steps.create_pr.outputs.pr_number }}
+          REQUIRED_TEST_CHECK: Run Unit Tests / Run Unit Tests
+        run: |
+          if [ -z "$GH_TOKEN" ]; then
+            echo "::notice::No token for auto-merge configured - PR #${PR_NUMBER} needs a manual approval and merge."
+            exit 0
+          fi
+
+          # Without required checks, auto-merge would merge as soon as the PR is approved,
+          # before tests have run. Only turn it on when main requires the unit tests to pass.
+          required_checks=$(gh api "repos/$GH_REPO/branches/main" --jq '.protection.required_status_checks.contexts // [] | .[]')
+          if ! grep -qx "$REQUIRED_TEST_CHECK" <<< "$required_checks"; then
+            echo "::warning::'$REQUIRED_TEST_CHECK' is not a required status check on main, so auto-merge stays off. PR #${PR_NUMBER} needs a manual approval and merge."
+            exit 0
+          fi
+
+          gh pr review "$PR_NUMBER" --approve --body "Generated from the published TIDAL API spec. Approved automatically; it merges once the required checks pass."
+          gh pr merge "$PR_NUMBER" --auto --squash

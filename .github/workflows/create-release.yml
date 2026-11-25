@@ -33,6 +33,7 @@ jobs:
     needs: expose-tag
     permissions: 
       contents: write
+      actions: write # to start the npm publish for packages that release automatically
     env: 
       path: ${{ inputs.module }}
       version: ${{ needs.expose-tag.outputs.module-version}}
@@ -67,4 +68,23 @@ jobs:
         version: ${{ env.version }}
         tag: ${{ env.tag }}
         token: ${{ github.token }}
+
+    # @tidal-music/api is generated from the published API spec and released without a human
+    # promoting the draft. Starting release-to-npm.yml directly is needed because a release
+    # published with GITHUB_TOKEN would not trigger its `release: published` event. That
+    # workflow publishes the package and then publishes this draft release.
+    - name: Publish to npm
+      if: ${{ inputs.module == 'packages/api' }}
+      env:
+        GH_TOKEN: ${{ github.token }}
+        PACKAGE_JSON: ${{ inputs.module }}/package.json
+        RELEASE_SHA: ${{ github.sha }}
+      run: |
+        package_name="$(jq -r '.name' "$PACKAGE_JSON")"
+        gh workflow run release-to-npm.yml \
+          --ref "$GITHUB_REF" \
+          -f package="$package_name" \
+          -f tag="$tag" \
+          -f sha="$RELEASE_SHA"
+        echo "Started npm publish of $package_name ($tag at $RELEASE_SHA)"
 

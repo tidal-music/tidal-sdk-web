@@ -1,8 +1,26 @@
 name: Publish Package to npmjs
 
 on:
+  # Manual releases: a human publishes a draft release in the GitHub UI.
   release:
     types: [published]
+  # Automatic releases: started by create-release.yml for packages that release without a
+  # human step (currently @tidal-music/api). Publishes only that package, then publishes the
+  # draft release.
+  workflow_dispatch:
+    inputs:
+      package:
+        description: 'Package to publish, e.g. @tidal-music/api'
+        required: true
+        type: string
+      tag:
+        description: 'Draft release tag to publish after npm, e.g. api-0.59.0'
+        required: true
+        type: string
+      sha:
+        description: 'Commit to publish from'
+        required: true
+        type: string
 
 permissions:
   id-token: write  # Required for OIDC
@@ -10,10 +28,51 @@ permissions:
 
 jobs:
   build:
+    # When publish-release below publishes a draft, GitHub should not raise a `release` event
+    # for it (it uses GITHUB_TOKEN). Skip it anyway if it does, so packages that are waiting
+    # for a human to publish their draft aren't published with it.
+    if: ${{ github.event_name != 'release' || github.actor != 'github-actions[bot]' }}
     runs-on: ubuntu-latest
     steps:
+      - name: Validate inputs
+        if: ${{ github.event_name == 'workflow_dispatch' }}
+        env:
+          PACKAGE: ${{ inputs.package }}
+          TAG: ${{ inputs.tag }}
+          SHA: ${{ inputs.sha }}
+        run: |
+          [[ "$PACKAGE" =~ ^@tidal-music/[a-z0-9-]+$ ]] || { echo "Invalid package: $PACKAGE"; exit 1; }
+          [[ "$TAG" =~ ^[a-z0-9-]+-[0-9]+\.[0-9]+\.[0-9]+$ ]] || { echo "Invalid tag: $TAG"; exit 1; }
+          [[ "$SHA" =~ ^[0-9a-f]{40}$ ]] || { echo "Invalid sha: $SHA"; exit 1; }
       - uses: actions/checkout@v7
+        with:
+          # Empty for release events, which check out the release tag as before.
+          ref: ${{ inputs.sha }}
       - uses: ./.github/actions/setup
-      - run: pnpm publish --recursive --no-git-checks --access public
+      - name: Publish unpublished packages
+        if: ${{ github.event_name == 'release' }}
+        run: pnpm publish --recursive --no-git-checks --access public
         env:
           NPM_CONFIG_PROVENANCE: "false"
+      - name: Publish ${{ inputs.package }}
+        if: ${{ github.event_name == 'workflow_dispatch' }}
+        # Filtered so that other packages with a version bump waiting in a draft release
+        # are not published along with it.
+        run: pnpm publish --recursive --filter "$PACKAGE" --no-git-checks --access public
+        env:
+          PACKAGE: ${{ inputs.package }}
+          NPM_CONFIG_PROVENANCE: "false"
+
+  publish-release:
+    needs: build
+    if: ${{ github.event_name == 'workflow_dispatch' }}
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Publish draft release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TAG: ${{ inputs.tag }}
+          SHA: ${{ inputs.sha }}
+        run: gh release edit "$TAG" --repo "$GITHUB_REPOSITORY" --draft=false --target "$SHA"

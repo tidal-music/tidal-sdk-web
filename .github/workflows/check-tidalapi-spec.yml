@@ -86,4 +86,5 @@ jobs:
     with:
       use_downloaded_spec: "true"
     secrets:
-      token: ${{ secrets.GITHUB_TOKEN }}
+      # tidal-tools PAT: approves the PR and turns on auto-merge (see generate-tidal-api.yml)
+      token: ${{ secrets.ACTIONS_PAT }}
