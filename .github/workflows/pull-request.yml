@@ -22,6 +22,15 @@ jobs:
     uses: ./.github/workflows/unit-test.yml
     secrets: inherit
 
+  build-docs:
+    name: Build Documentation
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: ./.github/actions/setup
+      - name: Typedoc
+        run: pnpm run docs
+
   trigger-changelogs-check:
     name: Trigger changelog files check
     uses: ./.github/workflows/check-changelog-files.yml
