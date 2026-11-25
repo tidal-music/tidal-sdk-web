@@ -27838,15 +27838,15 @@ export interface components {
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
+        AcceptedTerms_Owners_Multi_Relationship_Data_Document: components["schemas"]["AcceptedTerms_Owners_Multi_Relationship_Object"] & components["schemas"]["Top_Level_Included"];
         /** @description Target resource types: `users`. */
-        AcceptedTerms_Owners_Multi_Relationship_Data_Document: {
+        AcceptedTerms_Owners_Multi_Relationship_Object: {
             data?: components["schemas"]["Resource_Identifier"][];
-            included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
         AcceptedTerms_Relationships: {
-            owners?: components["schemas"]["AcceptedTerms_Owners_Multi_Relationship_Data_Document"];
-            terms?: components["schemas"]["AcceptedTerms_Terms_Single_Relationship_Data_Document"];
+            owners?: components["schemas"]["AcceptedTerms_Owners_Multi_Relationship_Object"];
+            terms?: components["schemas"]["AcceptedTerms_Terms_Single_Relationship_Object"];
         };
         AcceptedTerms_Resource_Object: {
             attributes?: components["schemas"]["AcceptedTerms_Attributes"];
@@ -27862,10 +27862,10 @@ export interface components {
              */
             type: "acceptedTerms";
         };
+        AcceptedTerms_Terms_Single_Relationship_Data_Document: components["schemas"]["AcceptedTerms_Terms_Single_Relationship_Object"] & components["schemas"]["Top_Level_Included"];
         /** @description Target resource types: `terms`. */
-        AcceptedTerms_Terms_Single_Relationship_Data_Document: {
+        AcceptedTerms_Terms_Single_Relationship_Object: {
             data?: components["schemas"]["Resource_Identifier"] | (never | null);
-            included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
         AlbumStatistics_Attributes: {
@@ -27885,14 +27885,14 @@ export interface components {
              */
             uniqueListeners: number;
         };
+        AlbumStatistics_Owners_Multi_Relationship_Data_Document: components["schemas"]["AlbumStatistics_Owners_Multi_Relationship_Object"] & components["schemas"]["Top_Level_Included"];
         /** @description Target resource types: `users`. */
-        AlbumStatistics_Owners_Multi_Relationship_Data_Document: {
+        AlbumStatistics_Owners_Multi_Relationship_Object: {
             data?: components["schemas"]["Resource_Identifier"][];
-            included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
         AlbumStatistics_Relationships: {
-            owners?: components["schemas"]["AlbumStatistics_Owners_Multi_Relationship_Data_Document"];
+            owners?: components["schemas"]["AlbumStatistics_Owners_Multi_Relationship_Object"];
         };
         AlbumStatistics_Resource_Object: {
             attributes?: components["schemas"]["AlbumStatistics_Attributes"];
@@ -28067,16 +28067,16 @@ export interface components {
             /** @enum {string} */
             type: "genres";
         };
+        Albums_AlbumStatistics_Single_Relationship_Data_Document: components["schemas"]["Albums_AlbumStatistics_Single_Relationship_Object"] & components["schemas"]["Top_Level_Included"];
         /** @description Target resource types: `albumStatistics`. */
-        Albums_AlbumStatistics_Single_Relationship_Data_Document: {
+        Albums_AlbumStatistics_Single_Relationship_Object: {
             data?: components["schemas"]["Resource_Identifier"] | (never | null);
-            included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
+        Albums_Artists_Multi_Relationship_Data_Document: components["schemas"]["Albums_Artists_Multi_Relationship_Object"] & components["schemas"]["Top_Level_Included"];
         /** @description Target resource types: `artists`. */
-        Albums_Artists_Multi_Relationship_Data_Document: {
+        Albums_Artists_Multi_Relationship_Object: {
             data?: components["schemas"]["Resource_Identifier"][];
-            included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
         Albums_Attributes: {
@@ -28101,6 +28101,7 @@ export interface components {
              * @description Available usage for this album. Deprecated: use 'usageRules' instead. This field will be removed in a future version.
              */
             availability?: ("STREAM" | "DJ" | "STEM")[];
+            /** @example 196589525444 */
             barcodeId: string | null;
             copyright?: components["schemas"]["Copyright"];
             /**
@@ -28167,26 +28168,26 @@ export interface components {
              */
             version?: string;
         };
+        Albums_CoverArt_Multi_Relationship_Data_Document: components["schemas"]["Albums_CoverArt_Multi_Relationship_Object"] & components["schemas"]["Top_Level_Included"];
         /** @description Target resource types: `artworks`. */
-        Albums_CoverArt_Multi_Relationship_Data_Document: {
+        Albums_CoverArt_Multi_Relationship_Object: {
             data?: components["schemas"]["Resource_Identifier"][];
-            included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
         Albums_Create_Single_Resource_Data_Document: {
             data: components["schemas"]["Albums_Resource_Object"];
             links: components["schemas"]["Links"];
         };
+        Albums_Genres_Multi_Relationship_Data_Document: components["schemas"]["Albums_Genres_Multi_Relationship_Object"] & components["schemas"]["Top_Level_Included"];
         /** @description Target resource types: `genres`. */
-        Albums_Genres_Multi_Relationship_Data_Document: {
+        Albums_Genres_Multi_Relationship_Object: {
             data?: components["schemas"]["Resource_Identifier"][];
-            included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
+        Albums_Items_Multi_Relationship_Data_Document: components["schemas"]["Albums_Items_Multi_Relationship_Object"] & components["schemas"]["Top_Level_Included"];
         /** @description Target resource types: `tracks`, `videos`. */
-        Albums_Items_Multi_Relationship_Data_Document: {
+        Albums_Items_Multi_Relationship_Object: {
             data?: components["schemas"]["Albums_Items_Resource_Identifier"][];
-            included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
         Albums_Items_Resource_Identifier: {
@@ -28222,38 +28223,38 @@ export interface components {
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
+        Albums_Owners_Multi_Relationship_Data_Document: components["schemas"]["Albums_Owners_Multi_Relationship_Object"] & components["schemas"]["Top_Level_Included"];
         /** @description Target resource types: `users`. */
-        Albums_Owners_Multi_Relationship_Data_Document: {
+        Albums_Owners_Multi_Relationship_Object: {
             data?: components["schemas"]["Resource_Identifier"][];
-            included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
+        Albums_PriceConfig_Single_Relationship_Data_Document: components["schemas"]["Albums_PriceConfig_Single_Relationship_Object"] & components["schemas"]["Top_Level_Included"];
         /** @description Target resource types: `priceConfigurations`. */
-        Albums_PriceConfig_Single_Relationship_Data_Document: {
+        Albums_PriceConfig_Single_Relationship_Object: {
             data?: components["schemas"]["Resource_Identifier"] | (never | null);
-            included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
+        Albums_Providers_Multi_Relationship_Data_Document: components["schemas"]["Albums_Providers_Multi_Relationship_Object"] & components["schemas"]["Top_Level_Included"];
         /** @description Target resource types: `providers`. */
-        Albums_Providers_Multi_Relationship_Data_Document: {
+        Albums_Providers_Multi_Relationship_Object: {
             data?: components["schemas"]["Resource_Identifier"][];
-            included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
         Albums_Relationships: {
-            albumStatistics?: components["schemas"]["Albums_AlbumStatistics_Single_Relationship_Data_Document"];
-            artists?: components["schemas"]["Albums_Artists_Multi_Relationship_Data_Document"];
-            coverArt?: components["schemas"]["Albums_CoverArt_Multi_Relationship_Data_Document"];
-            genres?: components["schemas"]["Albums_Genres_Multi_Relationship_Data_Document"];
-            items?: components["schemas"]["Albums_Items_Multi_Relationship_Data_Document"];
-            owners?: components["schemas"]["Albums_Owners_Multi_Relationship_Data_Document"];
-            priceConfig?: components["schemas"]["Albums_PriceConfig_Single_Relationship_Data_Document"];
-            providers?: components["schemas"]["Albums_Providers_Multi_Relationship_Data_Document"];
-            replacement?: components["schemas"]["Albums_Replacement_Single_Relationship_Data_Document"];
-            shares?: components["schemas"]["Albums_Shares_Multi_Relationship_Data_Document"];
-            similarAlbums?: components["schemas"]["Albums_SimilarAlbums_Multi_Relationship_Data_Document"];
-            suggestedCoverArts?: components["schemas"]["Albums_SuggestedCoverArts_Multi_Relationship_Data_Document"];
-            usageRules?: components["schemas"]["Albums_UsageRules_Single_Relationship_Data_Document"];
+            albumStatistics?: components["schemas"]["Albums_AlbumStatistics_Single_Relationship_Object"];
+            artists?: components["schemas"]["Albums_Artists_Multi_Relationship_Object"];
+            coverArt?: components["schemas"]["Albums_CoverArt_Multi_Relationship_Object"];
+            genres?: components["schemas"]["Albums_Genres_Multi_Relationship_Object"];
+            items?: components["schemas"]["Albums_Items_Multi_Relationship_Object"];
+            owners?: components["schemas"]["Albums_Owners_Multi_Relationship_Object"];
+            priceConfig?: components["schemas"]["Albums_PriceConfig_Single_Relationship_Object"];
+            providers?: components["schemas"]["Albums_Providers_Multi_Relationship_Object"];
+            replacement?: components["schemas"]["Albums_Replacement_Single_Relationship_Object"];
+            shares?: components["schemas"]["Albums_Shares_Multi_Relationship_Object"];
+            similarAlbums?: components["schemas"]["Albums_SimilarAlbums_Multi_Relationship_Object"];
+            suggestedCoverArts?: components["schemas"]["Albums_SuggestedCoverArts_Multi_Relationship_Object"];
+            usageRules?: components["schemas"]["Albums_UsageRules_Single_Relationship_Object"];
         };
         Albums_Replacement_Resource_Identifier: {
             /**
@@ -28264,17 +28265,17 @@ export interface components {
             meta?: components["schemas"]["Albums_Replacement_Resource_Identifier_Meta"];
             /**
              * @description Resource type
-             * @example tracks
+             * @example albums
              */
             type: string;
         };
         Albums_Replacement_Resource_Identifier_Meta: {
             replacement?: components["schemas"]["Replacement_Provenance"];
         };
+        Albums_Replacement_Single_Relationship_Data_Document: components["schemas"]["Albums_Replacement_Single_Relationship_Object"] & components["schemas"]["Top_Level_Included"];
         /** @description Target resource types: `albums`. */
-        Albums_Replacement_Single_Relationship_Data_Document: {
+        Albums_Replacement_Single_Relationship_Object: {
             data?: components["schemas"]["Albums_Replacement_Resource_Identifier"] | (never | null);
-            included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
         Albums_Resource_Object: {
@@ -28291,16 +28292,16 @@ export interface components {
              */
             type: "albums";
         };
+        Albums_Shares_Multi_Relationship_Data_Document: components["schemas"]["Albums_Shares_Multi_Relationship_Object"] & components["schemas"]["Top_Level_Included"];
         /** @description Target resource types: `shares`. */
-        Albums_Shares_Multi_Relationship_Data_Document: {
+        Albums_Shares_Multi_Relationship_Object: {
             data?: components["schemas"]["Resource_Identifier"][];
-            included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
+        Albums_SimilarAlbums_Multi_Relationship_Data_Document: components["schemas"]["Albums_SimilarAlbums_Multi_Relationship_Object"] & components["schemas"]["Top_Level_Included"];
         /** @description Target resource types: `albums`. */
-        Albums_SimilarAlbums_Multi_Relationship_Data_Document: {
+        Albums_SimilarAlbums_Multi_Relationship_Object: {
             data?: components["schemas"]["Albums_SimilarAlbums_Resource_Identifier"][];
-            included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
         Albums_SimilarAlbums_Resource_Identifier: {
@@ -28312,7 +28313,7 @@ export interface components {
             meta?: components["schemas"]["Albums_SimilarAlbums_Resource_Identifier_Meta"];
             /**
              * @description Resource type
-             * @example tracks
+             * @example albums
              */
             type: string;
         };
@@ -28324,16 +28325,16 @@ export interface components {
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
-        /** @description Target resource types: `artworks`. */
-        Albums_SuggestedCoverArts_Multi_Relationship_Data_Document: {
-            data?: components["schemas"]["Albums_SuggestedCoverArts_Resource_Identifier"][];
-            included?: components["schemas"]["Included"];
-            links: components["schemas"]["Links"];
-            meta?: components["schemas"]["Albums_SuggestedCoverArts_Multi_Relationship_Data_Document_Meta"];
-        };
+        Albums_SuggestedCoverArts_Multi_Relationship_Data_Document: components["schemas"]["Albums_SuggestedCoverArts_Multi_Relationship_Object"] & components["schemas"]["Top_Level_Included"];
         Albums_SuggestedCoverArts_Multi_Relationship_Data_Document_Meta: {
             /** @enum {string} */
             status?: "PENDING" | "PROCESSING" | "ERROR" | "OK";
+        };
+        /** @description Target resource types: `artworks`. */
+        Albums_SuggestedCoverArts_Multi_Relationship_Object: {
+            data?: components["schemas"]["Albums_SuggestedCoverArts_Resource_Identifier"][];
+            links: components["schemas"]["Links"];
+            meta?: components["schemas"]["Albums_SuggestedCoverArts_Multi_Relationship_Data_Document_Meta"];
         };
         Albums_SuggestedCoverArts_Resource_Identifier: {
             /**
@@ -28344,7 +28345,7 @@ export interface components {
             meta?: components["schemas"]["Albums_SuggestedCoverArts_Resource_Identifier_Meta"];
             /**
              * @description Resource type
-             * @example tracks
+             * @example artworks
              */
             type: string;
         };
@@ -28354,10 +28355,10 @@ export interface components {
             /** @description Foreground color for the suggested artwork */
             foregroundColor: string;
         };
+        Albums_UsageRules_Single_Relationship_Data_Document: components["schemas"]["Albums_UsageRules_Single_Relationship_Object"] & components["schemas"]["Top_Level_Included"];
         /** @description Target resource types: `usageRules`. */
-        Albums_UsageRules_Single_Relationship_Data_Document: {
+        Albums_UsageRules_Single_Relationship_Object: {
             data?: components["schemas"]["Resource_Identifier"] | (never | null);
-            included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
         AppreciationsCreateOperation_Payload: {
@@ -28428,7 +28429,7 @@ export interface components {
             editable: boolean;
             /**
              * @description Source the biography is coming from
-             * @example ARTIST
+             * @example TIDAL
              * @enum {string}
              */
             source?: "TIDAL" | "TiVo" | "MusicBrainz" | "Avex" | "Artist" | "UNKNOWN";
@@ -28438,14 +28439,14 @@ export interface components {
              */
             text: string;
         };
+        ArtistBiographies_Owners_Multi_Relationship_Data_Document: components["schemas"]["ArtistBiographies_Owners_Multi_Relationship_Object"] & components["schemas"]["Top_Level_Included"];
         /** @description Target resource types: `users`. */
-        ArtistBiographies_Owners_Multi_Relationship_Data_Document: {
+        ArtistBiographies_Owners_Multi_Relationship_Object: {
             data?: components["schemas"]["Resource_Identifier"][];
-            included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
         ArtistBiographies_Relationships: {
-            owners?: components["schemas"]["ArtistBiographies_Owners_Multi_Relationship_Data_Document"];
+            owners?: components["schemas"]["ArtistBiographies_Owners_Multi_Relationship_Object"];
         };
         ArtistBiographies_Resource_Object: {
             attributes?: components["schemas"]["ArtistBiographies_Attributes"];
@@ -28542,10 +28543,10 @@ export interface components {
             authorizationCode: string;
             redirectUri: string;
         };
+        ArtistClaims_AcceptedArtists_Multi_Relationship_Data_Document: components["schemas"]["ArtistClaims_AcceptedArtists_Multi_Relationship_Object"] & components["schemas"]["Top_Level_Included"];
         /** @description Target resource types: `artists`. */
-        ArtistClaims_AcceptedArtists_Multi_Relationship_Data_Document: {
+        ArtistClaims_AcceptedArtists_Multi_Relationship_Object: {
             data?: components["schemas"]["Resource_Identifier"][];
-            included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
         ArtistClaims_Attributes: {
@@ -28580,22 +28581,22 @@ export interface components {
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
+        ArtistClaims_Owners_Multi_Relationship_Data_Document: components["schemas"]["ArtistClaims_Owners_Multi_Relationship_Object"] & components["schemas"]["Top_Level_Included"];
         /** @description Target resource types: `users`. */
-        ArtistClaims_Owners_Multi_Relationship_Data_Document: {
+        ArtistClaims_Owners_Multi_Relationship_Object: {
             data?: components["schemas"]["Resource_Identifier"][];
-            included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
+        ArtistClaims_RecommendedArtists_Multi_Relationship_Data_Document: components["schemas"]["ArtistClaims_RecommendedArtists_Multi_Relationship_Object"] & components["schemas"]["Top_Level_Included"];
         /** @description Target resource types: `artists`. */
-        ArtistClaims_RecommendedArtists_Multi_Relationship_Data_Document: {
+        ArtistClaims_RecommendedArtists_Multi_Relationship_Object: {
             data?: components["schemas"]["Resource_Identifier"][];
-            included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
         ArtistClaims_Relationships: {
-            acceptedArtists?: components["schemas"]["ArtistClaims_AcceptedArtists_Multi_Relationship_Data_Document"];
-            owners?: components["schemas"]["ArtistClaims_Owners_Multi_Relationship_Data_Document"];
-            recommendedArtists?: components["schemas"]["ArtistClaims_RecommendedArtists_Multi_Relationship_Data_Document"];
+            acceptedArtists?: components["schemas"]["ArtistClaims_AcceptedArtists_Multi_Relationship_Object"];
+            owners?: components["schemas"]["ArtistClaims_Owners_Multi_Relationship_Object"];
+            recommendedArtists?: components["schemas"]["ArtistClaims_RecommendedArtists_Multi_Relationship_Object"];
         };
         ArtistClaims_Resource_Object: {
             attributes?: components["schemas"]["ArtistClaims_Attributes"];
@@ -28617,7 +28618,10 @@ export interface components {
             links: components["schemas"]["Links"];
         };
         ArtistRoles_Attributes: {
-            /** @description Name of the artist role */
+            /**
+             * @description Name of the artist role
+             * @example Producer
+             */
             name: string;
         };
         ArtistRoles_Resource_Object: {
@@ -28638,10 +28642,10 @@ export interface components {
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
+        ArtistSalesStatistics_Artist_Single_Relationship_Data_Document: components["schemas"]["ArtistSalesStatistics_Artist_Single_Relationship_Object"] & components["schemas"]["Top_Level_Included"];
         /** @description Target resource types: `artists`. */
-        ArtistSalesStatistics_Artist_Single_Relationship_Data_Document: {
+        ArtistSalesStatistics_Artist_Single_Relationship_Object: {
             data?: components["schemas"]["Resource_Identifier"] | (never | null);
-            included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
         ArtistSalesStatistics_Attributes: {
@@ -28758,8 +28762,8 @@ export interface components {
             count: number;
         };
         ArtistSalesStatistics_Relationships: {
-            artist?: components["schemas"]["ArtistSalesStatistics_Artist_Single_Relationship_Data_Document"];
-            topSellers?: components["schemas"]["ArtistSalesStatistics_TopSellers_Multi_Relationship_Data_Document"];
+            artist?: components["schemas"]["ArtistSalesStatistics_Artist_Single_Relationship_Object"];
+            topSellers?: components["schemas"]["ArtistSalesStatistics_TopSellers_Multi_Relationship_Object"];
         };
         ArtistSalesStatistics_Resource_Object: {
             attributes?: components["schemas"]["ArtistSalesStatistics_Attributes"];
@@ -28797,13 +28801,7 @@ export interface components {
              */
             merchAmount: string;
         };
-        /** @description Target resource types: `albums`, `tracks`. */
-        ArtistSalesStatistics_TopSellers_Multi_Relationship_Data_Document: {
-            data?: components["schemas"]["ArtistSalesStatistics_TopSellers_Resource_Identifier"][];
-            included?: components["schemas"]["Included"];
-            links: components["schemas"]["Links"];
-            meta?: components["schemas"]["ArtistSalesStatistics_TopSellers_Multi_Relationship_Data_Document_Meta"];
-        };
+        ArtistSalesStatistics_TopSellers_Multi_Relationship_Data_Document: components["schemas"]["ArtistSalesStatistics_TopSellers_Multi_Relationship_Object"] & components["schemas"]["Top_Level_Included"];
         /** @description status is the status of the sales statistics */
         ArtistSalesStatistics_TopSellers_Multi_Relationship_Data_Document_Meta: {
             /**
@@ -28817,6 +28815,12 @@ export interface components {
              */
             status: "OK" | "NOT_SET_UP" | "UNAVAILABLE";
         };
+        /** @description Target resource types: `albums`, `tracks`. */
+        ArtistSalesStatistics_TopSellers_Multi_Relationship_Object: {
+            data?: components["schemas"]["ArtistSalesStatistics_TopSellers_Resource_Identifier"][];
+            links: components["schemas"]["Links"];
+            meta?: components["schemas"]["ArtistSalesStatistics_TopSellers_Multi_Relationship_Data_Document_Meta"];
+        };
         ArtistSalesStatistics_TopSellers_Resource_Identifier: {
             /**
              * @description Resource id
@@ -28826,7 +28830,7 @@ export interface components {
             meta?: components["schemas"]["ArtistSalesStatistics_TopSellers_Resource_Identifier_Meta"];
             /**
              * @description Resource type
-             * @example tracks
+             * @example albums
              */
             type: string;
         };
@@ -28864,10 +28868,10 @@ export interface components {
          * @enum {string}
          */
         ArtistStatisticsWindowPeriod: "P7D" | "P28D" | "P12M";
+        ArtistStreamsStatistics_Artist_Single_Relationship_Data_Document: components["schemas"]["ArtistStreamsStatistics_Artist_Single_Relationship_Object"] & components["schemas"]["Top_Level_Included"];
         /** @description Target resource types: `artists`. */
-        ArtistStreamsStatistics_Artist_Single_Relationship_Data_Document: {
+        ArtistStreamsStatistics_Artist_Single_Relationship_Object: {
             data?: components["schemas"]["Resource_Identifier"] | (never | null);
-            included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
         ArtistStreamsStatistics_Attributes: {
@@ -28957,8 +28961,8 @@ export interface components {
             other?: components["schemas"]["ArtistStreamsStatistics_OtherPlays"];
         };
         ArtistStreamsStatistics_Relationships: {
-            artist?: components["schemas"]["ArtistStreamsStatistics_Artist_Single_Relationship_Data_Document"];
-            topTracks?: components["schemas"]["ArtistStreamsStatistics_TopTracks_Multi_Relationship_Data_Document"];
+            artist?: components["schemas"]["ArtistStreamsStatistics_Artist_Single_Relationship_Object"];
+            topTracks?: components["schemas"]["ArtistStreamsStatistics_TopTracks_Multi_Relationship_Object"];
         };
         ArtistStreamsStatistics_Resource_Object: {
             attributes?: components["schemas"]["ArtistStreamsStatistics_Attributes"];
@@ -28974,7 +28978,7 @@ export interface components {
              */
             type: "artistStreamsStatistics";
         };
-        /** @description Plays per bucket */
+        /** @description Plays and follower count per bucket */
         ArtistStreamsStatistics_Series: {
             bucketPeriod?: components["schemas"]["ArtistStatisticsBucketPeriod"];
             points: components["schemas"]["ArtistStreamsStatistics_SeriesPoint"][];
@@ -28985,6 +28989,11 @@ export interface components {
              * @description First day of the bucket
              */
             date: string;
+            /**
+             * Format: int64
+             * @description Follower count at the end of the bucket, as known when the statistics were computed. Earlier points can change between updates
+             */
+            followers?: number;
             /** Format: int64 */
             plays: number;
         };
@@ -29016,13 +29025,7 @@ export interface components {
              */
             otherListeners?: number;
         };
-        /** @description Target resource types: `tracks`. */
-        ArtistStreamsStatistics_TopTracks_Multi_Relationship_Data_Document: {
-            data?: components["schemas"]["ArtistStreamsStatistics_TopTracks_Resource_Identifier"][];
-            included?: components["schemas"]["Included"];
-            links: components["schemas"]["Links"];
-            meta?: components["schemas"]["ArtistStreamsStatistics_TopTracks_Multi_Relationship_Data_Document_Meta"];
-        };
+        ArtistStreamsStatistics_TopTracks_Multi_Relationship_Data_Document: components["schemas"]["ArtistStreamsStatistics_TopTracks_Multi_Relationship_Object"] & components["schemas"]["Top_Level_Included"];
         /** @description status is the breakdownsStatus of the statistics. When it is not OK the entries are withheld, so the empty linkage is not a measured empty result */
         ArtistStreamsStatistics_TopTracks_Multi_Relationship_Data_Document_Meta: {
             /**
@@ -29035,6 +29038,12 @@ export interface components {
              * @enum {string}
              */
             status: "OK" | "SUPPRESSED" | "UNAVAILABLE";
+        };
+        /** @description Target resource types: `tracks`. */
+        ArtistStreamsStatistics_TopTracks_Multi_Relationship_Object: {
+            data?: components["schemas"]["ArtistStreamsStatistics_TopTracks_Resource_Identifier"][];
+            links: components["schemas"]["Links"];
+            meta?: components["schemas"]["ArtistStreamsStatistics_TopTracks_Multi_Relationship_Data_Document_Meta"];
         };
         ArtistStreamsStatistics_TopTracks_Resource_Identifier: {
             /**
@@ -29166,10 +29175,10 @@ export interface components {
         ArtistsUpdateOperation_Payload_Meta: {
             dryRun?: boolean;
         };
+        Artists_Albums_Multi_Relationship_Data_Document: components["schemas"]["Artists_Albums_Multi_Relationship_Object"] & components["schemas"]["Top_Level_Included"];
         /** @description Target resource types: `albums`. */
-        Artists_Albums_Multi_Relationship_Data_Document: {
+        Artists_Albums_Multi_Relationship_Object: {
             data?: components["schemas"]["Artists_Albums_Resource_Identifier"][];
-            included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
         Artists_Albums_Resource_Identifier: {
@@ -29181,7 +29190,7 @@ export interface components {
             meta?: components["schemas"]["Artists_Albums_Resource_Identifier_Meta"];
             /**
              * @description Resource type
-             * @example tracks
+             * @example albums
              */
             type: string;
         };
@@ -29250,32 +29259,32 @@ export interface components {
              */
             spotlighted?: boolean;
         };
+        Artists_BannerArt_Multi_Relationship_Data_Document: components["schemas"]["Artists_BannerArt_Multi_Relationship_Object"] & components["schemas"]["Top_Level_Included"];
         /** @description Target resource types: `artworks`. */
-        Artists_BannerArt_Multi_Relationship_Data_Document: {
+        Artists_BannerArt_Multi_Relationship_Object: {
             data?: components["schemas"]["Resource_Identifier"][];
-            included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
+        Artists_Biography_Single_Relationship_Data_Document: components["schemas"]["Artists_Biography_Single_Relationship_Object"] & components["schemas"]["Top_Level_Included"];
         /** @description Target resource types: `artistBiographies`. */
-        Artists_Biography_Single_Relationship_Data_Document: {
+        Artists_Biography_Single_Relationship_Object: {
             data?: components["schemas"]["Resource_Identifier"] | (never | null);
-            included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
+        Artists_ClaimStatus_Single_Relationship_Data_Document: components["schemas"]["Artists_ClaimStatus_Single_Relationship_Object"] & components["schemas"]["Top_Level_Included"];
         /** @description Target resource types: `artistClaimStatuses`. */
-        Artists_ClaimStatus_Single_Relationship_Data_Document: {
+        Artists_ClaimStatus_Single_Relationship_Object: {
             data?: components["schemas"]["Resource_Identifier"] | (never | null);
-            included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
         Artists_Create_Single_Resource_Data_Document: {
             data: components["schemas"]["Artists_Resource_Object"];
             links: components["schemas"]["Links"];
         };
+        Artists_Followers_Multi_Relationship_Data_Document: components["schemas"]["Artists_Followers_Multi_Relationship_Object"] & components["schemas"]["Top_Level_Included"];
         /** @description Target resource types: `artists`. */
-        Artists_Followers_Multi_Relationship_Data_Document: {
+        Artists_Followers_Multi_Relationship_Object: {
             data?: components["schemas"]["Artists_Followers_Resource_Identifier"][];
-            included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
         Artists_Followers_Resource_Identifier: {
@@ -29287,7 +29296,7 @@ export interface components {
             meta?: components["schemas"]["Artists_Followers_Resource_Identifier_Meta"];
             /**
              * @description Resource type
-             * @example tracks
+             * @example artists
              */
             type: string;
         };
@@ -29307,10 +29316,10 @@ export interface components {
              */
             myArtistFollows: boolean;
         };
+        Artists_Following_Multi_Relationship_Data_Document: components["schemas"]["Artists_Following_Multi_Relationship_Object"] & components["schemas"]["Top_Level_Included"];
         /** @description Target resource types: `artists`. */
-        Artists_Following_Multi_Relationship_Data_Document: {
+        Artists_Following_Multi_Relationship_Object: {
             data?: components["schemas"]["Artists_Following_Resource_Identifier"][];
-            included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
         Artists_Following_Resource_Identifier: {
@@ -29322,17 +29331,17 @@ export interface components {
             meta?: components["schemas"]["Artists_Following_Resource_Identifier_Meta"];
             /**
              * @description Resource type
-             * @example tracks
+             * @example artists
              */
             type: string;
         };
         Artists_Following_Resource_Identifier_Meta: {
             viewer?: components["schemas"]["Artists_Followers_Resource_Meta_ViewerContext"];
         };
+        Artists_LogoArt_Multi_Relationship_Data_Document: components["schemas"]["Artists_LogoArt_Multi_Relationship_Object"] & components["schemas"]["Top_Level_Included"];
         /** @description Target resource types: `artworks`. */
-        Artists_LogoArt_Multi_Relationship_Data_Document: {
+        Artists_LogoArt_Multi_Relationship_Object: {
             data?: components["schemas"]["Resource_Identifier"][];
-            included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
         Artists_Multi_Resource_Data_Document: {
@@ -29340,40 +29349,40 @@ export interface components {
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
+        Artists_Owners_Multi_Relationship_Data_Document: components["schemas"]["Artists_Owners_Multi_Relationship_Object"] & components["schemas"]["Top_Level_Included"];
         /** @description Target resource types: `users`. */
-        Artists_Owners_Multi_Relationship_Data_Document: {
+        Artists_Owners_Multi_Relationship_Object: {
             data?: components["schemas"]["Resource_Identifier"][];
-            included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
+        Artists_ProfileArt_Multi_Relationship_Data_Document: components["schemas"]["Artists_ProfileArt_Multi_Relationship_Object"] & components["schemas"]["Top_Level_Included"];
         /** @description Target resource types: `artworks`. */
-        Artists_ProfileArt_Multi_Relationship_Data_Document: {
+        Artists_ProfileArt_Multi_Relationship_Object: {
             data?: components["schemas"]["Resource_Identifier"][];
-            included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
+        Artists_Radio_Multi_Relationship_Data_Document: components["schemas"]["Artists_Radio_Multi_Relationship_Object"] & components["schemas"]["Top_Level_Included"];
         /** @description Target resource types: `playlists`. */
-        Artists_Radio_Multi_Relationship_Data_Document: {
+        Artists_Radio_Multi_Relationship_Object: {
             data?: components["schemas"]["Resource_Identifier"][];
-            included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
         Artists_Relationships: {
-            albums?: components["schemas"]["Artists_Albums_Multi_Relationship_Data_Document"];
-            bannerArt?: components["schemas"]["Artists_BannerArt_Multi_Relationship_Data_Document"];
-            biography?: components["schemas"]["Artists_Biography_Single_Relationship_Data_Document"];
-            claimStatus?: components["schemas"]["Artists_ClaimStatus_Single_Relationship_Data_Document"];
-            followers?: components["schemas"]["Artists_Followers_Multi_Relationship_Data_Document"];
-            following?: components["schemas"]["Artists_Following_Multi_Relationship_Data_Document"];
-            logoArt?: components["schemas"]["Artists_LogoArt_Multi_Relationship_Data_Document"];
-            owners?: components["schemas"]["Artists_Owners_Multi_Relationship_Data_Document"];
-            profileArt?: components["schemas"]["Artists_ProfileArt_Multi_Relationship_Data_Document"];
-            radio?: components["schemas"]["Artists_Radio_Multi_Relationship_Data_Document"];
-            roles?: components["schemas"]["Artists_Roles_Multi_Relationship_Data_Document"];
-            similarArtists?: components["schemas"]["Artists_SimilarArtists_Multi_Relationship_Data_Document"];
-            trackProviders?: components["schemas"]["Artists_TrackProviders_Multi_Relationship_Data_Document"];
-            tracks?: components["schemas"]["Artists_Tracks_Multi_Relationship_Data_Document"];
-            videos?: components["schemas"]["Artists_Videos_Multi_Relationship_Data_Document"];
+            albums?: components["schemas"]["Artists_Albums_Multi_Relationship_Object"];
+            bannerArt?: components["schemas"]["Artists_BannerArt_Multi_Relationship_Object"];
+            biography?: components["schemas"]["Artists_Biography_Single_Relationship_Object"];
+            claimStatus?: components["schemas"]["Artists_ClaimStatus_Single_Relationship_Object"];
+            followers?: components["schemas"]["Artists_Followers_Multi_Relationship_Object"];
+            following?: components["schemas"]["Artists_Following_Multi_Relationship_Object"];
+            logoArt?: components["schemas"]["Artists_LogoArt_Multi_Relationship_Object"];
+            owners?: components["schemas"]["Artists_Owners_Multi_Relationship_Object"];
+            profileArt?: components["schemas"]["Artists_ProfileArt_Multi_Relationship_Object"];
+            radio?: components["schemas"]["Artists_Radio_Multi_Relationship_Object"];
+            roles?: components["schemas"]["Artists_Roles_Multi_Relationship_Object"];
+            similarArtists?: components["schemas"]["Artists_SimilarArtists_Multi_Relationship_Object"];
+            trackProviders?: components["schemas"]["Artists_TrackProviders_Multi_Relationship_Object"];
+            tracks?: components["schemas"]["Artists_Tracks_Multi_Relationship_Object"];
+            videos?: components["schemas"]["Artists_Videos_Multi_Relationship_Object"];
         };
         Artists_Resource_Object: {
             attributes?: components["schemas"]["Artists_Attributes"];
@@ -29389,16 +29398,16 @@ export interface components {
              */
             type: "artists";
         };
+        Artists_Roles_Multi_Relationship_Data_Document: components["schemas"]["Artists_Roles_Multi_Relationship_Object"] & components["schemas"]["Top_Level_Included"];
         /** @description Target resource types: `artistRoles`. */
-        Artists_Roles_Multi_Relationship_Data_Document: {
+        Artists_Roles_Multi_Relationship_Object: {
             data?: components["schemas"]["Resource_Identifier"][];
-            included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
+        Artists_SimilarArtists_Multi_Relationship_Data_Document: components["schemas"]["Artists_SimilarArtists_Multi_Relationship_Object"] & components["schemas"]["Top_Level_Included"];
         /** @description Target resource types: `artists`. */
-        Artists_SimilarArtists_Multi_Relationship_Data_Document: {
+        Artists_SimilarArtists_Multi_Relationship_Object: {
             data?: components["schemas"]["Resource_Identifier"][];
-            included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
         Artists_Single_Resource_Data_Document: {
@@ -29406,10 +29415,10 @@ export interface components {
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
+        Artists_TrackProviders_Multi_Relationship_Data_Document: components["schemas"]["Artists_TrackProviders_Multi_Relationship_Object"] & components["schemas"]["Top_Level_Included"];
         /** @description Target resource types: `providers`. */
-        Artists_TrackProviders_Multi_Relationship_Data_Document: {
+        Artists_TrackProviders_Multi_Relationship_Object: {
             data?: components["schemas"]["Artists_TrackProviders_Resource_Identifier"][];
-            included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
         Artists_TrackProviders_Resource_Identifier: {
@@ -29421,7 +29430,7 @@ export interface components {
             meta?: components["schemas"]["Artists_TrackProviders_Resource_Identifier_Meta"];
             /**
              * @description Resource type
-             * @example tracks
+             * @example providers
              */
             type: string;
         };
@@ -29433,10 +29442,10 @@ export interface components {
              */
             numberOfTracks: number;
         };
+        Artists_Tracks_Multi_Relationship_Data_Document: components["schemas"]["Artists_Tracks_Multi_Relationship_Object"] & components["schemas"]["Top_Level_Included"];
         /** @description Target resource types: `tracks`. */
-        Artists_Tracks_Multi_Relationship_Data_Document: {
+        Artists_Tracks_Multi_Relationship_Object: {
             data?: components["schemas"]["Artists_Tracks_Resource_Identifier"][];
-            included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
         Artists_Tracks_Resource_Identifier: {
@@ -29455,10 +29464,10 @@ export interface components {
         Artists_Tracks_Resource_Identifier_Meta: {
             replacement?: components["schemas"]["Replacement_Provenance"];
         };
+        Artists_Videos_Multi_Relationship_Data_Document: components["schemas"]["Artists_Videos_Multi_Relationship_Object"] & components["schemas"]["Top_Level_Included"];
         /** @description Target resource types: `videos`. */
-        Artists_Videos_Multi_Relationship_Data_Document: {
+        Artists_Videos_Multi_Relationship_Object: {
             data?: components["schemas"]["Artists_Videos_Resource_Identifier"][];
-            included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
         Artists_Videos_Resource_Identifier: {
@@ -29470,7 +29479,7 @@ export interface components {
             meta?: components["schemas"]["Artists_Videos_Resource_Identifier_Meta"];
             /**
              * @description Resource type
-             * @example tracks
+             * @example videos
              */
             type: string;
         };
@@ -29483,10 +29492,10 @@ export interface components {
             /** @enum {string} */
             type: "artworks";
         };
+        ArtworkLibraries_Artworks_Multi_Relationship_Data_Document: components["schemas"]["ArtworkLibraries_Artworks_Multi_Relationship_Object"] & components["schemas"]["Top_Level_Included"];
         /** @description Target resource types: `artworks`. */
-        ArtworkLibraries_Artworks_Multi_Relationship_Data_Document: {
+        ArtworkLibraries_Artworks_Multi_Relationship_Object: {
             data?: components["schemas"]["ArtworkLibraries_Artworks_Resource_Identifier"][];
-            included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
         ArtworkLibraries_Artworks_Resource_Identifier: {
@@ -29498,7 +29507,7 @@ export interface components {
             meta?: components["schemas"]["ArtworkLibraries_Artworks_Resource_Identifier_Meta"];
             /**
              * @description Resource type
-             * @example tracks
+             * @example artworks
              */
             type: string;
         };
@@ -29529,7 +29538,7 @@ export interface components {
             meta?: components["schemas"]["ArtworkLibraries_RandomArtwork_Resource_Identifier_Meta"];
             /**
              * @description Resource type
-             * @example tracks
+             * @example artworks
              */
             type: string;
         };
@@ -29539,15 +29548,15 @@ export interface components {
             /** @description Foreground color to use with the artwork */
             foregroundColor: string;
         };
+        ArtworkLibraries_RandomArtwork_Single_Relationship_Data_Document: components["schemas"]["ArtworkLibraries_RandomArtwork_Single_Relationship_Object"] & components["schemas"]["Top_Level_Included"];
         /** @description Target resource types: `artworks`. */
-        ArtworkLibraries_RandomArtwork_Single_Relationship_Data_Document: {
+        ArtworkLibraries_RandomArtwork_Single_Relationship_Object: {
             data?: components["schemas"]["ArtworkLibraries_RandomArtwork_Resource_Identifier"] | (never | null);
-            included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
         ArtworkLibraries_Relationships: {
-            artworks?: components["schemas"]["ArtworkLibraries_Artworks_Multi_Relationship_Data_Document"];
-            randomArtwork?: components["schemas"]["ArtworkLibraries_RandomArtwork_Single_Relationship_Data_Document"];
+            artworks?: components["schemas"]["ArtworkLibraries_Artworks_Multi_Relationship_Object"];
+            randomArtwork?: components["schemas"]["ArtworkLibraries_RandomArtwork_Single_Relationship_Object"];
         };
         ArtworkLibraries_Resource_Object: {
             attributes?: components["schemas"]["ArtworkLibraries_Attributes"];
@@ -29659,14 +29668,14 @@ export interface components {
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
+        Artworks_Owners_Multi_Relationship_Data_Document: components["schemas"]["Artworks_Owners_Multi_Relationship_Object"] & components["schemas"]["Top_Level_Included"];
         /** @description Target resource types: `users`. */
-        Artworks_Owners_Multi_Relationship_Data_Document: {
+        Artworks_Owners_Multi_Relationship_Object: {
             data?: components["schemas"]["Resource_Identifier"][];
-            included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
         Artworks_Relationships: {
-            owners?: components["schemas"]["Artworks_Owners_Multi_Relationship_Data_Document"];
+            owners?: components["schemas"]["Artworks_Owners_Multi_Relationship_Object"];
         };
         Artworks_Resource_Object: {
             attributes?: components["schemas"]["Artworks_Attributes"];
@@ -29916,14 +29925,14 @@ export interface components {
             data: components["schemas"]["ClientCertificates_Resource_Object"];
             links: components["schemas"]["Links"];
         };
+        ClientCertificates_Owners_Multi_Relationship_Data_Document: components["schemas"]["ClientCertificates_Owners_Multi_Relationship_Object"] & components["schemas"]["Top_Level_Included"];
         /** @description Target resource types: `users`. */
-        ClientCertificates_Owners_Multi_Relationship_Data_Document: {
+        ClientCertificates_Owners_Multi_Relationship_Object: {
             data?: components["schemas"]["Resource_Identifier"][];
-            included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
         ClientCertificates_Relationships: {
-            owners?: components["schemas"]["ClientCertificates_Owners_Multi_Relationship_Data_Document"];
+            owners?: components["schemas"]["ClientCertificates_Owners_Multi_Relationship_Object"];
         };
         ClientCertificates_Resource_Object: {
             attributes?: components["schemas"]["ClientCertificates_Attributes"];
@@ -29992,10 +30001,10 @@ export interface components {
             redirectUris?: string[];
             scopes?: string[];
         };
+        Clients_Certificates_Multi_Relationship_Data_Document: components["schemas"]["Clients_Certificates_Multi_Relationship_Object"] & components["schemas"]["Top_Level_Included"];
         /** @description Target resource types: `clientCertificates`. */
-        Clients_Certificates_Multi_Relationship_Data_Document: {
+        Clients_Certificates_Multi_Relationship_Object: {
             data?: components["schemas"]["Resource_Identifier"][];
-            included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
         Clients_Create_Single_Resource_Data_Document: {
@@ -30007,15 +30016,15 @@ export interface components {
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
+        Clients_Owners_Multi_Relationship_Data_Document: components["schemas"]["Clients_Owners_Multi_Relationship_Object"] & components["schemas"]["Top_Level_Included"];
         /** @description Target resource types: `users`. */
-        Clients_Owners_Multi_Relationship_Data_Document: {
+        Clients_Owners_Multi_Relationship_Object: {
             data?: components["schemas"]["Resource_Identifier"][];
-            included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
         Clients_Relationships: {
-            certificates?: components["schemas"]["Clients_Certificates_Multi_Relationship_Data_Document"];
-            owners?: components["schemas"]["Clients_Owners_Multi_Relationship_Data_Document"];
+            certificates?: components["schemas"]["Clients_Certificates_Multi_Relationship_Object"];
+            owners?: components["schemas"]["Clients_Owners_Multi_Relationship_Object"];
         };
         Clients_Resource_Object: {
             attributes?: components["schemas"]["Clients_Attributes"];
@@ -30127,15 +30136,15 @@ export interface components {
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
+        CollaborationInvites_Owners_Multi_Relationship_Data_Document: components["schemas"]["CollaborationInvites_Owners_Multi_Relationship_Object"] & components["schemas"]["Top_Level_Included"];
         /** @description Target resource types: `users`. */
-        CollaborationInvites_Owners_Multi_Relationship_Data_Document: {
+        CollaborationInvites_Owners_Multi_Relationship_Object: {
             data?: components["schemas"]["Resource_Identifier"][];
-            included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
         CollaborationInvites_Relationships: {
-            owners?: components["schemas"]["CollaborationInvites_Owners_Multi_Relationship_Data_Document"];
-            subject?: components["schemas"]["CollaborationInvites_Subject_Single_Relationship_Data_Document"];
+            owners?: components["schemas"]["CollaborationInvites_Owners_Multi_Relationship_Object"];
+            subject?: components["schemas"]["CollaborationInvites_Subject_Single_Relationship_Object"];
         };
         CollaborationInvites_Resource_Object: {
             attributes?: components["schemas"]["CollaborationInvites_Attributes"];
@@ -30156,10 +30165,10 @@ export interface components {
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
+        CollaborationInvites_Subject_Single_Relationship_Data_Document: components["schemas"]["CollaborationInvites_Subject_Single_Relationship_Object"] & components["schemas"]["Top_Level_Included"];
         /** @description Target resource types: `playlists`. */
-        CollaborationInvites_Subject_Single_Relationship_Data_Document: {
+        CollaborationInvites_Subject_Single_Relationship_Object: {
             data?: components["schemas"]["Resource_Identifier"] | (never | null);
-            included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
         CommentSummaries_Attributes: {
@@ -30175,7 +30184,7 @@ export interface components {
             links: components["schemas"]["Links"];
         };
         CommentSummaries_Relationships: {
-            subject?: components["schemas"]["CommentSummaries_Subject_Single_Relationship_Data_Document"];
+            subject?: components["schemas"]["CommentSummaries_Subject_Single_Relationship_Object"];
         };
         CommentSummaries_Resource_Object: {
             attributes?: components["schemas"]["CommentSummaries_Attributes"];
@@ -30191,10 +30200,10 @@ export interface components {
              */
             type: "commentSummaries";
         };
+        CommentSummaries_Subject_Single_Relationship_Data_Document: components["schemas"]["CommentSummaries_Subject_Single_Relationship_Object"] & components["schemas"]["Top_Level_Included"];
         /** @description Target resource types: `comments`, `trackSourceFiles`. */
-        CommentSummaries_Subject_Single_Relationship_Data_Document: {
+        CommentSummaries_Subject_Single_Relationship_Object: {
             data?: components["schemas"]["Resource_Identifier"] | (never | null);
-            included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
         CommentsCreateOperation_Payload: {
@@ -30273,16 +30282,16 @@ export interface components {
              */
             startOffset?: string;
         };
+        Comments_Author_Single_Relationship_Data_Document: components["schemas"]["Comments_Author_Single_Relationship_Object"] & components["schemas"]["Top_Level_Included"];
         /** @description Target resource types: `artists`. */
-        Comments_Author_Single_Relationship_Data_Document: {
+        Comments_Author_Single_Relationship_Object: {
             data?: components["schemas"]["Resource_Identifier"] | (never | null);
-            included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
+        Comments_CommentSummary_Single_Relationship_Data_Document: components["schemas"]["Comments_CommentSummary_Single_Relationship_Object"] & components["schemas"]["Top_Level_Included"];
         /** @description Target resource types: `commentSummaries`. */
-        Comments_CommentSummary_Single_Relationship_Data_Document: {
+        Comments_CommentSummary_Single_Relationship_Object: {
             data?: components["schemas"]["Resource_Identifier"] | (never | null);
-            included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
         Comments_Create_Single_Resource_Data_Document: {
@@ -30294,25 +30303,25 @@ export interface components {
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
+        Comments_Owners_Multi_Relationship_Data_Document: components["schemas"]["Comments_Owners_Multi_Relationship_Object"] & components["schemas"]["Top_Level_Included"];
         /** @description Target resource types: `users`. */
-        Comments_Owners_Multi_Relationship_Data_Document: {
+        Comments_Owners_Multi_Relationship_Object: {
             data?: components["schemas"]["Resource_Identifier"][];
-            included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
+        Comments_ReactionSummary_Single_Relationship_Data_Document: components["schemas"]["Comments_ReactionSummary_Single_Relationship_Object"] & components["schemas"]["Top_Level_Included"];
         /** @description Target resource types: `reactionSummaries`. */
-        Comments_ReactionSummary_Single_Relationship_Data_Document: {
+        Comments_ReactionSummary_Single_Relationship_Object: {
             data?: components["schemas"]["Resource_Identifier"] | (never | null);
-            included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
         Comments_Relationships: {
-            author?: components["schemas"]["Comments_Author_Single_Relationship_Data_Document"];
-            commentSummary?: components["schemas"]["Comments_CommentSummary_Single_Relationship_Data_Document"];
-            owners?: components["schemas"]["Comments_Owners_Multi_Relationship_Data_Document"];
-            reactionSummary?: components["schemas"]["Comments_ReactionSummary_Single_Relationship_Data_Document"];
-            rootSubject?: components["schemas"]["Comments_RootSubject_Single_Relationship_Data_Document"];
-            subject?: components["schemas"]["Comments_Subject_Single_Relationship_Data_Document"];
+            author?: components["schemas"]["Comments_Author_Single_Relationship_Object"];
+            commentSummary?: components["schemas"]["Comments_CommentSummary_Single_Relationship_Object"];
+            owners?: components["schemas"]["Comments_Owners_Multi_Relationship_Object"];
+            reactionSummary?: components["schemas"]["Comments_ReactionSummary_Single_Relationship_Object"];
+            rootSubject?: components["schemas"]["Comments_RootSubject_Single_Relationship_Object"];
+            subject?: components["schemas"]["Comments_Subject_Single_Relationship_Object"];
         };
         Comments_Resource_Object: {
             attributes?: components["schemas"]["Comments_Attributes"];
@@ -30328,10 +30337,10 @@ export interface components {
              */
             type: "comments";
         };
+        Comments_RootSubject_Single_Relationship_Data_Document: components["schemas"]["Comments_RootSubject_Single_Relationship_Object"] & components["schemas"]["Top_Level_Included"];
         /** @description Target resource types: `trackSourceFiles`. */
-        Comments_RootSubject_Single_Relationship_Data_Document: {
+        Comments_RootSubject_Single_Relationship_Object: {
             data?: components["schemas"]["Resource_Identifier"] | (never | null);
-            included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
         Comments_Single_Resource_Data_Document: {
@@ -30339,10 +30348,10 @@ export interface components {
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
+        Comments_Subject_Single_Relationship_Data_Document: components["schemas"]["Comments_Subject_Single_Relationship_Object"] & components["schemas"]["Top_Level_Included"];
         /** @description Target resource types: `comments`, `trackSourceFiles`. */
-        Comments_Subject_Single_Relationship_Data_Document: {
+        Comments_Subject_Single_Relationship_Object: {
             data?: components["schemas"]["Resource_Identifier"] | (never | null);
-            included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
         ContentClaimsCreateOperation_Payload: {
@@ -30409,23 +30418,23 @@ export interface components {
             meta?: components["schemas"]["ContentClaims_ClaimedResource_Resource_Identifier_Meta"];
             /**
              * @description Resource type
-             * @example tracks
+             * @example albums
              */
             type: string;
         };
         ContentClaims_ClaimedResource_Resource_Identifier_Meta: {
             replacement?: components["schemas"]["Replacement_Provenance"];
         };
+        ContentClaims_ClaimedResource_Single_Relationship_Data_Document: components["schemas"]["ContentClaims_ClaimedResource_Single_Relationship_Object"] & components["schemas"]["Top_Level_Included"];
         /** @description Target resource types: `albums`, `tracks`, `videos`. */
-        ContentClaims_ClaimedResource_Single_Relationship_Data_Document: {
+        ContentClaims_ClaimedResource_Single_Relationship_Object: {
             data?: components["schemas"]["ContentClaims_ClaimedResource_Resource_Identifier"] | (never | null);
-            included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
+        ContentClaims_ClaimingArtist_Single_Relationship_Data_Document: components["schemas"]["ContentClaims_ClaimingArtist_Single_Relationship_Object"] & components["schemas"]["Top_Level_Included"];
         /** @description Target resource types: `artists`. */
-        ContentClaims_ClaimingArtist_Single_Relationship_Data_Document: {
+        ContentClaims_ClaimingArtist_Single_Relationship_Object: {
             data?: components["schemas"]["Resource_Identifier"] | (never | null);
-            included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
         ContentClaims_Create_Single_Resource_Data_Document: {
@@ -30437,16 +30446,16 @@ export interface components {
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
+        ContentClaims_Owners_Multi_Relationship_Data_Document: components["schemas"]["ContentClaims_Owners_Multi_Relationship_Object"] & components["schemas"]["Top_Level_Included"];
         /** @description Target resource types: `users`. */
-        ContentClaims_Owners_Multi_Relationship_Data_Document: {
+        ContentClaims_Owners_Multi_Relationship_Object: {
             data?: components["schemas"]["Resource_Identifier"][];
-            included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
         ContentClaims_Relationships: {
-            claimedResource?: components["schemas"]["ContentClaims_ClaimedResource_Single_Relationship_Data_Document"];
-            claimingArtist?: components["schemas"]["ContentClaims_ClaimingArtist_Single_Relationship_Data_Document"];
-            owners?: components["schemas"]["ContentClaims_Owners_Multi_Relationship_Data_Document"];
+            claimedResource?: components["schemas"]["ContentClaims_ClaimedResource_Single_Relationship_Object"];
+            claimingArtist?: components["schemas"]["ContentClaims_ClaimingArtist_Single_Relationship_Object"];
+            owners?: components["schemas"]["ContentClaims_Owners_Multi_Relationship_Object"];
         };
         ContentClaims_Resource_Object: {
             attributes?: components["schemas"]["ContentClaims_Attributes"];
@@ -30471,10 +30480,10 @@ export interface components {
         Copyright: {
             text: string;
         };
+        Credits_Artist_Single_Relationship_Data_Document: components["schemas"]["Credits_Artist_Single_Relationship_Object"] & components["schemas"]["Top_Level_Included"];
         /** @description Target resource types: `artists`. */
-        Credits_Artist_Single_Relationship_Data_Document: {
+        Credits_Artist_Single_Relationship_Object: {
             data?: components["schemas"]["Resource_Identifier"] | (never | null);
-            included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
         Credits_Attributes: {
@@ -30489,15 +30498,15 @@ export interface components {
              */
             role: string;
         };
+        Credits_Category_Single_Relationship_Data_Document: components["schemas"]["Credits_Category_Single_Relationship_Object"] & components["schemas"]["Top_Level_Included"];
         /** @description Target resource types: `artistRoles`. */
-        Credits_Category_Single_Relationship_Data_Document: {
+        Credits_Category_Single_Relationship_Object: {
             data?: components["schemas"]["Resource_Identifier"] | (never | null);
-            included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
         Credits_Relationships: {
-            artist?: components["schemas"]["Credits_Artist_Single_Relationship_Data_Document"];
-            category?: components["schemas"]["Credits_Category_Single_Relationship_Data_Document"];
+            artist?: components["schemas"]["Credits_Artist_Single_Relationship_Object"];
+            category?: components["schemas"]["Credits_Category_Single_Relationship_Object"];
         };
         Credits_Resource_Object: {
             attributes?: components["schemas"]["Credits_Attributes"];
@@ -30603,14 +30612,14 @@ export interface components {
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
+        Downloads_Owners_Multi_Relationship_Data_Document: components["schemas"]["Downloads_Owners_Multi_Relationship_Object"] & components["schemas"]["Top_Level_Included"];
         /** @description Target resource types: `users`. */
-        Downloads_Owners_Multi_Relationship_Data_Document: {
+        Downloads_Owners_Multi_Relationship_Object: {
             data?: components["schemas"]["Resource_Identifier"][];
-            included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
         Downloads_Relationships: {
-            owners?: components["schemas"]["Downloads_Owners_Multi_Relationship_Data_Document"];
+            owners?: components["schemas"]["Downloads_Owners_Multi_Relationship_Object"];
         };
         Downloads_Resource_Object: {
             attributes?: components["schemas"]["Downloads_Attributes"];
@@ -30651,7 +30660,7 @@ export interface components {
             links: components["schemas"]["Links"];
         };
         DspSharingLinks_Relationships: {
-            subject?: components["schemas"]["DspSharingLinks_Subject_Single_Relationship_Data_Document"];
+            subject?: components["schemas"]["DspSharingLinks_Subject_Single_Relationship_Object"];
         };
         DspSharingLinks_Resource_Object: {
             attributes?: components["schemas"]["DspSharingLinks_Attributes"];
@@ -30676,17 +30685,17 @@ export interface components {
             meta?: components["schemas"]["DspSharingLinks_Subject_Resource_Identifier_Meta"];
             /**
              * @description Resource type
-             * @example tracks
+             * @example albums
              */
             type: string;
         };
         DspSharingLinks_Subject_Resource_Identifier_Meta: {
             replacement?: components["schemas"]["Replacement_Provenance"];
         };
+        DspSharingLinks_Subject_Single_Relationship_Data_Document: components["schemas"]["DspSharingLinks_Subject_Single_Relationship_Object"] & components["schemas"]["Top_Level_Included"];
         /** @description Target resource types: `albums`, `artists`, `tracks`. */
-        DspSharingLinks_Subject_Single_Relationship_Data_Document: {
+        DspSharingLinks_Subject_Single_Relationship_Object: {
             data?: components["schemas"]["DspSharingLinks_Subject_Resource_Identifier"] | (never | null);
-            included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
         DynamicModules_Attributes: {
@@ -30720,10 +30729,10 @@ export interface components {
              */
             viewAllLayout?: "GRID" | "LIST" | "UNKNOWN";
         };
+        DynamicModules_Items_Multi_Relationship_Data_Document: components["schemas"]["DynamicModules_Items_Multi_Relationship_Object"] & components["schemas"]["Top_Level_Included"];
         /** @description Target resource types: `albums`, `artistStreamsStatistics`, `artists`, `playlists`, `squareItems`, `studioHomeEventTiles`, `studioHomeInsightTiles`, `studioHomeMerchTiles`, `studioHomeMusicTiles`, `tracks`, `videos`. */
-        DynamicModules_Items_Multi_Relationship_Data_Document: {
+        DynamicModules_Items_Multi_Relationship_Object: {
             data?: components["schemas"]["DynamicModules_Items_Resource_Identifier"][];
-            included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
         DynamicModules_Items_Resource_Identifier: {
@@ -30735,7 +30744,7 @@ export interface components {
             meta?: components["schemas"]["DynamicModules_Items_Resource_Identifier_Meta"];
             /**
              * @description Resource type
-             * @example tracks
+             * @example albums
              */
             type: string;
         };
@@ -30748,8 +30757,8 @@ export interface components {
             links: components["schemas"]["Links"];
         };
         DynamicModules_Relationships: {
-            items?: components["schemas"]["DynamicModules_Items_Multi_Relationship_Data_Document"];
-            seedItem?: components["schemas"]["DynamicModules_SeedItem_Single_Relationship_Data_Document"];
+            items?: components["schemas"]["DynamicModules_Items_Multi_Relationship_Object"];
+            seedItem?: components["schemas"]["DynamicModules_SeedItem_Single_Relationship_Object"];
         };
         DynamicModules_Resource_Object: {
             attributes?: components["schemas"]["DynamicModules_Attributes"];
@@ -30774,17 +30783,17 @@ export interface components {
             meta?: components["schemas"]["DynamicModules_SeedItem_Resource_Identifier_Meta"];
             /**
              * @description Resource type
-             * @example tracks
+             * @example albums
              */
             type: string;
         };
         DynamicModules_SeedItem_Resource_Identifier_Meta: {
             replacement?: components["schemas"]["Replacement_Provenance"];
         };
+        DynamicModules_SeedItem_Single_Relationship_Data_Document: components["schemas"]["DynamicModules_SeedItem_Single_Relationship_Object"] & components["schemas"]["Top_Level_Included"];
         /** @description Target resource types: `albums`, `artists`. */
-        DynamicModules_SeedItem_Single_Relationship_Data_Document: {
+        DynamicModules_SeedItem_Single_Relationship_Object: {
             data?: components["schemas"]["DynamicModules_SeedItem_Resource_Identifier"] | (never | null);
-            included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
         DynamicModules_Single_Resource_Data_Document: {
@@ -30806,10 +30815,10 @@ export interface components {
              */
             reportingId: string;
         };
+        DynamicPages_Modules_Multi_Relationship_Data_Document: components["schemas"]["DynamicPages_Modules_Multi_Relationship_Object"] & components["schemas"]["Top_Level_Included"];
         /** @description Target resource types: `dynamicModules`. */
-        DynamicPages_Modules_Multi_Relationship_Data_Document: {
+        DynamicPages_Modules_Multi_Relationship_Object: {
             data?: components["schemas"]["Resource_Identifier"][];
-            included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
         DynamicPages_Multi_Resource_Data_Document: {
@@ -30818,8 +30827,8 @@ export interface components {
             links: components["schemas"]["Links"];
         };
         DynamicPages_Relationships: {
-            modules?: components["schemas"]["DynamicPages_Modules_Multi_Relationship_Data_Document"];
-            subject?: components["schemas"]["DynamicPages_Subject_Single_Relationship_Data_Document"];
+            modules?: components["schemas"]["DynamicPages_Modules_Multi_Relationship_Object"];
+            subject?: components["schemas"]["DynamicPages_Subject_Single_Relationship_Object"];
         };
         DynamicPages_Resource_Object: {
             attributes?: components["schemas"]["DynamicPages_Attributes"];
@@ -30844,17 +30853,17 @@ export interface components {
             meta?: components["schemas"]["DynamicPages_Subject_Resource_Identifier_Meta"];
             /**
              * @description Resource type
-             * @example tracks
+             * @example albums
              */
             type: string;
         };
         DynamicPages_Subject_Resource_Identifier_Meta: {
             replacement?: components["schemas"]["Replacement_Provenance"];
         };
+        DynamicPages_Subject_Single_Relationship_Data_Document: components["schemas"]["DynamicPages_Subject_Single_Relationship_Object"] & components["schemas"]["Top_Level_Included"];
         /** @description Target resource types: `albums`, `artists`, `playlists`, `tracks`, `users`, `videos`. */
-        DynamicPages_Subject_Single_Relationship_Data_Document: {
+        DynamicPages_Subject_Single_Relationship_Object: {
             data?: components["schemas"]["DynamicPages_Subject_Resource_Identifier"] | (never | null);
-            included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
         /** @description The viewer's effective role on the subject, from a grant or an implicit role such as an album's VIEWER through a grant on one of its tracks. Populated for owned albums, tracks and folders; omitted for other subjects. Share codes do not count. */
@@ -31019,10 +31028,10 @@ export interface components {
             /** @description Whether this item references a subject in another owner's tree, regardless of its current availability. */
             reference: boolean;
         };
+        FolderItems_Breadcrumb_Multi_Relationship_Data_Document: components["schemas"]["FolderItems_Breadcrumb_Multi_Relationship_Object"] & components["schemas"]["Top_Level_Included"];
         /** @description Target resource types: `folders`. */
-        FolderItems_Breadcrumb_Multi_Relationship_Data_Document: {
+        FolderItems_Breadcrumb_Multi_Relationship_Object: {
             data?: components["schemas"]["Resource_Identifier"][];
-            included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
         FolderItems_Create_Single_Resource_Data_Document: {
@@ -31034,16 +31043,16 @@ export interface components {
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
+        FolderItems_Owners_Multi_Relationship_Data_Document: components["schemas"]["FolderItems_Owners_Multi_Relationship_Object"] & components["schemas"]["Top_Level_Included"];
         /** @description Target resource types: `users`. */
-        FolderItems_Owners_Multi_Relationship_Data_Document: {
+        FolderItems_Owners_Multi_Relationship_Object: {
             data?: components["schemas"]["Resource_Identifier"][];
-            included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
+        FolderItems_Parent_Single_Relationship_Data_Document: components["schemas"]["FolderItems_Parent_Single_Relationship_Object"] & components["schemas"]["Top_Level_Included"];
         /** @description Target resource types: `folders`. */
-        FolderItems_Parent_Single_Relationship_Data_Document: {
+        FolderItems_Parent_Single_Relationship_Object: {
             data?: components["schemas"]["Resource_Identifier"] | (never | null);
-            included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
         FolderItems_Parent_Update_Resource_Identifier: {
@@ -31056,11 +31065,11 @@ export interface components {
             links: components["schemas"]["Links"];
         };
         FolderItems_Relationships: {
-            breadcrumb?: components["schemas"]["FolderItems_Breadcrumb_Multi_Relationship_Data_Document"];
-            owners?: components["schemas"]["FolderItems_Owners_Multi_Relationship_Data_Document"];
-            parent?: components["schemas"]["FolderItems_Parent_Single_Relationship_Data_Document"];
-            sharingSummary?: components["schemas"]["FolderItems_SharingSummary_Single_Relationship_Data_Document"];
-            subject?: components["schemas"]["FolderItems_Subject_Single_Relationship_Data_Document"];
+            breadcrumb?: components["schemas"]["FolderItems_Breadcrumb_Multi_Relationship_Object"];
+            owners?: components["schemas"]["FolderItems_Owners_Multi_Relationship_Object"];
+            parent?: components["schemas"]["FolderItems_Parent_Single_Relationship_Object"];
+            sharingSummary?: components["schemas"]["FolderItems_SharingSummary_Single_Relationship_Object"];
+            subject?: components["schemas"]["FolderItems_Subject_Single_Relationship_Object"];
         };
         FolderItems_Resource_Object: {
             attributes?: components["schemas"]["FolderItems_Attributes"];
@@ -31076,10 +31085,10 @@ export interface components {
              */
             type: "folderItems";
         };
+        FolderItems_SharingSummary_Single_Relationship_Data_Document: components["schemas"]["FolderItems_SharingSummary_Single_Relationship_Object"] & components["schemas"]["Top_Level_Included"];
         /** @description Target resource types: `sharingSummaries`. */
-        FolderItems_SharingSummary_Single_Relationship_Data_Document: {
+        FolderItems_SharingSummary_Single_Relationship_Object: {
             data?: components["schemas"]["Resource_Identifier"] | (never | null);
-            included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
         FolderItems_Single_Resource_Data_Document: {
@@ -31096,17 +31105,17 @@ export interface components {
             meta?: components["schemas"]["FolderItems_Subject_Resource_Identifier_Meta"];
             /**
              * @description Resource type
-             * @example tracks
+             * @example albums
              */
             type: string;
         };
         FolderItems_Subject_Resource_Identifier_Meta: {
             replacement?: components["schemas"]["Replacement_Provenance"];
         };
+        FolderItems_Subject_Single_Relationship_Data_Document: components["schemas"]["FolderItems_Subject_Single_Relationship_Object"] & components["schemas"]["Top_Level_Included"];
         /** @description Target resource types: `albums`, `folders`. */
-        FolderItems_Subject_Single_Relationship_Data_Document: {
+        FolderItems_Subject_Single_Relationship_Object: {
             data?: components["schemas"]["FolderItems_Subject_Resource_Identifier"] | (never | null);
-            included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
         FoldersCreateOperation_Payload: {
@@ -31175,11 +31184,16 @@ export interface components {
             /** @description Whether this is the root folder. */
             isRoot: boolean;
             name: string;
+            /**
+             * Format: int32
+             * @description Number of items in the folder's children relationship.
+             */
+            numberOfChildren?: number;
         };
+        Folders_Children_Multi_Relationship_Data_Document: components["schemas"]["Folders_Children_Multi_Relationship_Object"] & components["schemas"]["Top_Level_Included"];
         /** @description Target resource types: `folderItems`. */
-        Folders_Children_Multi_Relationship_Data_Document: {
+        Folders_Children_Multi_Relationship_Object: {
             data?: components["schemas"]["Resource_Identifier"][];
-            included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
         Folders_Create_Single_Resource_Data_Document: {
@@ -31191,29 +31205,29 @@ export interface components {
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
+        Folders_Owners_Multi_Relationship_Data_Document: components["schemas"]["Folders_Owners_Multi_Relationship_Object"] & components["schemas"]["Top_Level_Included"];
         /** @description Target resource types: `users`. */
-        Folders_Owners_Multi_Relationship_Data_Document: {
+        Folders_Owners_Multi_Relationship_Object: {
             data?: components["schemas"]["Resource_Identifier"][];
-            included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
+        Folders_Parent_Single_Relationship_Data_Document: components["schemas"]["Folders_Parent_Single_Relationship_Object"] & components["schemas"]["Top_Level_Included"];
         /** @description Target resource types: `folders`. */
-        Folders_Parent_Single_Relationship_Data_Document: {
+        Folders_Parent_Single_Relationship_Object: {
             data?: components["schemas"]["Resource_Identifier"] | (never | null);
-            included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
+        Folders_Preview_Multi_Relationship_Data_Document: components["schemas"]["Folders_Preview_Multi_Relationship_Object"] & components["schemas"]["Top_Level_Included"];
         /** @description Target resource types: `folderItems`. */
-        Folders_Preview_Multi_Relationship_Data_Document: {
+        Folders_Preview_Multi_Relationship_Object: {
             data?: components["schemas"]["Resource_Identifier"][];
-            included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
         Folders_Relationships: {
-            children?: components["schemas"]["Folders_Children_Multi_Relationship_Data_Document"];
-            owners?: components["schemas"]["Folders_Owners_Multi_Relationship_Data_Document"];
-            parent?: components["schemas"]["Folders_Parent_Single_Relationship_Data_Document"];
-            preview?: components["schemas"]["Folders_Preview_Multi_Relationship_Data_Document"];
+            children?: components["schemas"]["Folders_Children_Multi_Relationship_Object"];
+            owners?: components["schemas"]["Folders_Owners_Multi_Relationship_Object"];
+            parent?: components["schemas"]["Folders_Parent_Single_Relationship_Object"];
+            preview?: components["schemas"]["Folders_Preview_Multi_Relationship_Object"];
         };
         Folders_Resource_Object: {
             attributes?: components["schemas"]["Folders_Attributes"];
@@ -31379,10 +31393,10 @@ export interface components {
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
+        Installations_OfflineInventory_Multi_Relationship_Data_Document: components["schemas"]["Installations_OfflineInventory_Multi_Relationship_Object"] & components["schemas"]["Top_Level_Included"];
         /** @description Target resource types: `albums`, `playlists`, `tracks`, `userCollectionTracks`, `videos`. */
-        Installations_OfflineInventory_Multi_Relationship_Data_Document: {
+        Installations_OfflineInventory_Multi_Relationship_Object: {
             data?: components["schemas"]["Installations_OfflineInventory_Resource_Identifier"][];
-            included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
         Installations_OfflineInventory_Resource_Identifier: {
@@ -31394,7 +31408,7 @@ export interface components {
             meta?: components["schemas"]["Installations_OfflineInventory_Resource_Identifier_Meta"];
             /**
              * @description Resource type
-             * @example tracks
+             * @example albums
              */
             type: string;
         };
@@ -31403,15 +31417,15 @@ export interface components {
             addedAt: string;
             replacement?: components["schemas"]["Replacement_Provenance"];
         };
+        Installations_Owners_Multi_Relationship_Data_Document: components["schemas"]["Installations_Owners_Multi_Relationship_Object"] & components["schemas"]["Top_Level_Included"];
         /** @description Target resource types: `users`. */
-        Installations_Owners_Multi_Relationship_Data_Document: {
+        Installations_Owners_Multi_Relationship_Object: {
             data?: components["schemas"]["Resource_Identifier"][];
-            included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
         Installations_Relationships: {
-            offlineInventory?: components["schemas"]["Installations_OfflineInventory_Multi_Relationship_Data_Document"];
-            owners?: components["schemas"]["Installations_Owners_Multi_Relationship_Data_Document"];
+            offlineInventory?: components["schemas"]["Installations_OfflineInventory_Multi_Relationship_Object"];
+            owners?: components["schemas"]["Installations_Owners_Multi_Relationship_Object"];
         };
         Installations_Resource_Object: {
             attributes?: components["schemas"]["Installations_Attributes"];
@@ -31464,6 +31478,11 @@ export interface components {
             /** @description Media type hint for the linked resource */
             type?: string;
         };
+        /**
+         * @example {
+         *       "self": "/albums/251380836"
+         *     }
+         */
         Links: {
             meta?: components["schemas"]["Links_Meta"];
             /**
@@ -31546,15 +31565,15 @@ export interface components {
             data: components["schemas"]["Lyrics_Resource_Object"];
             links: components["schemas"]["Links"];
         };
+        Lyrics_Owners_Multi_Relationship_Data_Document: components["schemas"]["Lyrics_Owners_Multi_Relationship_Object"] & components["schemas"]["Top_Level_Included"];
         /** @description Target resource types: `users`. */
-        Lyrics_Owners_Multi_Relationship_Data_Document: {
+        Lyrics_Owners_Multi_Relationship_Object: {
             data?: components["schemas"]["Resource_Identifier"][];
-            included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
         Lyrics_Relationships: {
-            owners?: components["schemas"]["Lyrics_Owners_Multi_Relationship_Data_Document"];
-            track?: components["schemas"]["Lyrics_Track_Single_Relationship_Data_Document"];
+            owners?: components["schemas"]["Lyrics_Owners_Multi_Relationship_Object"];
+            track?: components["schemas"]["Lyrics_Track_Single_Relationship_Object"];
         };
         Lyrics_Resource_Object: {
             attributes?: components["schemas"]["Lyrics_Attributes"];
@@ -31591,10 +31610,10 @@ export interface components {
         Lyrics_Track_Resource_Identifier_Meta: {
             replacement?: components["schemas"]["Replacement_Provenance"];
         };
+        Lyrics_Track_Single_Relationship_Data_Document: components["schemas"]["Lyrics_Track_Single_Relationship_Object"] & components["schemas"]["Top_Level_Included"];
         /** @description Target resource types: `tracks`. */
-        Lyrics_Track_Single_Relationship_Data_Document: {
+        Lyrics_Track_Single_Relationship_Object: {
             data?: components["schemas"]["Lyrics_Track_Resource_Identifier"] | (never | null);
-            included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
         ManualArtistClaimsCreateOperation_Payload: {
@@ -31754,17 +31773,17 @@ export interface components {
             meta?: components["schemas"]["OfflineTasks_Collection_Resource_Identifier_Meta"];
             /**
              * @description Resource type
-             * @example tracks
+             * @example albums
              */
             type: string;
         };
         OfflineTasks_Collection_Resource_Identifier_Meta: {
             replacement?: components["schemas"]["Replacement_Provenance"];
         };
+        OfflineTasks_Collection_Single_Relationship_Data_Document: components["schemas"]["OfflineTasks_Collection_Single_Relationship_Object"] & components["schemas"]["Top_Level_Included"];
         /** @description Target resource types: `albums`, `playlists`, `tracks`, `userCollectionTracks`, `videos`. */
-        OfflineTasks_Collection_Single_Relationship_Data_Document: {
+        OfflineTasks_Collection_Single_Relationship_Object: {
             data?: components["schemas"]["OfflineTasks_Collection_Resource_Identifier"] | (never | null);
-            included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
         OfflineTasks_Item_Resource_Identifier: {
@@ -31776,17 +31795,17 @@ export interface components {
             meta?: components["schemas"]["OfflineTasks_Item_Resource_Identifier_Meta"];
             /**
              * @description Resource type
-             * @example tracks
+             * @example albums
              */
             type: string;
         };
         OfflineTasks_Item_Resource_Identifier_Meta: {
             replacement?: components["schemas"]["Replacement_Provenance"];
         };
+        OfflineTasks_Item_Single_Relationship_Data_Document: components["schemas"]["OfflineTasks_Item_Single_Relationship_Object"] & components["schemas"]["Top_Level_Included"];
         /** @description Target resource types: `albums`, `playlists`, `tracks`, `userCollectionTracks`, `videos`. */
-        OfflineTasks_Item_Single_Relationship_Data_Document: {
+        OfflineTasks_Item_Single_Relationship_Object: {
             data?: components["schemas"]["OfflineTasks_Item_Resource_Identifier"] | (never | null);
-            included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
         OfflineTasks_Multi_Resource_Data_Document: {
@@ -31794,16 +31813,16 @@ export interface components {
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
+        OfflineTasks_Owners_Multi_Relationship_Data_Document: components["schemas"]["OfflineTasks_Owners_Multi_Relationship_Object"] & components["schemas"]["Top_Level_Included"];
         /** @description Target resource types: `users`. */
-        OfflineTasks_Owners_Multi_Relationship_Data_Document: {
+        OfflineTasks_Owners_Multi_Relationship_Object: {
             data?: components["schemas"]["Resource_Identifier"][];
-            included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
         OfflineTasks_Relationships: {
-            collection?: components["schemas"]["OfflineTasks_Collection_Single_Relationship_Data_Document"];
-            item?: components["schemas"]["OfflineTasks_Item_Single_Relationship_Data_Document"];
-            owners?: components["schemas"]["OfflineTasks_Owners_Multi_Relationship_Data_Document"];
+            collection?: components["schemas"]["OfflineTasks_Collection_Single_Relationship_Object"];
+            item?: components["schemas"]["OfflineTasks_Item_Single_Relationship_Object"];
+            owners?: components["schemas"]["OfflineTasks_Owners_Multi_Relationship_Object"];
         };
         OfflineTasks_Resource_Object: {
             attributes?: components["schemas"]["OfflineTasks_Attributes"];
@@ -31991,10 +32010,10 @@ export interface components {
             /** @description Queue is shuffled or not */
             shuffled: boolean;
         };
+        PlayQueues_ChangeEventStream_Single_Relationship_Data_Document: components["schemas"]["PlayQueues_ChangeEventStream_Single_Relationship_Object"] & components["schemas"]["Top_Level_Included"];
         /** @description Target resource types: `changeEventStreams`. */
-        PlayQueues_ChangeEventStream_Single_Relationship_Data_Document: {
+        PlayQueues_ChangeEventStream_Single_Relationship_Object: {
             data?: components["schemas"]["Resource_Identifier"] | (never | null);
-            included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
         PlayQueues_Create_Single_Resource_Data_Document: {
@@ -32036,10 +32055,10 @@ export interface components {
             replacement?: components["schemas"]["Replacement_Provenance"];
             updatedByInstallationId?: string;
         };
+        PlayQueues_Current_Single_Relationship_Data_Document: components["schemas"]["PlayQueues_Current_Single_Relationship_Object"] & components["schemas"]["Top_Level_Included"];
         /** @description Target resource types: `tracks`, `videos`. */
-        PlayQueues_Current_Single_Relationship_Data_Document: {
+        PlayQueues_Current_Single_Relationship_Object: {
             data?: components["schemas"]["PlayQueues_Current_Resource_Identifier"] | (never | null);
-            included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
         PlayQueues_Current_Update_Resource_Identifier: {
@@ -32088,10 +32107,10 @@ export interface components {
             /** @enum {string} */
             type: "tracks" | "videos";
         };
+        PlayQueues_Future_Multi_Relationship_Data_Document: components["schemas"]["PlayQueues_Future_Multi_Relationship_Object"] & components["schemas"]["Top_Level_Included"];
         /** @description Target resource types: `tracks`, `videos`. */
-        PlayQueues_Future_Multi_Relationship_Data_Document: {
+        PlayQueues_Future_Multi_Relationship_Object: {
             data?: components["schemas"]["PlayQueues_Future_Resource_Identifier"][];
-            included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
         PlayQueues_Future_Resource_Identifier: {
@@ -32134,16 +32153,16 @@ export interface components {
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
+        PlayQueues_Owners_Multi_Relationship_Data_Document: components["schemas"]["PlayQueues_Owners_Multi_Relationship_Object"] & components["schemas"]["Top_Level_Included"];
         /** @description Target resource types: `users`. */
-        PlayQueues_Owners_Multi_Relationship_Data_Document: {
+        PlayQueues_Owners_Multi_Relationship_Object: {
             data?: components["schemas"]["Resource_Identifier"][];
-            included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
+        PlayQueues_Past_Multi_Relationship_Data_Document: components["schemas"]["PlayQueues_Past_Multi_Relationship_Object"] & components["schemas"]["Top_Level_Included"];
         /** @description Target resource types: `tracks`, `videos`. */
-        PlayQueues_Past_Multi_Relationship_Data_Document: {
+        PlayQueues_Past_Multi_Relationship_Object: {
             data?: components["schemas"]["PlayQueues_Past_Resource_Identifier"][];
-            included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
         PlayQueues_Past_Resource_Identifier: {
@@ -32167,11 +32186,11 @@ export interface components {
             replacement?: components["schemas"]["Replacement_Provenance"];
         };
         PlayQueues_Relationships: {
-            changeEventStream?: components["schemas"]["PlayQueues_ChangeEventStream_Single_Relationship_Data_Document"];
-            current?: components["schemas"]["PlayQueues_Current_Single_Relationship_Data_Document"];
-            future?: components["schemas"]["PlayQueues_Future_Multi_Relationship_Data_Document"];
-            owners?: components["schemas"]["PlayQueues_Owners_Multi_Relationship_Data_Document"];
-            past?: components["schemas"]["PlayQueues_Past_Multi_Relationship_Data_Document"];
+            changeEventStream?: components["schemas"]["PlayQueues_ChangeEventStream_Single_Relationship_Object"];
+            current?: components["schemas"]["PlayQueues_Current_Single_Relationship_Object"];
+            future?: components["schemas"]["PlayQueues_Future_Multi_Relationship_Object"];
+            owners?: components["schemas"]["PlayQueues_Owners_Multi_Relationship_Object"];
+            past?: components["schemas"]["PlayQueues_Past_Multi_Relationship_Object"];
         };
         PlayQueues_Resource_Object: {
             attributes?: components["schemas"]["PlayQueues_Attributes"];
@@ -32311,14 +32330,14 @@ export interface components {
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
+        PlaylistGenerationSchedules_Playlist_Single_Relationship_Data_Document: components["schemas"]["PlaylistGenerationSchedules_Playlist_Single_Relationship_Object"] & components["schemas"]["Top_Level_Included"];
         /** @description Target resource types: `playlists`. */
-        PlaylistGenerationSchedules_Playlist_Single_Relationship_Data_Document: {
+        PlaylistGenerationSchedules_Playlist_Single_Relationship_Object: {
             data?: components["schemas"]["Resource_Identifier"] | (never | null);
-            included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
         PlaylistGenerationSchedules_Relationships: {
-            playlist?: components["schemas"]["PlaylistGenerationSchedules_Playlist_Single_Relationship_Data_Document"];
+            playlist?: components["schemas"]["PlaylistGenerationSchedules_Playlist_Single_Relationship_Object"];
         };
         PlaylistGenerationSchedules_Resource_Object: {
             attributes?: components["schemas"]["PlaylistGenerationSchedules_Attributes"];
@@ -32494,10 +32513,10 @@ export interface components {
              */
             status: "PENDING" | "PROCESSING" | "ERROR" | "OK";
         };
+        PlaylistGenerations_BaseGeneration_Single_Relationship_Data_Document: components["schemas"]["PlaylistGenerations_BaseGeneration_Single_Relationship_Object"] & components["schemas"]["Top_Level_Included"];
         /** @description Target resource types: `playlistGenerations`. */
-        PlaylistGenerations_BaseGeneration_Single_Relationship_Data_Document: {
+        PlaylistGenerations_BaseGeneration_Single_Relationship_Object: {
             data?: components["schemas"]["Resource_Identifier"] | (never | null);
-            included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
         PlaylistGenerations_Create_Single_Resource_Data_Document: {
@@ -32509,16 +32528,16 @@ export interface components {
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
+        PlaylistGenerations_Playlist_Single_Relationship_Data_Document: components["schemas"]["PlaylistGenerations_Playlist_Single_Relationship_Object"] & components["schemas"]["Top_Level_Included"];
         /** @description Target resource types: `playlists`. */
-        PlaylistGenerations_Playlist_Single_Relationship_Data_Document: {
+        PlaylistGenerations_Playlist_Single_Relationship_Object: {
             data?: components["schemas"]["Resource_Identifier"] | (never | null);
-            included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
         PlaylistGenerations_Relationships: {
-            baseGeneration?: components["schemas"]["PlaylistGenerations_BaseGeneration_Single_Relationship_Data_Document"];
-            playlist?: components["schemas"]["PlaylistGenerations_Playlist_Single_Relationship_Data_Document"];
-            trackPreferences?: components["schemas"]["PlaylistGenerations_TrackPreferences_Multi_Relationship_Data_Document"];
+            baseGeneration?: components["schemas"]["PlaylistGenerations_BaseGeneration_Single_Relationship_Object"];
+            playlist?: components["schemas"]["PlaylistGenerations_Playlist_Single_Relationship_Object"];
+            trackPreferences?: components["schemas"]["PlaylistGenerations_TrackPreferences_Multi_Relationship_Object"];
         };
         PlaylistGenerations_Resource_Object: {
             attributes?: components["schemas"]["PlaylistGenerations_Attributes"];
@@ -32558,16 +32577,16 @@ export interface components {
             /** @enum {string} */
             preference: "KEEP" | "REMOVE" | "MORE_LIKE_THIS" | "UNKNOWN";
         };
-        /** @description Target resource types: `tracks`. */
-        PlaylistGenerations_TrackPreferences_Multi_Relationship_Data_Document: {
-            data?: components["schemas"]["PlaylistGenerations_TrackPreferences_Resource_Identifier"][];
-            included?: components["schemas"]["Included"];
-            links: components["schemas"]["Links"];
-            meta?: components["schemas"]["PlaylistGenerations_TrackPreferences_Multi_Relationship_Data_Document_Meta"];
-        };
+        PlaylistGenerations_TrackPreferences_Multi_Relationship_Data_Document: components["schemas"]["PlaylistGenerations_TrackPreferences_Multi_Relationship_Object"] & components["schemas"]["Top_Level_Included"];
         PlaylistGenerations_TrackPreferences_Multi_Relationship_Data_Document_Meta: {
             /** Format: int32 */
             preferenceVersion: number;
+        };
+        /** @description Target resource types: `tracks`. */
+        PlaylistGenerations_TrackPreferences_Multi_Relationship_Object: {
+            data?: components["schemas"]["PlaylistGenerations_TrackPreferences_Resource_Identifier"][];
+            links: components["schemas"]["Links"];
+            meta?: components["schemas"]["PlaylistGenerations_TrackPreferences_Multi_Relationship_Data_Document_Meta"];
         };
         PlaylistGenerations_TrackPreferences_Resource_Identifier: {
             /**
@@ -32647,7 +32666,9 @@ export interface components {
             accessType?: "PUBLIC" | "UNLISTED";
             /** Format: date-time */
             createdAt?: string;
+            /** @example Songs for the long drive */
             description?: string;
+            /** @example Road trip */
             name: string;
         };
         PlaylistsItemsAddMultiDataRelationshipWithResponse409ResponseBody: {
@@ -32755,7 +32776,9 @@ export interface components {
              * @enum {string}
              */
             accessType?: "PUBLIC" | "UNLISTED";
+            /** @example Songs for the long drive */
             description?: string;
+            /** @example Road trip */
             name?: string;
         };
         Playlists_Attributes: {
@@ -32772,7 +32795,10 @@ export interface components {
              * @description Datetime of playlist creation (ISO 8601)
              */
             createdAt: string;
-            /** @description Playlist description */
+            /**
+             * @description Playlist description
+             * @example Songs for the long drive
+             */
             description?: string;
             /**
              * @description Duration of playlist (ISO 8601)
@@ -32787,7 +32813,10 @@ export interface components {
              * @description Datetime of last modification of the playlist (ISO 8601)
              */
             lastModifiedAt: string;
-            /** @description Playlist name */
+            /**
+             * @description Playlist name
+             * @example Road trip
+             */
             name: string;
             /**
              * Format: int32
@@ -32815,32 +32844,32 @@ export interface components {
              */
             playlistType: "EDITORIAL" | "USER" | "MIX" | "ARTIST";
         };
+        Playlists_CollaboratorProfiles_Multi_Relationship_Data_Document: components["schemas"]["Playlists_CollaboratorProfiles_Multi_Relationship_Object"] & components["schemas"]["Top_Level_Included"];
         /** @description Target resource types: `artists`. */
-        Playlists_CollaboratorProfiles_Multi_Relationship_Data_Document: {
+        Playlists_CollaboratorProfiles_Multi_Relationship_Object: {
             data?: components["schemas"]["Resource_Identifier"][];
-            included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
+        Playlists_Collaborators_Multi_Relationship_Data_Document: components["schemas"]["Playlists_Collaborators_Multi_Relationship_Object"] & components["schemas"]["Top_Level_Included"];
         /** @description Target resource types: `users`. */
-        Playlists_Collaborators_Multi_Relationship_Data_Document: {
+        Playlists_Collaborators_Multi_Relationship_Object: {
             data?: components["schemas"]["Resource_Identifier"][];
-            included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
+        Playlists_CoverArt_Multi_Relationship_Data_Document: components["schemas"]["Playlists_CoverArt_Multi_Relationship_Object"] & components["schemas"]["Top_Level_Included"];
         /** @description Target resource types: `artworks`. */
-        Playlists_CoverArt_Multi_Relationship_Data_Document: {
+        Playlists_CoverArt_Multi_Relationship_Object: {
             data?: components["schemas"]["Resource_Identifier"][];
-            included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
         Playlists_Create_Single_Resource_Data_Document: {
             data: components["schemas"]["Playlists_Resource_Object"];
             links: components["schemas"]["Links"];
         };
+        Playlists_Curators_Multi_Relationship_Data_Document: components["schemas"]["Playlists_Curators_Multi_Relationship_Object"] & components["schemas"]["Top_Level_Included"];
         /** @description Target resource types: `artists`. */
-        Playlists_Curators_Multi_Relationship_Data_Document: {
+        Playlists_Curators_Multi_Relationship_Object: {
             data?: components["schemas"]["Resource_Identifier"][];
-            included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
         Playlists_Items_Add_Multi_Relationship_Data_Document: {
@@ -32862,10 +32891,10 @@ export interface components {
             addedAt: string;
             itemId: string;
         };
+        Playlists_Items_Multi_Relationship_Data_Document: components["schemas"]["Playlists_Items_Multi_Relationship_Object"] & components["schemas"]["Top_Level_Included"];
         /** @description Target resource types: `tracks`, `videos`. */
-        Playlists_Items_Multi_Relationship_Data_Document: {
+        Playlists_Items_Multi_Relationship_Object: {
             data?: components["schemas"]["Playlists_Items_Resource_Identifier"][];
-            included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
         Playlists_Items_Resource_Identifier: {
@@ -32892,29 +32921,29 @@ export interface components {
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
+        Playlists_OwnerProfiles_Multi_Relationship_Data_Document: components["schemas"]["Playlists_OwnerProfiles_Multi_Relationship_Object"] & components["schemas"]["Top_Level_Included"];
         /** @description Target resource types: `artists`. */
-        Playlists_OwnerProfiles_Multi_Relationship_Data_Document: {
+        Playlists_OwnerProfiles_Multi_Relationship_Object: {
             data?: components["schemas"]["Resource_Identifier"][];
-            included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
+        Playlists_Owners_Multi_Relationship_Data_Document: components["schemas"]["Playlists_Owners_Multi_Relationship_Object"] & components["schemas"]["Top_Level_Included"];
         /** @description Target resource types: `users`. */
-        Playlists_Owners_Multi_Relationship_Data_Document: {
+        Playlists_Owners_Multi_Relationship_Object: {
             data?: components["schemas"]["Resource_Identifier"][];
-            included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
         Playlists_Relationships: {
             /** @deprecated */
-            collaboratorProfiles?: components["schemas"]["Playlists_CollaboratorProfiles_Multi_Relationship_Data_Document"];
-            collaborators?: components["schemas"]["Playlists_Collaborators_Multi_Relationship_Data_Document"];
-            coverArt?: components["schemas"]["Playlists_CoverArt_Multi_Relationship_Data_Document"];
-            curators?: components["schemas"]["Playlists_Curators_Multi_Relationship_Data_Document"];
-            items?: components["schemas"]["Playlists_Items_Multi_Relationship_Data_Document"];
+            collaboratorProfiles?: components["schemas"]["Playlists_CollaboratorProfiles_Multi_Relationship_Object"];
+            collaborators?: components["schemas"]["Playlists_Collaborators_Multi_Relationship_Object"];
+            coverArt?: components["schemas"]["Playlists_CoverArt_Multi_Relationship_Object"];
+            curators?: components["schemas"]["Playlists_Curators_Multi_Relationship_Object"];
+            items?: components["schemas"]["Playlists_Items_Multi_Relationship_Object"];
             /** @deprecated */
-            ownerProfiles?: components["schemas"]["Playlists_OwnerProfiles_Multi_Relationship_Data_Document"];
-            owners?: components["schemas"]["Playlists_Owners_Multi_Relationship_Data_Document"];
-            suggestedCoverArts?: components["schemas"]["Playlists_SuggestedCoverArts_Multi_Relationship_Data_Document"];
+            ownerProfiles?: components["schemas"]["Playlists_OwnerProfiles_Multi_Relationship_Object"];
+            owners?: components["schemas"]["Playlists_Owners_Multi_Relationship_Object"];
+            suggestedCoverArts?: components["schemas"]["Playlists_SuggestedCoverArts_Multi_Relationship_Object"];
         };
         Playlists_Resource_Object: {
             attributes?: components["schemas"]["Playlists_Attributes"];
@@ -32935,10 +32964,10 @@ export interface components {
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
+        Playlists_SuggestedCoverArts_Multi_Relationship_Data_Document: components["schemas"]["Playlists_SuggestedCoverArts_Multi_Relationship_Object"] & components["schemas"]["Top_Level_Included"];
         /** @description Target resource types: `artworks`. */
-        Playlists_SuggestedCoverArts_Multi_Relationship_Data_Document: {
+        Playlists_SuggestedCoverArts_Multi_Relationship_Object: {
             data?: components["schemas"]["Playlists_SuggestedCoverArts_Resource_Identifier"][];
-            included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
         Playlists_SuggestedCoverArts_Resource_Identifier: {
@@ -32950,7 +32979,7 @@ export interface components {
             meta?: components["schemas"]["Playlists_SuggestedCoverArts_Resource_Identifier_Meta"];
             /**
              * @description Resource type
-             * @example tracks
+             * @example artworks
              */
             type: string;
         };
@@ -33044,21 +33073,21 @@ export interface components {
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
+        ProviderOwners_Owners_Multi_Relationship_Data_Document: components["schemas"]["ProviderOwners_Owners_Multi_Relationship_Object"] & components["schemas"]["Top_Level_Included"];
         /** @description Target resource types: `users`. */
-        ProviderOwners_Owners_Multi_Relationship_Data_Document: {
+        ProviderOwners_Owners_Multi_Relationship_Object: {
             data?: components["schemas"]["Resource_Identifier"][];
-            included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
+        ProviderOwners_Provider_Single_Relationship_Data_Document: components["schemas"]["ProviderOwners_Provider_Single_Relationship_Object"] & components["schemas"]["Top_Level_Included"];
         /** @description Target resource types: `providers`. */
-        ProviderOwners_Provider_Single_Relationship_Data_Document: {
+        ProviderOwners_Provider_Single_Relationship_Object: {
             data?: components["schemas"]["Resource_Identifier"] | (never | null);
-            included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
         ProviderOwners_Relationships: {
-            owners?: components["schemas"]["ProviderOwners_Owners_Multi_Relationship_Data_Document"];
-            provider?: components["schemas"]["ProviderOwners_Provider_Single_Relationship_Data_Document"];
+            owners?: components["schemas"]["ProviderOwners_Owners_Multi_Relationship_Object"];
+            provider?: components["schemas"]["ProviderOwners_Provider_Single_Relationship_Object"];
         };
         ProviderOwners_Resource_Object: {
             attributes?: components["schemas"]["ProviderOwners_Attributes"];
@@ -33087,15 +33116,15 @@ export interface components {
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
+        ProviderProductInfos_Provider_Single_Relationship_Data_Document: components["schemas"]["ProviderProductInfos_Provider_Single_Relationship_Object"] & components["schemas"]["Top_Level_Included"];
         /** @description Target resource types: `providers`. */
-        ProviderProductInfos_Provider_Single_Relationship_Data_Document: {
+        ProviderProductInfos_Provider_Single_Relationship_Object: {
             data?: components["schemas"]["Resource_Identifier"] | (never | null);
-            included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
         ProviderProductInfos_Relationships: {
-            provider?: components["schemas"]["ProviderProductInfos_Provider_Single_Relationship_Data_Document"];
-            subject?: components["schemas"]["ProviderProductInfos_Subject_Single_Relationship_Data_Document"];
+            provider?: components["schemas"]["ProviderProductInfos_Provider_Single_Relationship_Object"];
+            subject?: components["schemas"]["ProviderProductInfos_Subject_Single_Relationship_Object"];
         };
         ProviderProductInfos_Resource_Object: {
             attributes?: components["schemas"]["ProviderProductInfos_Attributes"];
@@ -33120,17 +33149,17 @@ export interface components {
             meta?: components["schemas"]["ProviderProductInfos_Subject_Resource_Identifier_Meta"];
             /**
              * @description Resource type
-             * @example tracks
+             * @example albums
              */
             type: string;
         };
         ProviderProductInfos_Subject_Resource_Identifier_Meta: {
             replacement?: components["schemas"]["Replacement_Provenance"];
         };
+        ProviderProductInfos_Subject_Single_Relationship_Data_Document: components["schemas"]["ProviderProductInfos_Subject_Single_Relationship_Object"] & components["schemas"]["Top_Level_Included"];
         /** @description Target resource types: `albums`, `videos`. */
-        ProviderProductInfos_Subject_Single_Relationship_Data_Document: {
+        ProviderProductInfos_Subject_Single_Relationship_Object: {
             data?: components["schemas"]["ProviderProductInfos_Subject_Resource_Identifier"] | (never | null);
-            included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
         Providers_Attributes: {
@@ -33177,15 +33206,15 @@ export interface components {
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
+        Purchases_Owners_Multi_Relationship_Data_Document: components["schemas"]["Purchases_Owners_Multi_Relationship_Object"] & components["schemas"]["Top_Level_Included"];
         /** @description Target resource types: `users`. */
-        Purchases_Owners_Multi_Relationship_Data_Document: {
+        Purchases_Owners_Multi_Relationship_Object: {
             data?: components["schemas"]["Resource_Identifier"][];
-            included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
         Purchases_Relationships: {
-            owners?: components["schemas"]["Purchases_Owners_Multi_Relationship_Data_Document"];
-            subject?: components["schemas"]["Purchases_Subject_Single_Relationship_Data_Document"];
+            owners?: components["schemas"]["Purchases_Owners_Multi_Relationship_Object"];
+            subject?: components["schemas"]["Purchases_Subject_Single_Relationship_Object"];
         };
         Purchases_Resource_Object: {
             attributes?: components["schemas"]["Purchases_Attributes"];
@@ -33210,17 +33239,17 @@ export interface components {
             meta?: components["schemas"]["Purchases_Subject_Resource_Identifier_Meta"];
             /**
              * @description Resource type
-             * @example tracks
+             * @example albums
              */
             type: string;
         };
         Purchases_Subject_Resource_Identifier_Meta: {
             replacement?: components["schemas"]["Replacement_Provenance"];
         };
+        Purchases_Subject_Single_Relationship_Data_Document: components["schemas"]["Purchases_Subject_Single_Relationship_Object"] & components["schemas"]["Top_Level_Included"];
         /** @description Target resource types: `albums`, `tracks`. */
-        Purchases_Subject_Single_Relationship_Data_Document: {
+        Purchases_Subject_Single_Relationship_Object: {
             data?: components["schemas"]["Purchases_Subject_Resource_Identifier"] | (never | null);
-            included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
         ReactionSummaries_Attributes: {
@@ -33240,7 +33269,7 @@ export interface components {
             links: components["schemas"]["Links"];
         };
         ReactionSummaries_Relationships: {
-            subject?: components["schemas"]["ReactionSummaries_Subject_Single_Relationship_Data_Document"];
+            subject?: components["schemas"]["ReactionSummaries_Subject_Single_Relationship_Object"];
         };
         ReactionSummaries_Resource_Object: {
             attributes?: components["schemas"]["ReactionSummaries_Attributes"];
@@ -33256,10 +33285,10 @@ export interface components {
              */
             type: "reactionSummaries";
         };
+        ReactionSummaries_Subject_Single_Relationship_Data_Document: components["schemas"]["ReactionSummaries_Subject_Single_Relationship_Object"] & components["schemas"]["Top_Level_Included"];
         /** @description Target resource types: `comments`, `trackSourceFiles`. */
-        ReactionSummaries_Subject_Single_Relationship_Data_Document: {
+        ReactionSummaries_Subject_Single_Relationship_Object: {
             data?: components["schemas"]["Resource_Identifier"] | (never | null);
-            included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
         ReactionsCreateOperation_Payload: {
@@ -33315,10 +33344,10 @@ export interface components {
              */
             startOffset?: string;
         };
+        Reactions_Author_Single_Relationship_Data_Document: components["schemas"]["Reactions_Author_Single_Relationship_Object"] & components["schemas"]["Top_Level_Included"];
         /** @description Target resource types: `artists`. */
-        Reactions_Author_Single_Relationship_Data_Document: {
+        Reactions_Author_Single_Relationship_Object: {
             data?: components["schemas"]["Resource_Identifier"] | (never | null);
-            included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
         Reactions_Create_Single_Resource_Data_Document: {
@@ -33330,16 +33359,16 @@ export interface components {
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
+        Reactions_Owners_Multi_Relationship_Data_Document: components["schemas"]["Reactions_Owners_Multi_Relationship_Object"] & components["schemas"]["Top_Level_Included"];
         /** @description Target resource types: `users`. */
-        Reactions_Owners_Multi_Relationship_Data_Document: {
+        Reactions_Owners_Multi_Relationship_Object: {
             data?: components["schemas"]["Resource_Identifier"][];
-            included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
         Reactions_Relationships: {
-            author?: components["schemas"]["Reactions_Author_Single_Relationship_Data_Document"];
-            owners?: components["schemas"]["Reactions_Owners_Multi_Relationship_Data_Document"];
-            subject?: components["schemas"]["Reactions_Subject_Single_Relationship_Data_Document"];
+            author?: components["schemas"]["Reactions_Author_Single_Relationship_Object"];
+            owners?: components["schemas"]["Reactions_Owners_Multi_Relationship_Object"];
+            subject?: components["schemas"]["Reactions_Subject_Single_Relationship_Object"];
         };
         Reactions_Resource_Object: {
             attributes?: components["schemas"]["Reactions_Attributes"];
@@ -33355,10 +33384,10 @@ export interface components {
              */
             type: "reactions";
         };
+        Reactions_Subject_Single_Relationship_Data_Document: components["schemas"]["Reactions_Subject_Single_Relationship_Object"] & components["schemas"]["Top_Level_Included"];
         /** @description Target resource types: `comments`, `trackSourceFiles`. */
-        Reactions_Subject_Single_Relationship_Data_Document: {
+        Reactions_Subject_Single_Relationship_Object: {
             data?: components["schemas"]["Resource_Identifier"] | (never | null);
-            included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
         /** @description Relationship identifier before contextual replacement projection. */
@@ -33482,22 +33511,22 @@ export interface components {
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
+        ResourceGrantInvitations_Owners_Multi_Relationship_Data_Document: components["schemas"]["ResourceGrantInvitations_Owners_Multi_Relationship_Object"] & components["schemas"]["Top_Level_Included"];
         /** @description Target resource types: `users`. */
-        ResourceGrantInvitations_Owners_Multi_Relationship_Data_Document: {
+        ResourceGrantInvitations_Owners_Multi_Relationship_Object: {
             data?: components["schemas"]["Resource_Identifier"][];
-            included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
+        ResourceGrantInvitations_PreviewGrant_Single_Relationship_Data_Document: components["schemas"]["ResourceGrantInvitations_PreviewGrant_Single_Relationship_Object"] & components["schemas"]["Top_Level_Included"];
         /** @description Target resource types: `resourceGrants`. */
-        ResourceGrantInvitations_PreviewGrant_Single_Relationship_Data_Document: {
+        ResourceGrantInvitations_PreviewGrant_Single_Relationship_Object: {
             data?: components["schemas"]["Resource_Identifier"] | (never | null);
-            included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
         ResourceGrantInvitations_Relationships: {
-            owners?: components["schemas"]["ResourceGrantInvitations_Owners_Multi_Relationship_Data_Document"];
-            previewGrant?: components["schemas"]["ResourceGrantInvitations_PreviewGrant_Single_Relationship_Data_Document"];
-            subject?: components["schemas"]["ResourceGrantInvitations_Subject_Single_Relationship_Data_Document"];
+            owners?: components["schemas"]["ResourceGrantInvitations_Owners_Multi_Relationship_Object"];
+            previewGrant?: components["schemas"]["ResourceGrantInvitations_PreviewGrant_Single_Relationship_Object"];
+            subject?: components["schemas"]["ResourceGrantInvitations_Subject_Single_Relationship_Object"];
         };
         ResourceGrantInvitations_Resource_Object: {
             attributes?: components["schemas"]["ResourceGrantInvitations_Attributes"];
@@ -33527,17 +33556,17 @@ export interface components {
             meta?: components["schemas"]["ResourceGrantInvitations_Subject_Resource_Identifier_Meta"];
             /**
              * @description Resource type
-             * @example tracks
+             * @example albums
              */
             type: string;
         };
         ResourceGrantInvitations_Subject_Resource_Identifier_Meta: {
             replacement?: components["schemas"]["Replacement_Provenance"];
         };
+        ResourceGrantInvitations_Subject_Single_Relationship_Data_Document: components["schemas"]["ResourceGrantInvitations_Subject_Single_Relationship_Object"] & components["schemas"]["Top_Level_Included"];
         /** @description Target resource types: `albums`, `folders`, `playlists`, `tracks`. */
-        ResourceGrantInvitations_Subject_Single_Relationship_Data_Document: {
+        ResourceGrantInvitations_Subject_Single_Relationship_Object: {
             data?: components["schemas"]["ResourceGrantInvitations_Subject_Resource_Identifier"] | (never | null);
-            included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
         ResourceGrantInvitations_Update_Single_Resource_Data_Document: {
@@ -33652,16 +33681,16 @@ export interface components {
             data: components["schemas"]["ResourceGrants_Resource_Object"];
             links: components["schemas"]["Links"];
         };
+        ResourceGrants_Grantee_Single_Relationship_Data_Document: components["schemas"]["ResourceGrants_Grantee_Single_Relationship_Object"] & components["schemas"]["Top_Level_Included"];
         /** @description Target resource types: `groups`, `users`. */
-        ResourceGrants_Grantee_Single_Relationship_Data_Document: {
+        ResourceGrants_Grantee_Single_Relationship_Object: {
             data?: components["schemas"]["Resource_Identifier"] | (never | null);
-            included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
+        ResourceGrants_Invitation_Single_Relationship_Data_Document: components["schemas"]["ResourceGrants_Invitation_Single_Relationship_Object"] & components["schemas"]["Top_Level_Included"];
         /** @description Target resource types: `resourceGrantInvitations`. */
-        ResourceGrants_Invitation_Single_Relationship_Data_Document: {
+        ResourceGrants_Invitation_Single_Relationship_Object: {
             data?: components["schemas"]["Resource_Identifier"] | (never | null);
-            included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
         ResourceGrants_Multi_Resource_Data_Document: {
@@ -33670,9 +33699,9 @@ export interface components {
             links: components["schemas"]["Links"];
         };
         ResourceGrants_Relationships: {
-            grantee?: components["schemas"]["ResourceGrants_Grantee_Single_Relationship_Data_Document"];
-            invitation?: components["schemas"]["ResourceGrants_Invitation_Single_Relationship_Data_Document"];
-            subject?: components["schemas"]["ResourceGrants_Subject_Single_Relationship_Data_Document"];
+            grantee?: components["schemas"]["ResourceGrants_Grantee_Single_Relationship_Object"];
+            invitation?: components["schemas"]["ResourceGrants_Invitation_Single_Relationship_Object"];
+            subject?: components["schemas"]["ResourceGrants_Subject_Single_Relationship_Object"];
         };
         ResourceGrants_Resource_Object: {
             attributes?: components["schemas"]["ResourceGrants_Attributes"];
@@ -33702,17 +33731,17 @@ export interface components {
             meta?: components["schemas"]["ResourceGrants_Subject_Resource_Identifier_Meta"];
             /**
              * @description Resource type
-             * @example tracks
+             * @example albums
              */
             type: string;
         };
         ResourceGrants_Subject_Resource_Identifier_Meta: {
             replacement?: components["schemas"]["Replacement_Provenance"];
         };
+        ResourceGrants_Subject_Single_Relationship_Data_Document: components["schemas"]["ResourceGrants_Subject_Single_Relationship_Object"] & components["schemas"]["Top_Level_Included"];
         /** @description Target resource types: `albums`, `folders`, `playlists`, `tracks`. */
-        ResourceGrants_Subject_Single_Relationship_Data_Document: {
+        ResourceGrants_Subject_Single_Relationship_Object: {
             data?: components["schemas"]["ResourceGrants_Subject_Resource_Identifier"] | (never | null);
-            included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
         ResourceGrants_Update_Single_Resource_Data_Document: {
@@ -33881,10 +33910,10 @@ export interface components {
              */
             type: "searchHistoryEntries";
         };
+        SearchResults_Albums_Multi_Relationship_Data_Document: components["schemas"]["SearchResults_Albums_Multi_Relationship_Object"] & components["schemas"]["Top_Level_Included"];
         /** @description Target resource types: `albums`. */
-        SearchResults_Albums_Multi_Relationship_Data_Document: {
+        SearchResults_Albums_Multi_Relationship_Object: {
             data?: components["schemas"]["SearchResults_Albums_Resource_Identifier"][];
-            included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
         SearchResults_Albums_Resource_Identifier: {
@@ -33896,17 +33925,17 @@ export interface components {
             meta?: components["schemas"]["SearchResults_Albums_Resource_Identifier_Meta"];
             /**
              * @description Resource type
-             * @example tracks
+             * @example albums
              */
             type: string;
         };
         SearchResults_Albums_Resource_Identifier_Meta: {
             replacement?: components["schemas"]["Replacement_Provenance"];
         };
+        SearchResults_Artists_Multi_Relationship_Data_Document: components["schemas"]["SearchResults_Artists_Multi_Relationship_Object"] & components["schemas"]["Top_Level_Included"];
         /** @description Target resource types: `artists`. */
-        SearchResults_Artists_Multi_Relationship_Data_Document: {
+        SearchResults_Artists_Multi_Relationship_Object: {
             data?: components["schemas"]["Resource_Identifier"][];
-            included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
         SearchResults_Attributes: {
@@ -33931,19 +33960,19 @@ export interface components {
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
+        SearchResults_Playlists_Multi_Relationship_Data_Document: components["schemas"]["SearchResults_Playlists_Multi_Relationship_Object"] & components["schemas"]["Top_Level_Included"];
         /** @description Target resource types: `playlists`. */
-        SearchResults_Playlists_Multi_Relationship_Data_Document: {
+        SearchResults_Playlists_Multi_Relationship_Object: {
             data?: components["schemas"]["Resource_Identifier"][];
-            included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
         SearchResults_Relationships: {
-            albums?: components["schemas"]["SearchResults_Albums_Multi_Relationship_Data_Document"];
-            artists?: components["schemas"]["SearchResults_Artists_Multi_Relationship_Data_Document"];
-            playlists?: components["schemas"]["SearchResults_Playlists_Multi_Relationship_Data_Document"];
-            topHits?: components["schemas"]["SearchResults_TopHits_Multi_Relationship_Data_Document"];
-            tracks?: components["schemas"]["SearchResults_Tracks_Multi_Relationship_Data_Document"];
-            videos?: components["schemas"]["SearchResults_Videos_Multi_Relationship_Data_Document"];
+            albums?: components["schemas"]["SearchResults_Albums_Multi_Relationship_Object"];
+            artists?: components["schemas"]["SearchResults_Artists_Multi_Relationship_Object"];
+            playlists?: components["schemas"]["SearchResults_Playlists_Multi_Relationship_Object"];
+            topHits?: components["schemas"]["SearchResults_TopHits_Multi_Relationship_Object"];
+            tracks?: components["schemas"]["SearchResults_Tracks_Multi_Relationship_Object"];
+            videos?: components["schemas"]["SearchResults_Videos_Multi_Relationship_Object"];
         };
         SearchResults_Resource_Object: {
             attributes?: components["schemas"]["SearchResults_Attributes"];
@@ -33959,10 +33988,10 @@ export interface components {
              */
             type: "searchResults";
         };
+        SearchResults_TopHits_Multi_Relationship_Data_Document: components["schemas"]["SearchResults_TopHits_Multi_Relationship_Object"] & components["schemas"]["Top_Level_Included"];
         /** @description Target resource types: `albums`, `artists`, `playlists`, `tracks`, `videos`. */
-        SearchResults_TopHits_Multi_Relationship_Data_Document: {
+        SearchResults_TopHits_Multi_Relationship_Object: {
             data?: components["schemas"]["SearchResults_TopHits_Resource_Identifier"][];
-            included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
         SearchResults_TopHits_Resource_Identifier: {
@@ -33974,17 +34003,17 @@ export interface components {
             meta?: components["schemas"]["SearchResults_TopHits_Resource_Identifier_Meta"];
             /**
              * @description Resource type
-             * @example tracks
+             * @example albums
              */
             type: string;
         };
         SearchResults_TopHits_Resource_Identifier_Meta: {
             replacement?: components["schemas"]["Replacement_Provenance"];
         };
+        SearchResults_Tracks_Multi_Relationship_Data_Document: components["schemas"]["SearchResults_Tracks_Multi_Relationship_Object"] & components["schemas"]["Top_Level_Included"];
         /** @description Target resource types: `tracks`. */
-        SearchResults_Tracks_Multi_Relationship_Data_Document: {
+        SearchResults_Tracks_Multi_Relationship_Object: {
             data?: components["schemas"]["SearchResults_Tracks_Resource_Identifier"][];
-            included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
         SearchResults_Tracks_Resource_Identifier: {
@@ -34003,10 +34032,10 @@ export interface components {
         SearchResults_Tracks_Resource_Identifier_Meta: {
             replacement?: components["schemas"]["Replacement_Provenance"];
         };
+        SearchResults_Videos_Multi_Relationship_Data_Document: components["schemas"]["SearchResults_Videos_Multi_Relationship_Object"] & components["schemas"]["Top_Level_Included"];
         /** @description Target resource types: `videos`. */
-        SearchResults_Videos_Multi_Relationship_Data_Document: {
+        SearchResults_Videos_Multi_Relationship_Object: {
             data?: components["schemas"]["SearchResults_Videos_Resource_Identifier"][];
-            included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
         SearchResults_Videos_Resource_Identifier: {
@@ -34018,7 +34047,7 @@ export interface components {
             meta?: components["schemas"]["SearchResults_Videos_Resource_Identifier_Meta"];
             /**
              * @description Resource type
-             * @example tracks
+             * @example videos
              */
             type: string;
         };
@@ -34033,13 +34062,16 @@ export interface components {
             query: string;
             /** @description Suggested search queries */
             suggestions: components["schemas"]["SearchSuggestions_Suggestions"][];
-            /** @description Unique tracking id */
+            /**
+             * @description Unique tracking id
+             * @example d8012e96-7818-4d2d-a957-5053811bf69c
+             */
             trackingId: string;
         };
+        SearchSuggestions_DirectHits_Multi_Relationship_Data_Document: components["schemas"]["SearchSuggestions_DirectHits_Multi_Relationship_Object"] & components["schemas"]["Top_Level_Included"];
         /** @description Target resource types: `albums`, `artists`, `playlists`, `tracks`, `videos`. */
-        SearchSuggestions_DirectHits_Multi_Relationship_Data_Document: {
+        SearchSuggestions_DirectHits_Multi_Relationship_Object: {
             data?: components["schemas"]["SearchSuggestions_DirectHits_Resource_Identifier"][];
-            included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
         SearchSuggestions_DirectHits_Resource_Identifier: {
@@ -34051,7 +34083,7 @@ export interface components {
             meta?: components["schemas"]["SearchSuggestions_DirectHits_Resource_Identifier_Meta"];
             /**
              * @description Resource type
-             * @example tracks
+             * @example albums
              */
             type: string;
         };
@@ -34072,10 +34104,10 @@ export interface components {
              */
             start: number;
         };
+        SearchSuggestions_History_Multi_Relationship_Data_Document: components["schemas"]["SearchSuggestions_History_Multi_Relationship_Object"] & components["schemas"]["Top_Level_Included"];
         /** @description Target resource types: `searchHistoryEntries`. */
-        SearchSuggestions_History_Multi_Relationship_Data_Document: {
+        SearchSuggestions_History_Multi_Relationship_Object: {
             data?: components["schemas"]["Resource_Identifier"][];
-            included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
         SearchSuggestions_Multi_Resource_Data_Document: {
@@ -34084,8 +34116,8 @@ export interface components {
             links: components["schemas"]["Links"];
         };
         SearchSuggestions_Relationships: {
-            directHits?: components["schemas"]["SearchSuggestions_DirectHits_Multi_Relationship_Data_Document"];
-            history?: components["schemas"]["SearchSuggestions_History_Multi_Relationship_Data_Document"];
+            directHits?: components["schemas"]["SearchSuggestions_DirectHits_Multi_Relationship_Object"];
+            history?: components["schemas"]["SearchSuggestions_History_Multi_Relationship_Object"];
         };
         SearchSuggestions_Resource_Object: {
             attributes?: components["schemas"]["SearchSuggestions_Attributes"];
@@ -34216,15 +34248,15 @@ export interface components {
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
+        Shares_Owners_Multi_Relationship_Data_Document: components["schemas"]["Shares_Owners_Multi_Relationship_Object"] & components["schemas"]["Top_Level_Included"];
         /** @description Target resource types: `users`. */
-        Shares_Owners_Multi_Relationship_Data_Document: {
+        Shares_Owners_Multi_Relationship_Object: {
             data?: components["schemas"]["Resource_Identifier"][];
-            included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
         Shares_Relationships: {
-            owners?: components["schemas"]["Shares_Owners_Multi_Relationship_Data_Document"];
-            sharedResources?: components["schemas"]["Shares_SharedResources_Multi_Relationship_Data_Document"];
+            owners?: components["schemas"]["Shares_Owners_Multi_Relationship_Object"];
+            sharedResources?: components["schemas"]["Shares_SharedResources_Multi_Relationship_Object"];
         };
         Shares_Resource_Object: {
             attributes?: components["schemas"]["Shares_Attributes"];
@@ -34240,10 +34272,10 @@ export interface components {
              */
             type: "shares";
         };
+        Shares_SharedResources_Multi_Relationship_Data_Document: components["schemas"]["Shares_SharedResources_Multi_Relationship_Object"] & components["schemas"]["Top_Level_Included"];
         /** @description Target resource types: `albums`, `playlists`, `tracks`. */
-        Shares_SharedResources_Multi_Relationship_Data_Document: {
+        Shares_SharedResources_Multi_Relationship_Object: {
             data?: components["schemas"]["Shares_SharedResources_Resource_Identifier"][];
-            included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
         Shares_SharedResources_Resource_Identifier: {
@@ -34255,7 +34287,7 @@ export interface components {
             meta?: components["schemas"]["Shares_SharedResources_Resource_Identifier_Meta"];
             /**
              * @description Resource type
-             * @example tracks
+             * @example albums
              */
             type: string;
         };
@@ -34283,7 +34315,7 @@ export interface components {
             links: components["schemas"]["Links"];
         };
         SharingSummaries_Relationships: {
-            subject?: components["schemas"]["SharingSummaries_Subject_Single_Relationship_Data_Document"];
+            subject?: components["schemas"]["SharingSummaries_Subject_Single_Relationship_Object"];
         };
         SharingSummaries_Resource_Object: {
             attributes?: components["schemas"]["SharingSummaries_Attributes"];
@@ -34308,17 +34340,17 @@ export interface components {
             meta?: components["schemas"]["SharingSummaries_Subject_Resource_Identifier_Meta"];
             /**
              * @description Resource type
-             * @example tracks
+             * @example albums
              */
             type: string;
         };
         SharingSummaries_Subject_Resource_Identifier_Meta: {
             replacement?: components["schemas"]["Replacement_Provenance"];
         };
+        SharingSummaries_Subject_Single_Relationship_Data_Document: components["schemas"]["SharingSummaries_Subject_Single_Relationship_Object"] & components["schemas"]["Top_Level_Included"];
         /** @description Target resource types: `albums`, `folders`, `tracks`. */
-        SharingSummaries_Subject_Single_Relationship_Data_Document: {
+        SharingSummaries_Subject_Single_Relationship_Object: {
             data?: components["schemas"]["SharingSummaries_Subject_Resource_Identifier"] | (never | null);
-            included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
         /** @description Publication target supplied on creation; reads use publishedInSelectedSite */
@@ -34468,8 +34500,8 @@ export interface components {
             links: components["schemas"]["Links"];
         };
         SquareConnections_Relationships: {
-            selectedSite?: components["schemas"]["SquareConnections_SelectedSite_Single_Relationship_Data_Document"];
-            sites?: components["schemas"]["SquareConnections_Sites_Multi_Relationship_Data_Document"];
+            selectedSite?: components["schemas"]["SquareConnections_SelectedSite_Single_Relationship_Object"];
+            sites?: components["schemas"]["SquareConnections_Sites_Multi_Relationship_Object"];
         };
         SquareConnections_Resource_Object: {
             attributes?: components["schemas"]["SquareConnections_Attributes"];
@@ -34485,10 +34517,10 @@ export interface components {
              */
             type: "squareConnections";
         };
+        SquareConnections_SelectedSite_Single_Relationship_Data_Document: components["schemas"]["SquareConnections_SelectedSite_Single_Relationship_Object"] & components["schemas"]["Top_Level_Included"];
         /** @description Target resource types: `squareSites`. */
-        SquareConnections_SelectedSite_Single_Relationship_Data_Document: {
+        SquareConnections_SelectedSite_Single_Relationship_Object: {
             data?: components["schemas"]["Resource_Identifier"] | (never | null);
-            included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
         SquareConnections_SelectedSite_Update_Resource_Identifier: {
@@ -34505,10 +34537,10 @@ export interface components {
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
+        SquareConnections_Sites_Multi_Relationship_Data_Document: components["schemas"]["SquareConnections_Sites_Multi_Relationship_Object"] & components["schemas"]["Top_Level_Included"];
         /** @description Target resource types: `squareSites`. */
-        SquareConnections_Sites_Multi_Relationship_Data_Document: {
+        SquareConnections_Sites_Multi_Relationship_Object: {
             data?: components["schemas"]["Resource_Identifier"][];
-            included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
         SquareItemVariationPhysicalCountsCreateOperation_Payload: {
@@ -34859,17 +34891,17 @@ export interface components {
                 status: string;
             }[];
         };
-        /** @description Target resource types: `artworks`. */
-        SquareItemVariations_Artworks_Multi_Relationship_Data_Document: {
-            data?: components["schemas"]["Resource_Identifier"][];
-            included?: components["schemas"]["Included"];
-            links: components["schemas"]["Links"];
-            meta?: components["schemas"]["SquareItemVariations_Artworks_Multi_Relationship_Data_Document_Meta"];
-        };
+        SquareItemVariations_Artworks_Multi_Relationship_Data_Document: components["schemas"]["SquareItemVariations_Artworks_Multi_Relationship_Object"] & components["schemas"]["Top_Level_Included"];
         /** @description Revision of the variation whose artworks are listed */
         SquareItemVariations_Artworks_Multi_Relationship_Data_Document_Meta: {
             /** Format: int64 */
             revision: number;
+        };
+        /** @description Target resource types: `artworks`. */
+        SquareItemVariations_Artworks_Multi_Relationship_Object: {
+            data?: components["schemas"]["Resource_Identifier"][];
+            links: components["schemas"]["Links"];
+            meta?: components["schemas"]["SquareItemVariations_Artworks_Multi_Relationship_Data_Document_Meta"];
         };
         SquareItemVariations_Artworks_Update_Multi_Relationship_Data_Document: {
             data: components["schemas"]["SquareItemVariations_Artworks_Update_Resource_Identifier"][];
@@ -34933,15 +34965,15 @@ export interface components {
              */
             expectedItemRevision: number;
         };
+        SquareItemVariations_Owners_Multi_Relationship_Data_Document: components["schemas"]["SquareItemVariations_Owners_Multi_Relationship_Object"] & components["schemas"]["Top_Level_Included"];
         /** @description Target resource types: `users`. */
-        SquareItemVariations_Owners_Multi_Relationship_Data_Document: {
+        SquareItemVariations_Owners_Multi_Relationship_Object: {
             data?: components["schemas"]["Resource_Identifier"][];
-            included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
         SquareItemVariations_Relationships: {
-            artworks?: components["schemas"]["SquareItemVariations_Artworks_Multi_Relationship_Data_Document"];
-            owners?: components["schemas"]["SquareItemVariations_Owners_Multi_Relationship_Data_Document"];
+            artworks?: components["schemas"]["SquareItemVariations_Artworks_Multi_Relationship_Object"];
+            owners?: components["schemas"]["SquareItemVariations_Owners_Multi_Relationship_Object"];
         };
         SquareItemVariations_Resource_Object: {
             attributes?: components["schemas"]["SquareItemVariations_Attributes"];
@@ -35266,10 +35298,10 @@ export interface components {
                 status: string;
             }[];
         };
+        SquareItems_Artworks_Multi_Relationship_Data_Document: components["schemas"]["SquareItems_Artworks_Multi_Relationship_Object"] & components["schemas"]["Top_Level_Included"];
         /** @description Target resource types: `artworks`. */
-        SquareItems_Artworks_Multi_Relationship_Data_Document: {
+        SquareItems_Artworks_Multi_Relationship_Object: {
             data?: components["schemas"]["Resource_Identifier"][];
-            included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
         SquareItems_Artworks_Update_Multi_Relationship_Data_Document: {
@@ -35319,16 +35351,16 @@ export interface components {
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
+        SquareItems_Owners_Multi_Relationship_Data_Document: components["schemas"]["SquareItems_Owners_Multi_Relationship_Object"] & components["schemas"]["Top_Level_Included"];
         /** @description Target resource types: `users`. */
-        SquareItems_Owners_Multi_Relationship_Data_Document: {
+        SquareItems_Owners_Multi_Relationship_Object: {
             data?: components["schemas"]["Resource_Identifier"][];
-            included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
         SquareItems_Relationships: {
-            artworks?: components["schemas"]["SquareItems_Artworks_Multi_Relationship_Data_Document"];
-            owners?: components["schemas"]["SquareItems_Owners_Multi_Relationship_Data_Document"];
-            variations?: components["schemas"]["SquareItems_Variations_Multi_Relationship_Data_Document"];
+            artworks?: components["schemas"]["SquareItems_Artworks_Multi_Relationship_Object"];
+            owners?: components["schemas"]["SquareItems_Owners_Multi_Relationship_Object"];
+            variations?: components["schemas"]["SquareItems_Variations_Multi_Relationship_Object"];
         };
         SquareItems_Resource_Object: {
             attributes?: components["schemas"]["SquareItems_Attributes"];
@@ -35353,10 +35385,10 @@ export interface components {
             data: components["schemas"]["SquareItems_Resource_Object"];
             links: components["schemas"]["Links"];
         };
+        SquareItems_Variations_Multi_Relationship_Data_Document: components["schemas"]["SquareItems_Variations_Multi_Relationship_Object"] & components["schemas"]["Top_Level_Included"];
         /** @description Target resource types: `squareItemVariations`. */
-        SquareItems_Variations_Multi_Relationship_Data_Document: {
+        SquareItems_Variations_Multi_Relationship_Object: {
             data?: components["schemas"]["Resource_Identifier"][];
-            included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
         SquareItems_Variations_Update_Multi_Relationship_Data_Document: {
@@ -35482,14 +35514,14 @@ export interface components {
             /** @description The site's title as set by the seller in Square */
             siteTitle?: string;
         };
+        SquareSites_Items_Multi_Relationship_Data_Document: components["schemas"]["SquareSites_Items_Multi_Relationship_Object"] & components["schemas"]["Top_Level_Included"];
         /** @description Target resource types: `squareItems`. */
-        SquareSites_Items_Multi_Relationship_Data_Document: {
+        SquareSites_Items_Multi_Relationship_Object: {
             data?: components["schemas"]["Resource_Identifier"][];
-            included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
         SquareSites_Relationships: {
-            items?: components["schemas"]["SquareSites_Items_Multi_Relationship_Data_Document"];
+            items?: components["schemas"]["SquareSites_Items_Multi_Relationship_Object"];
         };
         SquareSites_Resource_Object: {
             attributes?: components["schemas"]["SquareSites_Attributes"];
@@ -35583,14 +35615,14 @@ export interface components {
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
+        StripeConnections_Owners_Multi_Relationship_Data_Document: components["schemas"]["StripeConnections_Owners_Multi_Relationship_Object"] & components["schemas"]["Top_Level_Included"];
         /** @description Target resource types: `users`. */
-        StripeConnections_Owners_Multi_Relationship_Data_Document: {
+        StripeConnections_Owners_Multi_Relationship_Object: {
             data?: components["schemas"]["Resource_Identifier"][];
-            included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
         StripeConnections_Relationships: {
-            owners?: components["schemas"]["StripeConnections_Owners_Multi_Relationship_Data_Document"];
+            owners?: components["schemas"]["StripeConnections_Owners_Multi_Relationship_Object"];
         };
         StripeConnections_Resource_Object: {
             attributes?: components["schemas"]["StripeConnections_Attributes"];
@@ -35614,14 +35646,14 @@ export interface components {
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
+        StripeDashboardLinks_Owners_Multi_Relationship_Data_Document: components["schemas"]["StripeDashboardLinks_Owners_Multi_Relationship_Object"] & components["schemas"]["Top_Level_Included"];
         /** @description Target resource types: `users`. */
-        StripeDashboardLinks_Owners_Multi_Relationship_Data_Document: {
+        StripeDashboardLinks_Owners_Multi_Relationship_Object: {
             data?: components["schemas"]["Resource_Identifier"][];
-            included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
         StripeDashboardLinks_Relationships: {
-            owners?: components["schemas"]["StripeDashboardLinks_Owners_Multi_Relationship_Data_Document"];
+            owners?: components["schemas"]["StripeDashboardLinks_Owners_Multi_Relationship_Object"];
         };
         StripeDashboardLinks_Resource_Object: {
             attributes?: components["schemas"]["StripeDashboardLinks_Attributes"];
@@ -35663,14 +35695,14 @@ export interface components {
             /** @description Terms types the user must accept before using this tile; empty when none are missing. */
             requiredTerms: ("DEVELOPER" | "UPLOAD_MARKETPLACE" | "MERCH_GUIDELINES" | "TIDAL_CONNECT_DEVELOPER")[];
         };
+        StudioHomeInsightTiles_Items_Multi_Relationship_Data_Document: components["schemas"]["StudioHomeInsightTiles_Items_Multi_Relationship_Object"] & components["schemas"]["Top_Level_Included"];
         /** @description Target resource types: `artistStreamsStatistics`. */
-        StudioHomeInsightTiles_Items_Multi_Relationship_Data_Document: {
+        StudioHomeInsightTiles_Items_Multi_Relationship_Object: {
             data?: components["schemas"]["Resource_Identifier"][];
-            included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
         StudioHomeInsightTiles_Relationships: {
-            items?: components["schemas"]["StudioHomeInsightTiles_Items_Multi_Relationship_Data_Document"];
+            items?: components["schemas"]["StudioHomeInsightTiles_Items_Multi_Relationship_Object"];
         };
         StudioHomeInsightTiles_Resource_Object: {
             attributes?: components["schemas"]["StudioHomeInsightTiles_Attributes"];
@@ -35700,15 +35732,15 @@ export interface components {
              */
             requiredTerms: ("DEVELOPER" | "UPLOAD_MARKETPLACE" | "MERCH_GUIDELINES" | "TIDAL_CONNECT_DEVELOPER")[];
         };
+        StudioHomeMerchTiles_Items_Multi_Relationship_Data_Document: components["schemas"]["StudioHomeMerchTiles_Items_Multi_Relationship_Object"] & components["schemas"]["Top_Level_Included"];
         /** @description Target resource types: `squareItems`. */
-        StudioHomeMerchTiles_Items_Multi_Relationship_Data_Document: {
+        StudioHomeMerchTiles_Items_Multi_Relationship_Object: {
             data?: components["schemas"]["Resource_Identifier"][];
-            included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
         StudioHomeMerchTiles_Relationships: {
-            items?: components["schemas"]["StudioHomeMerchTiles_Items_Multi_Relationship_Data_Document"];
-            squareConnection?: components["schemas"]["StudioHomeMerchTiles_SquareConnection_Single_Relationship_Data_Document"];
+            items?: components["schemas"]["StudioHomeMerchTiles_Items_Multi_Relationship_Object"];
+            squareConnection?: components["schemas"]["StudioHomeMerchTiles_SquareConnection_Single_Relationship_Object"];
         };
         StudioHomeMerchTiles_Resource_Object: {
             attributes?: components["schemas"]["StudioHomeMerchTiles_Attributes"];
@@ -35729,10 +35761,10 @@ export interface components {
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
+        StudioHomeMerchTiles_SquareConnection_Single_Relationship_Data_Document: components["schemas"]["StudioHomeMerchTiles_SquareConnection_Single_Relationship_Object"] & components["schemas"]["Top_Level_Included"];
         /** @description Target resource types: `squareConnections`. */
-        StudioHomeMerchTiles_SquareConnection_Single_Relationship_Data_Document: {
+        StudioHomeMerchTiles_SquareConnection_Single_Relationship_Object: {
             data?: components["schemas"]["Resource_Identifier"] | (never | null);
-            included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
         StudioHomeMusicTiles_Attributes: {
@@ -35753,10 +35785,10 @@ export interface components {
              */
             folders: number;
         };
+        StudioHomeMusicTiles_Items_Multi_Relationship_Data_Document: components["schemas"]["StudioHomeMusicTiles_Items_Multi_Relationship_Object"] & components["schemas"]["Top_Level_Included"];
         /** @description Target resource types: `albums`. */
-        StudioHomeMusicTiles_Items_Multi_Relationship_Data_Document: {
+        StudioHomeMusicTiles_Items_Multi_Relationship_Object: {
             data?: components["schemas"]["StudioHomeMusicTiles_Items_Resource_Identifier"][];
-            included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
         StudioHomeMusicTiles_Items_Resource_Identifier: {
@@ -35768,7 +35800,7 @@ export interface components {
             meta?: components["schemas"]["StudioHomeMusicTiles_Items_Resource_Identifier_Meta"];
             /**
              * @description Resource type
-             * @example tracks
+             * @example albums
              */
             type: string;
         };
@@ -35776,7 +35808,7 @@ export interface components {
             replacement?: components["schemas"]["Replacement_Provenance"];
         };
         StudioHomeMusicTiles_Relationships: {
-            items?: components["schemas"]["StudioHomeMusicTiles_Items_Multi_Relationship_Data_Document"];
+            items?: components["schemas"]["StudioHomeMusicTiles_Items_Multi_Relationship_Object"];
         };
         StudioHomeMusicTiles_Resource_Object: {
             attributes?: components["schemas"]["StudioHomeMusicTiles_Attributes"];
@@ -35861,14 +35893,14 @@ export interface components {
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
+        SubscriptionPriceChangeDecisions_PriceChange_Single_Relationship_Data_Document: components["schemas"]["SubscriptionPriceChangeDecisions_PriceChange_Single_Relationship_Object"] & components["schemas"]["Top_Level_Included"];
         /** @description Target resource types: `userSubscriptionPriceChanges`. */
-        SubscriptionPriceChangeDecisions_PriceChange_Single_Relationship_Data_Document: {
+        SubscriptionPriceChangeDecisions_PriceChange_Single_Relationship_Object: {
             data?: components["schemas"]["Resource_Identifier"] | (never | null);
-            included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
         SubscriptionPriceChangeDecisions_Relationships: {
-            priceChange?: components["schemas"]["SubscriptionPriceChangeDecisions_PriceChange_Single_Relationship_Data_Document"];
+            priceChange?: components["schemas"]["SubscriptionPriceChangeDecisions_PriceChange_Single_Relationship_Object"];
         };
         SubscriptionPriceChangeDecisions_Resource_Object: {
             attributes?: components["schemas"]["SubscriptionPriceChangeDecisions_Attributes"];
@@ -35900,14 +35932,14 @@ export interface components {
             data: components["schemas"]["TemporaryUserTokens_Resource_Object"];
             links: components["schemas"]["Links"];
         };
+        TemporaryUserTokens_Owners_Multi_Relationship_Data_Document: components["schemas"]["TemporaryUserTokens_Owners_Multi_Relationship_Object"] & components["schemas"]["Top_Level_Included"];
         /** @description Target resource types: `users`. */
-        TemporaryUserTokens_Owners_Multi_Relationship_Data_Document: {
+        TemporaryUserTokens_Owners_Multi_Relationship_Object: {
             data?: components["schemas"]["Resource_Identifier"][];
-            included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
         TemporaryUserTokens_Relationships: {
-            owners?: components["schemas"]["TemporaryUserTokens_Owners_Multi_Relationship_Data_Document"];
+            owners?: components["schemas"]["TemporaryUserTokens_Owners_Multi_Relationship_Object"];
         };
         TemporaryUserTokens_Resource_Object: {
             attributes?: components["schemas"]["TemporaryUserTokens_Attributes"];
@@ -35980,6 +36012,9 @@ export interface components {
              * @enum {string}
              */
             source: "TIDAL";
+        };
+        Top_Level_Included: {
+            included?: components["schemas"]["Included"];
         };
         TrackFilesReadById403ResponseBody: {
             errors: {
@@ -36157,32 +36192,32 @@ export interface components {
             status?: components["schemas"]["File_Status"];
             uploadLink?: components["schemas"]["File_Upload_Link"];
         };
+        TrackSourceFiles_CommentSummary_Single_Relationship_Data_Document: components["schemas"]["TrackSourceFiles_CommentSummary_Single_Relationship_Object"] & components["schemas"]["Top_Level_Included"];
         /** @description Target resource types: `commentSummaries`. */
-        TrackSourceFiles_CommentSummary_Single_Relationship_Data_Document: {
+        TrackSourceFiles_CommentSummary_Single_Relationship_Object: {
             data?: components["schemas"]["Resource_Identifier"] | (never | null);
-            included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
         TrackSourceFiles_Create_Single_Resource_Data_Document: {
             data: components["schemas"]["TrackSourceFiles_Resource_Object"];
             links: components["schemas"]["Links"];
         };
+        TrackSourceFiles_Owners_Multi_Relationship_Data_Document: components["schemas"]["TrackSourceFiles_Owners_Multi_Relationship_Object"] & components["schemas"]["Top_Level_Included"];
         /** @description Target resource types: `users`. */
-        TrackSourceFiles_Owners_Multi_Relationship_Data_Document: {
+        TrackSourceFiles_Owners_Multi_Relationship_Object: {
             data?: components["schemas"]["Resource_Identifier"][];
-            included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
+        TrackSourceFiles_ReactionSummary_Single_Relationship_Data_Document: components["schemas"]["TrackSourceFiles_ReactionSummary_Single_Relationship_Object"] & components["schemas"]["Top_Level_Included"];
         /** @description Target resource types: `reactionSummaries`. */
-        TrackSourceFiles_ReactionSummary_Single_Relationship_Data_Document: {
+        TrackSourceFiles_ReactionSummary_Single_Relationship_Object: {
             data?: components["schemas"]["Resource_Identifier"] | (never | null);
-            included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
         TrackSourceFiles_Relationships: {
-            commentSummary?: components["schemas"]["TrackSourceFiles_CommentSummary_Single_Relationship_Data_Document"];
-            owners?: components["schemas"]["TrackSourceFiles_Owners_Multi_Relationship_Data_Document"];
-            reactionSummary?: components["schemas"]["TrackSourceFiles_ReactionSummary_Single_Relationship_Data_Document"];
+            commentSummary?: components["schemas"]["TrackSourceFiles_CommentSummary_Single_Relationship_Object"];
+            owners?: components["schemas"]["TrackSourceFiles_Owners_Multi_Relationship_Object"];
+            reactionSummary?: components["schemas"]["TrackSourceFiles_ReactionSummary_Single_Relationship_Object"];
         };
         TrackSourceFiles_Resource_Object: {
             attributes?: components["schemas"]["TrackSourceFiles_Attributes"];
@@ -36215,14 +36250,14 @@ export interface components {
              */
             uniqueListeners: number;
         };
+        TrackStatistics_Owners_Multi_Relationship_Data_Document: components["schemas"]["TrackStatistics_Owners_Multi_Relationship_Object"] & components["schemas"]["Top_Level_Included"];
         /** @description Target resource types: `users`. */
-        TrackStatistics_Owners_Multi_Relationship_Data_Document: {
+        TrackStatistics_Owners_Multi_Relationship_Object: {
             data?: components["schemas"]["Resource_Identifier"][];
-            included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
         TrackStatistics_Relationships: {
-            owners?: components["schemas"]["TrackStatistics_Owners_Multi_Relationship_Data_Document"];
+            owners?: components["schemas"]["TrackStatistics_Owners_Multi_Relationship_Object"];
         };
         TrackStatistics_Resource_Object: {
             attributes?: components["schemas"]["TrackStatistics_Attributes"];
@@ -36395,10 +36430,10 @@ export interface components {
             /** @enum {string} */
             type: "genres";
         };
+        Tracks_Albums_Multi_Relationship_Data_Document: components["schemas"]["Tracks_Albums_Multi_Relationship_Object"] & components["schemas"]["Top_Level_Included"];
         /** @description Target resource types: `albums`. */
-        Tracks_Albums_Multi_Relationship_Data_Document: {
+        Tracks_Albums_Multi_Relationship_Object: {
             data?: components["schemas"]["Tracks_Albums_Resource_Identifier"][];
-            included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
         Tracks_Albums_Resource_Identifier: {
@@ -36410,17 +36445,17 @@ export interface components {
             meta?: components["schemas"]["Tracks_Albums_Resource_Identifier_Meta"];
             /**
              * @description Resource type
-             * @example tracks
+             * @example albums
              */
             type: string;
         };
         Tracks_Albums_Resource_Identifier_Meta: {
             replacement?: components["schemas"]["Replacement_Provenance"];
         };
+        Tracks_Artists_Multi_Relationship_Data_Document: components["schemas"]["Tracks_Artists_Multi_Relationship_Object"] & components["schemas"]["Top_Level_Included"];
         /** @description Target resource types: `artists`. */
-        Tracks_Artists_Multi_Relationship_Data_Document: {
+        Tracks_Artists_Multi_Relationship_Object: {
             data?: components["schemas"]["Resource_Identifier"][];
-            included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
         Tracks_Attributes: {
@@ -36507,34 +36542,34 @@ export interface components {
             data: components["schemas"]["Tracks_Resource_Object"];
             links: components["schemas"]["Links"];
         };
+        Tracks_Credits_Multi_Relationship_Data_Document: components["schemas"]["Tracks_Credits_Multi_Relationship_Object"] & components["schemas"]["Top_Level_Included"];
         /** @description Target resource types: `credits`. */
-        Tracks_Credits_Multi_Relationship_Data_Document: {
+        Tracks_Credits_Multi_Relationship_Object: {
             data?: components["schemas"]["Resource_Identifier"][];
-            included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
+        Tracks_Download_Single_Relationship_Data_Document: components["schemas"]["Tracks_Download_Single_Relationship_Object"] & components["schemas"]["Top_Level_Included"];
         /** @description Target resource types: `downloads`. */
-        Tracks_Download_Single_Relationship_Data_Document: {
+        Tracks_Download_Single_Relationship_Object: {
             data?: components["schemas"]["Resource_Identifier"] | (never | null);
-            included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
+        Tracks_Genres_Multi_Relationship_Data_Document: components["schemas"]["Tracks_Genres_Multi_Relationship_Object"] & components["schemas"]["Top_Level_Included"];
         /** @description Target resource types: `genres`. */
-        Tracks_Genres_Multi_Relationship_Data_Document: {
+        Tracks_Genres_Multi_Relationship_Object: {
             data?: components["schemas"]["Resource_Identifier"][];
-            included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
+        Tracks_Lyrics_Multi_Relationship_Data_Document: components["schemas"]["Tracks_Lyrics_Multi_Relationship_Object"] & components["schemas"]["Top_Level_Included"];
         /** @description Target resource types: `lyrics`. */
-        Tracks_Lyrics_Multi_Relationship_Data_Document: {
+        Tracks_Lyrics_Multi_Relationship_Object: {
             data?: components["schemas"]["Resource_Identifier"][];
-            included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
+        Tracks_MetadataStatus_Single_Relationship_Data_Document: components["schemas"]["Tracks_MetadataStatus_Single_Relationship_Object"] & components["schemas"]["Top_Level_Included"];
         /** @description Target resource types: `tracksMetadataStatus`. */
-        Tracks_MetadataStatus_Single_Relationship_Data_Document: {
+        Tracks_MetadataStatus_Single_Relationship_Object: {
             data?: components["schemas"]["Resource_Identifier"] | (never | null);
-            included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
         Tracks_Multi_Resource_Data_Document: {
@@ -36542,49 +36577,49 @@ export interface components {
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
+        Tracks_Owners_Multi_Relationship_Data_Document: components["schemas"]["Tracks_Owners_Multi_Relationship_Object"] & components["schemas"]["Top_Level_Included"];
         /** @description Target resource types: `users`. */
-        Tracks_Owners_Multi_Relationship_Data_Document: {
+        Tracks_Owners_Multi_Relationship_Object: {
             data?: components["schemas"]["Resource_Identifier"][];
-            included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
+        Tracks_PriceConfig_Single_Relationship_Data_Document: components["schemas"]["Tracks_PriceConfig_Single_Relationship_Object"] & components["schemas"]["Top_Level_Included"];
         /** @description Target resource types: `priceConfigurations`. */
-        Tracks_PriceConfig_Single_Relationship_Data_Document: {
+        Tracks_PriceConfig_Single_Relationship_Object: {
             data?: components["schemas"]["Resource_Identifier"] | (never | null);
-            included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
+        Tracks_Providers_Multi_Relationship_Data_Document: components["schemas"]["Tracks_Providers_Multi_Relationship_Object"] & components["schemas"]["Top_Level_Included"];
         /** @description Target resource types: `providers`. */
-        Tracks_Providers_Multi_Relationship_Data_Document: {
+        Tracks_Providers_Multi_Relationship_Object: {
             data?: components["schemas"]["Resource_Identifier"][];
-            included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
+        Tracks_Radio_Multi_Relationship_Data_Document: components["schemas"]["Tracks_Radio_Multi_Relationship_Object"] & components["schemas"]["Top_Level_Included"];
         /** @description Target resource types: `playlists`. */
-        Tracks_Radio_Multi_Relationship_Data_Document: {
+        Tracks_Radio_Multi_Relationship_Object: {
             data?: components["schemas"]["Resource_Identifier"][];
-            included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
         Tracks_Relationships: {
-            albums?: components["schemas"]["Tracks_Albums_Multi_Relationship_Data_Document"];
-            artists?: components["schemas"]["Tracks_Artists_Multi_Relationship_Data_Document"];
-            credits?: components["schemas"]["Tracks_Credits_Multi_Relationship_Data_Document"];
-            download?: components["schemas"]["Tracks_Download_Single_Relationship_Data_Document"];
-            genres?: components["schemas"]["Tracks_Genres_Multi_Relationship_Data_Document"];
-            lyrics?: components["schemas"]["Tracks_Lyrics_Multi_Relationship_Data_Document"];
-            metadataStatus?: components["schemas"]["Tracks_MetadataStatus_Single_Relationship_Data_Document"];
-            owners?: components["schemas"]["Tracks_Owners_Multi_Relationship_Data_Document"];
-            priceConfig?: components["schemas"]["Tracks_PriceConfig_Single_Relationship_Data_Document"];
-            providers?: components["schemas"]["Tracks_Providers_Multi_Relationship_Data_Document"];
-            radio?: components["schemas"]["Tracks_Radio_Multi_Relationship_Data_Document"];
-            replacement?: components["schemas"]["Tracks_Replacement_Single_Relationship_Data_Document"];
-            shares?: components["schemas"]["Tracks_Shares_Multi_Relationship_Data_Document"];
-            similarTracks?: components["schemas"]["Tracks_SimilarTracks_Multi_Relationship_Data_Document"];
-            sourceFile?: components["schemas"]["Tracks_SourceFile_Single_Relationship_Data_Document"];
-            suggestedTracks?: components["schemas"]["Tracks_SuggestedTracks_Multi_Relationship_Data_Document"];
-            trackStatistics?: components["schemas"]["Tracks_TrackStatistics_Single_Relationship_Data_Document"];
-            usageRules?: components["schemas"]["Tracks_UsageRules_Single_Relationship_Data_Document"];
+            albums?: components["schemas"]["Tracks_Albums_Multi_Relationship_Object"];
+            artists?: components["schemas"]["Tracks_Artists_Multi_Relationship_Object"];
+            credits?: components["schemas"]["Tracks_Credits_Multi_Relationship_Object"];
+            download?: components["schemas"]["Tracks_Download_Single_Relationship_Object"];
+            genres?: components["schemas"]["Tracks_Genres_Multi_Relationship_Object"];
+            lyrics?: components["schemas"]["Tracks_Lyrics_Multi_Relationship_Object"];
+            metadataStatus?: components["schemas"]["Tracks_MetadataStatus_Single_Relationship_Object"];
+            owners?: components["schemas"]["Tracks_Owners_Multi_Relationship_Object"];
+            priceConfig?: components["schemas"]["Tracks_PriceConfig_Single_Relationship_Object"];
+            providers?: components["schemas"]["Tracks_Providers_Multi_Relationship_Object"];
+            radio?: components["schemas"]["Tracks_Radio_Multi_Relationship_Object"];
+            replacement?: components["schemas"]["Tracks_Replacement_Single_Relationship_Object"];
+            shares?: components["schemas"]["Tracks_Shares_Multi_Relationship_Object"];
+            similarTracks?: components["schemas"]["Tracks_SimilarTracks_Multi_Relationship_Object"];
+            sourceFile?: components["schemas"]["Tracks_SourceFile_Single_Relationship_Object"];
+            suggestedTracks?: components["schemas"]["Tracks_SuggestedTracks_Multi_Relationship_Object"];
+            trackStatistics?: components["schemas"]["Tracks_TrackStatistics_Single_Relationship_Object"];
+            usageRules?: components["schemas"]["Tracks_UsageRules_Single_Relationship_Object"];
         };
         Tracks_Replacement_Resource_Identifier: {
             /**
@@ -36602,10 +36637,10 @@ export interface components {
         Tracks_Replacement_Resource_Identifier_Meta: {
             replacement?: components["schemas"]["Replacement_Provenance"];
         };
+        Tracks_Replacement_Single_Relationship_Data_Document: components["schemas"]["Tracks_Replacement_Single_Relationship_Object"] & components["schemas"]["Top_Level_Included"];
         /** @description Target resource types: `tracks`. */
-        Tracks_Replacement_Single_Relationship_Data_Document: {
+        Tracks_Replacement_Single_Relationship_Object: {
             data?: components["schemas"]["Tracks_Replacement_Resource_Identifier"] | (never | null);
-            included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
         Tracks_Resource_Object: {
@@ -36622,16 +36657,16 @@ export interface components {
              */
             type: "tracks";
         };
+        Tracks_Shares_Multi_Relationship_Data_Document: components["schemas"]["Tracks_Shares_Multi_Relationship_Object"] & components["schemas"]["Top_Level_Included"];
         /** @description Target resource types: `shares`. */
-        Tracks_Shares_Multi_Relationship_Data_Document: {
+        Tracks_Shares_Multi_Relationship_Object: {
             data?: components["schemas"]["Resource_Identifier"][];
-            included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
+        Tracks_SimilarTracks_Multi_Relationship_Data_Document: components["schemas"]["Tracks_SimilarTracks_Multi_Relationship_Object"] & components["schemas"]["Top_Level_Included"];
         /** @description Target resource types: `tracks`. */
-        Tracks_SimilarTracks_Multi_Relationship_Data_Document: {
+        Tracks_SimilarTracks_Multi_Relationship_Object: {
             data?: components["schemas"]["Tracks_SimilarTracks_Resource_Identifier"][];
-            included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
         Tracks_SimilarTracks_Resource_Identifier: {
@@ -36655,16 +36690,16 @@ export interface components {
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
+        Tracks_SourceFile_Single_Relationship_Data_Document: components["schemas"]["Tracks_SourceFile_Single_Relationship_Object"] & components["schemas"]["Top_Level_Included"];
         /** @description Target resource types: `trackSourceFiles`. */
-        Tracks_SourceFile_Single_Relationship_Data_Document: {
+        Tracks_SourceFile_Single_Relationship_Object: {
             data?: components["schemas"]["Resource_Identifier"] | (never | null);
-            included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
+        Tracks_SuggestedTracks_Multi_Relationship_Data_Document: components["schemas"]["Tracks_SuggestedTracks_Multi_Relationship_Object"] & components["schemas"]["Top_Level_Included"];
         /** @description Target resource types: `tracks`. */
-        Tracks_SuggestedTracks_Multi_Relationship_Data_Document: {
+        Tracks_SuggestedTracks_Multi_Relationship_Object: {
             data?: components["schemas"]["Tracks_SuggestedTracks_Resource_Identifier"][];
-            included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
         Tracks_SuggestedTracks_Resource_Identifier: {
@@ -36683,16 +36718,16 @@ export interface components {
         Tracks_SuggestedTracks_Resource_Identifier_Meta: {
             replacement?: components["schemas"]["Replacement_Provenance"];
         };
+        Tracks_TrackStatistics_Single_Relationship_Data_Document: components["schemas"]["Tracks_TrackStatistics_Single_Relationship_Object"] & components["schemas"]["Top_Level_Included"];
         /** @description Target resource types: `trackStatistics`. */
-        Tracks_TrackStatistics_Single_Relationship_Data_Document: {
+        Tracks_TrackStatistics_Single_Relationship_Object: {
             data?: components["schemas"]["Resource_Identifier"] | (never | null);
-            included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
+        Tracks_UsageRules_Single_Relationship_Data_Document: components["schemas"]["Tracks_UsageRules_Single_Relationship_Object"] & components["schemas"]["Top_Level_Included"];
         /** @description Target resource types: `usageRules`. */
-        Tracks_UsageRules_Single_Relationship_Data_Document: {
+        Tracks_UsageRules_Single_Relationship_Object: {
             data?: components["schemas"]["Resource_Identifier"] | (never | null);
-            included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
         UsageRulesCreateOperation_Payload: {
@@ -36739,7 +36774,10 @@ export interface components {
             }[];
         };
         UsageRules_Attributes: {
-            /** @description Country code (ISO 3166-1 alpha-2) */
+            /**
+             * @description Country code (ISO 3166-1 alpha-2)
+             * @example US
+             */
             countryCode: string;
             /** @description Usage types allowed for free/ad-supported model */
             free?: ("STREAM" | "DJ" | "STEM" | "DOWNLOAD")[];
@@ -36866,10 +36904,10 @@ export interface components {
             /** Format: date-time */
             addedAt: string;
         };
+        UserCollectionAlbums_Items_Multi_Relationship_Data_Document: components["schemas"]["UserCollectionAlbums_Items_Multi_Relationship_Object"] & components["schemas"]["Top_Level_Included"];
         /** @description Target resource types: `albums`. */
-        UserCollectionAlbums_Items_Multi_Relationship_Data_Document: {
+        UserCollectionAlbums_Items_Multi_Relationship_Object: {
             data?: components["schemas"]["UserCollectionAlbums_Items_Resource_Identifier"][];
-            included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
         UserCollectionAlbums_Items_Resource_Identifier: {
@@ -36881,7 +36919,7 @@ export interface components {
             meta?: components["schemas"]["UserCollectionAlbums_Items_Resource_Identifier_Meta"];
             /**
              * @description Resource type
-             * @example tracks
+             * @example albums
              */
             type: string;
         };
@@ -36890,15 +36928,15 @@ export interface components {
             addedAt: string;
             replacement?: components["schemas"]["Replacement_Provenance"];
         };
+        UserCollectionAlbums_Owners_Multi_Relationship_Data_Document: components["schemas"]["UserCollectionAlbums_Owners_Multi_Relationship_Object"] & components["schemas"]["Top_Level_Included"];
         /** @description Target resource types: `users`. */
-        UserCollectionAlbums_Owners_Multi_Relationship_Data_Document: {
+        UserCollectionAlbums_Owners_Multi_Relationship_Object: {
             data?: components["schemas"]["Resource_Identifier"][];
-            included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
         UserCollectionAlbums_Relationships: {
-            items?: components["schemas"]["UserCollectionAlbums_Items_Multi_Relationship_Data_Document"];
-            owners?: components["schemas"]["UserCollectionAlbums_Owners_Multi_Relationship_Data_Document"];
+            items?: components["schemas"]["UserCollectionAlbums_Items_Multi_Relationship_Object"];
+            owners?: components["schemas"]["UserCollectionAlbums_Owners_Multi_Relationship_Object"];
         };
         UserCollectionAlbums_Resource_Object: {
             attributes?: components["schemas"]["UserCollectionAlbums_Attributes"];
@@ -37003,10 +37041,10 @@ export interface components {
             /** Format: date-time */
             addedAt: string;
         };
+        UserCollectionArtists_Items_Multi_Relationship_Data_Document: components["schemas"]["UserCollectionArtists_Items_Multi_Relationship_Object"] & components["schemas"]["Top_Level_Included"];
         /** @description Target resource types: `artists`. */
-        UserCollectionArtists_Items_Multi_Relationship_Data_Document: {
+        UserCollectionArtists_Items_Multi_Relationship_Object: {
             data?: components["schemas"]["UserCollectionArtists_Items_Resource_Identifier"][];
-            included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
         UserCollectionArtists_Items_Resource_Identifier: {
@@ -37018,7 +37056,7 @@ export interface components {
             meta?: components["schemas"]["UserCollectionArtists_Items_Resource_Identifier_Meta"];
             /**
              * @description Resource type
-             * @example tracks
+             * @example artists
              */
             type: string;
         };
@@ -37026,15 +37064,15 @@ export interface components {
             /** Format: date-time */
             addedAt: string;
         };
+        UserCollectionArtists_Owners_Multi_Relationship_Data_Document: components["schemas"]["UserCollectionArtists_Owners_Multi_Relationship_Object"] & components["schemas"]["Top_Level_Included"];
         /** @description Target resource types: `users`. */
-        UserCollectionArtists_Owners_Multi_Relationship_Data_Document: {
+        UserCollectionArtists_Owners_Multi_Relationship_Object: {
             data?: components["schemas"]["Resource_Identifier"][];
-            included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
         UserCollectionArtists_Relationships: {
-            items?: components["schemas"]["UserCollectionArtists_Items_Multi_Relationship_Data_Document"];
-            owners?: components["schemas"]["UserCollectionArtists_Owners_Multi_Relationship_Data_Document"];
+            items?: components["schemas"]["UserCollectionArtists_Items_Multi_Relationship_Object"];
+            owners?: components["schemas"]["UserCollectionArtists_Owners_Multi_Relationship_Object"];
         };
         UserCollectionArtists_Resource_Object: {
             attributes?: components["schemas"]["UserCollectionArtists_Attributes"];
@@ -37127,10 +37165,10 @@ export interface components {
             data: components["schemas"]["UserCollectionFolders_Resource_Object"];
             links: components["schemas"]["Links"];
         };
+        UserCollectionFolders_Items_Multi_Relationship_Data_Document: components["schemas"]["UserCollectionFolders_Items_Multi_Relationship_Object"] & components["schemas"]["Top_Level_Included"];
         /** @description Target resource types: `playlists`, `userCollectionFolders`. */
-        UserCollectionFolders_Items_Multi_Relationship_Data_Document: {
+        UserCollectionFolders_Items_Multi_Relationship_Object: {
             data?: components["schemas"]["UserCollectionFolders_Items_Resource_Identifier"][];
-            included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
         UserCollectionFolders_Items_Resource_Identifier: {
@@ -37142,7 +37180,7 @@ export interface components {
             meta?: components["schemas"]["UserCollectionFolders_Items_Resource_Identifier_Meta"];
             /**
              * @description Resource type
-             * @example tracks
+             * @example playlists
              */
             type: string;
         };
@@ -37155,16 +37193,16 @@ export interface components {
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
+        UserCollectionFolders_Owners_Multi_Relationship_Data_Document: components["schemas"]["UserCollectionFolders_Owners_Multi_Relationship_Object"] & components["schemas"]["Top_Level_Included"];
         /** @description Target resource types: `users`. */
-        UserCollectionFolders_Owners_Multi_Relationship_Data_Document: {
+        UserCollectionFolders_Owners_Multi_Relationship_Object: {
             data?: components["schemas"]["Resource_Identifier"][];
-            included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
         UserCollectionFolders_Relationships: {
-            items?: components["schemas"]["UserCollectionFolders_Items_Multi_Relationship_Data_Document"];
-            owners?: components["schemas"]["UserCollectionFolders_Owners_Multi_Relationship_Data_Document"];
-            userCollection?: components["schemas"]["UserCollectionFolders_UserCollection_Single_Relationship_Data_Document"];
+            items?: components["schemas"]["UserCollectionFolders_Items_Multi_Relationship_Object"];
+            owners?: components["schemas"]["UserCollectionFolders_Owners_Multi_Relationship_Object"];
+            userCollection?: components["schemas"]["UserCollectionFolders_UserCollection_Single_Relationship_Object"];
         };
         UserCollectionFolders_Resource_Object: {
             attributes?: components["schemas"]["UserCollectionFolders_Attributes"];
@@ -37185,10 +37223,10 @@ export interface components {
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
+        UserCollectionFolders_UserCollection_Single_Relationship_Data_Document: components["schemas"]["UserCollectionFolders_UserCollection_Single_Relationship_Object"] & components["schemas"]["Top_Level_Included"];
         /** @description Target resource types: `userCollectionPlaylists`. */
-        UserCollectionFolders_UserCollection_Single_Relationship_Data_Document: {
+        UserCollectionFolders_UserCollection_Single_Relationship_Object: {
             data?: components["schemas"]["Resource_Identifier"] | (never | null);
-            included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
         UserCollectionPlaylistsItemsAddMultiDataRelationshipWithResponse409ResponseBody: {
@@ -37275,10 +37313,10 @@ export interface components {
             /** Format: date-time */
             addedAt: string;
         };
+        UserCollectionPlaylists_Items_Multi_Relationship_Data_Document: components["schemas"]["UserCollectionPlaylists_Items_Multi_Relationship_Object"] & components["schemas"]["Top_Level_Included"];
         /** @description Target resource types: `playlists`, `userCollectionFolders`. */
-        UserCollectionPlaylists_Items_Multi_Relationship_Data_Document: {
+        UserCollectionPlaylists_Items_Multi_Relationship_Object: {
             data?: components["schemas"]["UserCollectionPlaylists_Items_Resource_Identifier"][];
-            included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
         UserCollectionPlaylists_Items_Resource_Identifier: {
@@ -37290,7 +37328,7 @@ export interface components {
             meta?: components["schemas"]["UserCollectionPlaylists_Items_Resource_Identifier_Meta"];
             /**
              * @description Resource type
-             * @example tracks
+             * @example playlists
              */
             type: string;
         };
@@ -37298,15 +37336,15 @@ export interface components {
             /** Format: date-time */
             addedAt: string;
         };
+        UserCollectionPlaylists_Owners_Multi_Relationship_Data_Document: components["schemas"]["UserCollectionPlaylists_Owners_Multi_Relationship_Object"] & components["schemas"]["Top_Level_Included"];
         /** @description Target resource types: `users`. */
-        UserCollectionPlaylists_Owners_Multi_Relationship_Data_Document: {
+        UserCollectionPlaylists_Owners_Multi_Relationship_Object: {
             data?: components["schemas"]["Resource_Identifier"][];
-            included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
         UserCollectionPlaylists_Relationships: {
-            items?: components["schemas"]["UserCollectionPlaylists_Items_Multi_Relationship_Data_Document"];
-            owners?: components["schemas"]["UserCollectionPlaylists_Owners_Multi_Relationship_Data_Document"];
+            items?: components["schemas"]["UserCollectionPlaylists_Items_Multi_Relationship_Object"];
+            owners?: components["schemas"]["UserCollectionPlaylists_Owners_Multi_Relationship_Object"];
         };
         UserCollectionPlaylists_Resource_Object: {
             attributes?: components["schemas"]["UserCollectionPlaylists_Attributes"];
@@ -37393,10 +37431,10 @@ export interface components {
             /** Format: date-time */
             addedAt: string;
         };
+        UserCollectionSaveForLaters_Items_Multi_Relationship_Data_Document: components["schemas"]["UserCollectionSaveForLaters_Items_Multi_Relationship_Object"] & components["schemas"]["Top_Level_Included"];
         /** @description Target resource types: `albums`, `artists`, `playlists`, `tracks`, `videos`. */
-        UserCollectionSaveForLaters_Items_Multi_Relationship_Data_Document: {
+        UserCollectionSaveForLaters_Items_Multi_Relationship_Object: {
             data?: components["schemas"]["UserCollectionSaveForLaters_Items_Resource_Identifier"][];
-            included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
         UserCollectionSaveForLaters_Items_Resource_Identifier: {
@@ -37408,7 +37446,7 @@ export interface components {
             meta?: components["schemas"]["UserCollectionSaveForLaters_Items_Resource_Identifier_Meta"];
             /**
              * @description Resource type
-             * @example tracks
+             * @example albums
              */
             type: string;
         };
@@ -37417,15 +37455,15 @@ export interface components {
             addedAt: string;
             replacement?: components["schemas"]["Replacement_Provenance"];
         };
+        UserCollectionSaveForLaters_Owners_Multi_Relationship_Data_Document: components["schemas"]["UserCollectionSaveForLaters_Owners_Multi_Relationship_Object"] & components["schemas"]["Top_Level_Included"];
         /** @description Target resource types: `users`. */
-        UserCollectionSaveForLaters_Owners_Multi_Relationship_Data_Document: {
+        UserCollectionSaveForLaters_Owners_Multi_Relationship_Object: {
             data?: components["schemas"]["Resource_Identifier"][];
-            included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
         UserCollectionSaveForLaters_Relationships: {
-            items?: components["schemas"]["UserCollectionSaveForLaters_Items_Multi_Relationship_Data_Document"];
-            owners?: components["schemas"]["UserCollectionSaveForLaters_Owners_Multi_Relationship_Data_Document"];
+            items?: components["schemas"]["UserCollectionSaveForLaters_Items_Multi_Relationship_Object"];
+            owners?: components["schemas"]["UserCollectionSaveForLaters_Owners_Multi_Relationship_Object"];
         };
         UserCollectionSaveForLaters_Resource_Object: {
             attributes?: components["schemas"]["UserCollectionSaveForLaters_Attributes"];
@@ -37530,10 +37568,10 @@ export interface components {
             /** Format: date-time */
             addedAt: string;
         };
+        UserCollectionTracks_Items_Multi_Relationship_Data_Document: components["schemas"]["UserCollectionTracks_Items_Multi_Relationship_Object"] & components["schemas"]["Top_Level_Included"];
         /** @description Target resource types: `tracks`. */
-        UserCollectionTracks_Items_Multi_Relationship_Data_Document: {
+        UserCollectionTracks_Items_Multi_Relationship_Object: {
             data?: components["schemas"]["UserCollectionTracks_Items_Resource_Identifier"][];
-            included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
         UserCollectionTracks_Items_Resource_Identifier: {
@@ -37554,15 +37592,15 @@ export interface components {
             addedAt: string;
             replacement?: components["schemas"]["Replacement_Provenance"];
         };
+        UserCollectionTracks_Owners_Multi_Relationship_Data_Document: components["schemas"]["UserCollectionTracks_Owners_Multi_Relationship_Object"] & components["schemas"]["Top_Level_Included"];
         /** @description Target resource types: `users`. */
-        UserCollectionTracks_Owners_Multi_Relationship_Data_Document: {
+        UserCollectionTracks_Owners_Multi_Relationship_Object: {
             data?: components["schemas"]["Resource_Identifier"][];
-            included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
         UserCollectionTracks_Relationships: {
-            items?: components["schemas"]["UserCollectionTracks_Items_Multi_Relationship_Data_Document"];
-            owners?: components["schemas"]["UserCollectionTracks_Owners_Multi_Relationship_Data_Document"];
+            items?: components["schemas"]["UserCollectionTracks_Items_Multi_Relationship_Object"];
+            owners?: components["schemas"]["UserCollectionTracks_Owners_Multi_Relationship_Object"];
         };
         UserCollectionTracks_Resource_Object: {
             attributes?: components["schemas"]["UserCollectionTracks_Attributes"];
@@ -37667,10 +37705,10 @@ export interface components {
             /** Format: date-time */
             addedAt: string;
         };
+        UserCollectionVideos_Items_Multi_Relationship_Data_Document: components["schemas"]["UserCollectionVideos_Items_Multi_Relationship_Object"] & components["schemas"]["Top_Level_Included"];
         /** @description Target resource types: `videos`. */
-        UserCollectionVideos_Items_Multi_Relationship_Data_Document: {
+        UserCollectionVideos_Items_Multi_Relationship_Object: {
             data?: components["schemas"]["UserCollectionVideos_Items_Resource_Identifier"][];
-            included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
         UserCollectionVideos_Items_Resource_Identifier: {
@@ -37682,7 +37720,7 @@ export interface components {
             meta?: components["schemas"]["UserCollectionVideos_Items_Resource_Identifier_Meta"];
             /**
              * @description Resource type
-             * @example tracks
+             * @example videos
              */
             type: string;
         };
@@ -37691,15 +37729,15 @@ export interface components {
             addedAt: string;
             replacement?: components["schemas"]["Replacement_Provenance"];
         };
+        UserCollectionVideos_Owners_Multi_Relationship_Data_Document: components["schemas"]["UserCollectionVideos_Owners_Multi_Relationship_Object"] & components["schemas"]["Top_Level_Included"];
         /** @description Target resource types: `users`. */
-        UserCollectionVideos_Owners_Multi_Relationship_Data_Document: {
+        UserCollectionVideos_Owners_Multi_Relationship_Object: {
             data?: components["schemas"]["Resource_Identifier"][];
-            included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
         UserCollectionVideos_Relationships: {
-            items?: components["schemas"]["UserCollectionVideos_Items_Multi_Relationship_Data_Document"];
-            owners?: components["schemas"]["UserCollectionVideos_Owners_Multi_Relationship_Data_Document"];
+            items?: components["schemas"]["UserCollectionVideos_Items_Multi_Relationship_Object"];
+            owners?: components["schemas"]["UserCollectionVideos_Owners_Multi_Relationship_Object"];
         };
         UserCollectionVideos_Resource_Object: {
             attributes?: components["schemas"]["UserCollectionVideos_Attributes"];
@@ -37721,14 +37759,14 @@ export interface components {
             links: components["schemas"]["Links"];
         };
         UserDailyMixes_Attributes: Record<string, never>;
+        UserDailyMixes_Items_Multi_Relationship_Data_Document: components["schemas"]["UserDailyMixes_Items_Multi_Relationship_Object"] & components["schemas"]["Top_Level_Included"];
         /** @description Target resource types: `playlists`. */
-        UserDailyMixes_Items_Multi_Relationship_Data_Document: {
+        UserDailyMixes_Items_Multi_Relationship_Object: {
             data?: components["schemas"]["Resource_Identifier"][];
-            included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
         UserDailyMixes_Relationships: {
-            items?: components["schemas"]["UserDailyMixes_Items_Multi_Relationship_Data_Document"];
+            items?: components["schemas"]["UserDailyMixes_Items_Multi_Relationship_Object"];
         };
         UserDailyMixes_Resource_Object: {
             attributes?: components["schemas"]["UserDailyMixes_Attributes"];
@@ -37865,14 +37903,14 @@ export interface components {
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
+        UserDataExports_Owners_Multi_Relationship_Data_Document: components["schemas"]["UserDataExports_Owners_Multi_Relationship_Object"] & components["schemas"]["Top_Level_Included"];
         /** @description Target resource types: `users`. */
-        UserDataExports_Owners_Multi_Relationship_Data_Document: {
+        UserDataExports_Owners_Multi_Relationship_Object: {
             data?: components["schemas"]["Resource_Identifier"][];
-            included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
         UserDataExports_Relationships: {
-            owners?: components["schemas"]["UserDataExports_Owners_Multi_Relationship_Data_Document"];
+            owners?: components["schemas"]["UserDataExports_Owners_Multi_Relationship_Object"];
         };
         UserDataExports_Resource_Object: {
             attributes?: components["schemas"]["UserDataExports_Attributes"];
@@ -37894,14 +37932,14 @@ export interface components {
             links: components["schemas"]["Links"];
         };
         UserDiscoveryMixes_Attributes: Record<string, never>;
+        UserDiscoveryMixes_Items_Multi_Relationship_Data_Document: components["schemas"]["UserDiscoveryMixes_Items_Multi_Relationship_Object"] & components["schemas"]["Top_Level_Included"];
         /** @description Target resource types: `playlists`. */
-        UserDiscoveryMixes_Items_Multi_Relationship_Data_Document: {
+        UserDiscoveryMixes_Items_Multi_Relationship_Object: {
             data?: components["schemas"]["Resource_Identifier"][];
-            included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
         UserDiscoveryMixes_Relationships: {
-            items?: components["schemas"]["UserDiscoveryMixes_Items_Multi_Relationship_Data_Document"];
+            items?: components["schemas"]["UserDiscoveryMixes_Items_Multi_Relationship_Object"];
         };
         UserDiscoveryMixes_Resource_Object: {
             attributes?: components["schemas"]["UserDiscoveryMixes_Attributes"];
@@ -38048,10 +38086,10 @@ export interface components {
              */
             activityType: "TRACK_SOURCE_FILE_COMMENTED";
         };
+        UserFeedItems_Actors_Multi_Relationship_Data_Document: components["schemas"]["UserFeedItems_Actors_Multi_Relationship_Object"] & components["schemas"]["Top_Level_Included"];
         /** @description Target resource types: `artists`. */
-        UserFeedItems_Actors_Multi_Relationship_Data_Document: {
+        UserFeedItems_Actors_Multi_Relationship_Object: {
             data?: components["schemas"]["Resource_Identifier"][];
-            included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
         UserFeedItems_Attributes: {
@@ -38095,8 +38133,8 @@ export interface components {
             seenThroughToken: string;
         };
         UserFeedItems_Relationships: {
-            actors?: components["schemas"]["UserFeedItems_Actors_Multi_Relationship_Data_Document"];
-            subject?: components["schemas"]["UserFeedItems_Subject_Single_Relationship_Data_Document"];
+            actors?: components["schemas"]["UserFeedItems_Actors_Multi_Relationship_Object"];
+            subject?: components["schemas"]["UserFeedItems_Subject_Single_Relationship_Object"];
         };
         UserFeedItems_Resource_Object: {
             attributes?: components["schemas"]["UserFeedItems_Attributes"];
@@ -38121,17 +38159,17 @@ export interface components {
             meta?: components["schemas"]["UserFeedItems_Subject_Resource_Identifier_Meta"];
             /**
              * @description Resource type
-             * @example tracks
+             * @example albums
              */
             type: string;
         };
         UserFeedItems_Subject_Resource_Identifier_Meta: {
             replacement?: components["schemas"]["Replacement_Provenance"];
         };
+        UserFeedItems_Subject_Single_Relationship_Data_Document: components["schemas"]["UserFeedItems_Subject_Single_Relationship_Object"] & components["schemas"]["Top_Level_Included"];
         /** @description Target resource types: `albums`, `artists`, `comments`, `playlists`, `trackSourceFiles`, `tracks`. */
-        UserFeedItems_Subject_Single_Relationship_Data_Document: {
+        UserFeedItems_Subject_Single_Relationship_Object: {
             data?: components["schemas"]["UserFeedItems_Subject_Resource_Identifier"] | (never | null);
-            included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
         UserFeedsUpdateOperation_Payload: {
@@ -38202,14 +38240,14 @@ export interface components {
             links: components["schemas"]["Links"];
         };
         UserNewReleaseMixes_Attributes: Record<string, never>;
+        UserNewReleaseMixes_Items_Multi_Relationship_Data_Document: components["schemas"]["UserNewReleaseMixes_Items_Multi_Relationship_Object"] & components["schemas"]["Top_Level_Included"];
         /** @description Target resource types: `playlists`. */
-        UserNewReleaseMixes_Items_Multi_Relationship_Data_Document: {
+        UserNewReleaseMixes_Items_Multi_Relationship_Object: {
             data?: components["schemas"]["Resource_Identifier"][];
-            included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
         UserNewReleaseMixes_Relationships: {
-            items?: components["schemas"]["UserNewReleaseMixes_Items_Multi_Relationship_Data_Document"];
+            items?: components["schemas"]["UserNewReleaseMixes_Items_Multi_Relationship_Object"];
         };
         UserNewReleaseMixes_Resource_Object: {
             attributes?: components["schemas"]["UserNewReleaseMixes_Attributes"];
@@ -38231,14 +38269,14 @@ export interface components {
             links: components["schemas"]["Links"];
         };
         UserOfflineMixes_Attributes: Record<string, never>;
+        UserOfflineMixes_Items_Multi_Relationship_Data_Document: components["schemas"]["UserOfflineMixes_Items_Multi_Relationship_Object"] & components["schemas"]["Top_Level_Included"];
         /** @description Target resource types: `playlists`. */
-        UserOfflineMixes_Items_Multi_Relationship_Data_Document: {
+        UserOfflineMixes_Items_Multi_Relationship_Object: {
             data?: components["schemas"]["Resource_Identifier"][];
-            included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
         UserOfflineMixes_Relationships: {
-            items?: components["schemas"]["UserOfflineMixes_Items_Multi_Relationship_Data_Document"];
+            items?: components["schemas"]["UserOfflineMixes_Items_Multi_Relationship_Object"];
         };
         UserOfflineMixes_Resource_Object: {
             attributes?: components["schemas"]["UserOfflineMixes_Attributes"];
@@ -38300,10 +38338,10 @@ export interface components {
             /** @enum {string} */
             playbackStatus?: "PLAYING" | "PAUSED";
         };
+        UserPlaybackStates_ActivePlayer_Single_Relationship_Data_Document: components["schemas"]["UserPlaybackStates_ActivePlayer_Single_Relationship_Object"] & components["schemas"]["Top_Level_Included"];
         /** @description Target resource types: `installations`. */
-        UserPlaybackStates_ActivePlayer_Single_Relationship_Data_Document: {
+        UserPlaybackStates_ActivePlayer_Single_Relationship_Object: {
             data?: components["schemas"]["Resource_Identifier"] | (never | null);
-            included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
         UserPlaybackStates_ActivePlayer_Update_Resource_Identifier: {
@@ -38328,22 +38366,22 @@ export interface components {
             /** @enum {string} */
             type: "installations";
         };
+        UserPlaybackStates_AvailablePlayers_Multi_Relationship_Data_Document: components["schemas"]["UserPlaybackStates_AvailablePlayers_Multi_Relationship_Object"] & components["schemas"]["Top_Level_Included"];
         /** @description Target resource types: `installations`. */
-        UserPlaybackStates_AvailablePlayers_Multi_Relationship_Data_Document: {
+        UserPlaybackStates_AvailablePlayers_Multi_Relationship_Object: {
             data?: components["schemas"]["Resource_Identifier"][];
-            included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
+        UserPlaybackStates_ChangeEventStream_Single_Relationship_Data_Document: components["schemas"]["UserPlaybackStates_ChangeEventStream_Single_Relationship_Object"] & components["schemas"]["Top_Level_Included"];
         /** @description Target resource types: `changeEventStreams`. */
-        UserPlaybackStates_ChangeEventStream_Single_Relationship_Data_Document: {
+        UserPlaybackStates_ChangeEventStream_Single_Relationship_Object: {
             data?: components["schemas"]["Resource_Identifier"] | (never | null);
-            included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
+        UserPlaybackStates_PlayQueue_Single_Relationship_Data_Document: components["schemas"]["UserPlaybackStates_PlayQueue_Single_Relationship_Object"] & components["schemas"]["Top_Level_Included"];
         /** @description Target resource types: `playQueues`. */
-        UserPlaybackStates_PlayQueue_Single_Relationship_Data_Document: {
+        UserPlaybackStates_PlayQueue_Single_Relationship_Object: {
             data?: components["schemas"]["Resource_Identifier"] | (never | null);
-            included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
         UserPlaybackStates_PlayQueue_Update_Resource_Identifier: {
@@ -38356,10 +38394,10 @@ export interface components {
             links: components["schemas"]["Links"];
         };
         UserPlaybackStates_Relationships: {
-            activePlayer?: components["schemas"]["UserPlaybackStates_ActivePlayer_Single_Relationship_Data_Document"];
-            availablePlayers?: components["schemas"]["UserPlaybackStates_AvailablePlayers_Multi_Relationship_Data_Document"];
-            changeEventStream?: components["schemas"]["UserPlaybackStates_ChangeEventStream_Single_Relationship_Data_Document"];
-            playQueue?: components["schemas"]["UserPlaybackStates_PlayQueue_Single_Relationship_Data_Document"];
+            activePlayer?: components["schemas"]["UserPlaybackStates_ActivePlayer_Single_Relationship_Object"];
+            availablePlayers?: components["schemas"]["UserPlaybackStates_AvailablePlayers_Multi_Relationship_Object"];
+            changeEventStream?: components["schemas"]["UserPlaybackStates_ChangeEventStream_Single_Relationship_Object"];
+            playQueue?: components["schemas"]["UserPlaybackStates_PlayQueue_Single_Relationship_Object"];
         };
         UserPlaybackStates_Resource_Object: {
             attributes?: components["schemas"]["UserPlaybackStates_Attributes"];
@@ -38480,10 +38518,10 @@ export interface components {
             /** @enum {string} */
             type: "artists";
         };
+        UserRecommendationBlocks_Artists_Multi_Relationship_Data_Document: components["schemas"]["UserRecommendationBlocks_Artists_Multi_Relationship_Object"] & components["schemas"]["Top_Level_Included"];
         /** @description Target resource types: `artists`. */
-        UserRecommendationBlocks_Artists_Multi_Relationship_Data_Document: {
+        UserRecommendationBlocks_Artists_Multi_Relationship_Object: {
             data?: components["schemas"]["UserRecommendationBlocks_Artists_Resource_Identifier"][];
-            included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
         UserRecommendationBlocks_Artists_Resource_Identifier: {
@@ -38495,7 +38533,7 @@ export interface components {
             meta?: components["schemas"]["UserRecommendationBlocks_Artists_Resource_Identifier_Meta"];
             /**
              * @description Resource type
-             * @example tracks
+             * @example artists
              */
             type: string;
         };
@@ -38507,17 +38545,17 @@ export interface components {
             createdAt: string;
         };
         UserRecommendationBlocks_Attributes: Record<string, never>;
+        UserRecommendationBlocks_Owners_Multi_Relationship_Data_Document: components["schemas"]["UserRecommendationBlocks_Owners_Multi_Relationship_Object"] & components["schemas"]["Top_Level_Included"];
         /** @description Target resource types: `users`. */
-        UserRecommendationBlocks_Owners_Multi_Relationship_Data_Document: {
+        UserRecommendationBlocks_Owners_Multi_Relationship_Object: {
             data?: components["schemas"]["Resource_Identifier"][];
-            included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
         UserRecommendationBlocks_Relationships: {
-            artists?: components["schemas"]["UserRecommendationBlocks_Artists_Multi_Relationship_Data_Document"];
-            owners?: components["schemas"]["UserRecommendationBlocks_Owners_Multi_Relationship_Data_Document"];
-            tracks?: components["schemas"]["UserRecommendationBlocks_Tracks_Multi_Relationship_Data_Document"];
-            videos?: components["schemas"]["UserRecommendationBlocks_Videos_Multi_Relationship_Data_Document"];
+            artists?: components["schemas"]["UserRecommendationBlocks_Artists_Multi_Relationship_Object"];
+            owners?: components["schemas"]["UserRecommendationBlocks_Owners_Multi_Relationship_Object"];
+            tracks?: components["schemas"]["UserRecommendationBlocks_Tracks_Multi_Relationship_Object"];
+            videos?: components["schemas"]["UserRecommendationBlocks_Videos_Multi_Relationship_Object"];
         };
         UserRecommendationBlocks_Resource_Object: {
             attributes?: components["schemas"]["UserRecommendationBlocks_Attributes"];
@@ -38547,10 +38585,10 @@ export interface components {
             /** @enum {string} */
             type: "tracks";
         };
+        UserRecommendationBlocks_Tracks_Multi_Relationship_Data_Document: components["schemas"]["UserRecommendationBlocks_Tracks_Multi_Relationship_Object"] & components["schemas"]["Top_Level_Included"];
         /** @description Target resource types: `tracks`. */
-        UserRecommendationBlocks_Tracks_Multi_Relationship_Data_Document: {
+        UserRecommendationBlocks_Tracks_Multi_Relationship_Object: {
             data?: components["schemas"]["UserRecommendationBlocks_Tracks_Resource_Identifier"][];
-            included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
         UserRecommendationBlocks_Tracks_Resource_Identifier: {
@@ -38583,10 +38621,10 @@ export interface components {
             /** @enum {string} */
             type: "videos";
         };
+        UserRecommendationBlocks_Videos_Multi_Relationship_Data_Document: components["schemas"]["UserRecommendationBlocks_Videos_Multi_Relationship_Object"] & components["schemas"]["Top_Level_Included"];
         /** @description Target resource types: `videos`. */
-        UserRecommendationBlocks_Videos_Multi_Relationship_Data_Document: {
+        UserRecommendationBlocks_Videos_Multi_Relationship_Object: {
             data?: components["schemas"]["UserRecommendationBlocks_Videos_Resource_Identifier"][];
-            included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
         UserRecommendationBlocks_Videos_Resource_Identifier: {
@@ -38598,7 +38636,7 @@ export interface components {
             meta?: components["schemas"]["UserRecommendationBlocks_Videos_Resource_Identifier_Meta"];
             /**
              * @description Resource type
-             * @example tracks
+             * @example videos
              */
             type: string;
         };
@@ -38696,10 +38734,10 @@ export interface components {
              */
             newPrice: string;
         };
+        UserSubscriptionPriceChanges_Decision_Single_Relationship_Data_Document: components["schemas"]["UserSubscriptionPriceChanges_Decision_Single_Relationship_Object"] & components["schemas"]["Top_Level_Included"];
         /** @description Target resource types: `subscriptionPriceChangeDecisions`. */
-        UserSubscriptionPriceChanges_Decision_Single_Relationship_Data_Document: {
+        UserSubscriptionPriceChanges_Decision_Single_Relationship_Object: {
             data?: components["schemas"]["Resource_Identifier"] | (never | null);
-            included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
         UserSubscriptionPriceChanges_Multi_Resource_Data_Document: {
@@ -38708,7 +38746,7 @@ export interface components {
             links: components["schemas"]["Links"];
         };
         UserSubscriptionPriceChanges_Relationships: {
-            decision?: components["schemas"]["UserSubscriptionPriceChanges_Decision_Single_Relationship_Data_Document"];
+            decision?: components["schemas"]["UserSubscriptionPriceChanges_Decision_Single_Relationship_Object"];
         };
         UserSubscriptionPriceChanges_Resource_Object: {
             attributes?: components["schemas"]["UserSubscriptionPriceChanges_Attributes"];
@@ -38724,10 +38762,10 @@ export interface components {
              */
             type: "userSubscriptionPriceChanges";
         };
+        Users_Artist_Single_Relationship_Data_Document: components["schemas"]["Users_Artist_Single_Relationship_Object"] & components["schemas"]["Top_Level_Included"];
         /** @description Target resource types: `artists`. */
-        Users_Artist_Single_Relationship_Data_Document: {
+        Users_Artist_Single_Relationship_Object: {
             data?: components["schemas"]["Resource_Identifier"] | (never | null);
-            included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
         Users_Attributes: {
@@ -38774,7 +38812,7 @@ export interface components {
             username: string;
         };
         Users_Relationships: {
-            artist?: components["schemas"]["Users_Artist_Single_Relationship_Data_Document"];
+            artist?: components["schemas"]["Users_Artist_Single_Relationship_Object"];
         };
         Users_Resource_Object: {
             attributes?: components["schemas"]["Users_Attributes"];
@@ -38859,10 +38897,10 @@ export interface components {
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
+        Videos_Albums_Multi_Relationship_Data_Document: components["schemas"]["Videos_Albums_Multi_Relationship_Object"] & components["schemas"]["Top_Level_Included"];
         /** @description Target resource types: `albums`. */
-        Videos_Albums_Multi_Relationship_Data_Document: {
+        Videos_Albums_Multi_Relationship_Object: {
             data?: components["schemas"]["Videos_Albums_Resource_Identifier"][];
-            included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
         Videos_Albums_Resource_Identifier: {
@@ -38874,17 +38912,17 @@ export interface components {
             meta?: components["schemas"]["Videos_Albums_Resource_Identifier_Meta"];
             /**
              * @description Resource type
-             * @example tracks
+             * @example albums
              */
             type: string;
         };
         Videos_Albums_Resource_Identifier_Meta: {
             replacement?: components["schemas"]["Replacement_Provenance"];
         };
+        Videos_Artists_Multi_Relationship_Data_Document: components["schemas"]["Videos_Artists_Multi_Relationship_Object"] & components["schemas"]["Top_Level_Included"];
         /** @description Target resource types: `artists`. */
-        Videos_Artists_Multi_Relationship_Data_Document: {
+        Videos_Artists_Multi_Relationship_Object: {
             data?: components["schemas"]["Resource_Identifier"][];
-            included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
         Videos_Attributes: {
@@ -38934,10 +38972,10 @@ export interface components {
              */
             version?: string;
         };
+        Videos_Credits_Multi_Relationship_Data_Document: components["schemas"]["Videos_Credits_Multi_Relationship_Object"] & components["schemas"]["Top_Level_Included"];
         /** @description Target resource types: `credits`. */
-        Videos_Credits_Multi_Relationship_Data_Document: {
+        Videos_Credits_Multi_Relationship_Object: {
             data?: components["schemas"]["Resource_Identifier"][];
-            included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
         Videos_Multi_Resource_Data_Document: {
@@ -38945,22 +38983,22 @@ export interface components {
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
+        Videos_Providers_Multi_Relationship_Data_Document: components["schemas"]["Videos_Providers_Multi_Relationship_Object"] & components["schemas"]["Top_Level_Included"];
         /** @description Target resource types: `providers`. */
-        Videos_Providers_Multi_Relationship_Data_Document: {
+        Videos_Providers_Multi_Relationship_Object: {
             data?: components["schemas"]["Resource_Identifier"][];
-            included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
         Videos_Relationships: {
-            albums?: components["schemas"]["Videos_Albums_Multi_Relationship_Data_Document"];
-            artists?: components["schemas"]["Videos_Artists_Multi_Relationship_Data_Document"];
-            credits?: components["schemas"]["Videos_Credits_Multi_Relationship_Data_Document"];
-            providers?: components["schemas"]["Videos_Providers_Multi_Relationship_Data_Document"];
-            replacement?: components["schemas"]["Videos_Replacement_Single_Relationship_Data_Document"];
-            similarVideos?: components["schemas"]["Videos_SimilarVideos_Multi_Relationship_Data_Document"];
-            suggestedVideos?: components["schemas"]["Videos_SuggestedVideos_Multi_Relationship_Data_Document"];
-            thumbnailArt?: components["schemas"]["Videos_ThumbnailArt_Multi_Relationship_Data_Document"];
-            usageRules?: components["schemas"]["Videos_UsageRules_Single_Relationship_Data_Document"];
+            albums?: components["schemas"]["Videos_Albums_Multi_Relationship_Object"];
+            artists?: components["schemas"]["Videos_Artists_Multi_Relationship_Object"];
+            credits?: components["schemas"]["Videos_Credits_Multi_Relationship_Object"];
+            providers?: components["schemas"]["Videos_Providers_Multi_Relationship_Object"];
+            replacement?: components["schemas"]["Videos_Replacement_Single_Relationship_Object"];
+            similarVideos?: components["schemas"]["Videos_SimilarVideos_Multi_Relationship_Object"];
+            suggestedVideos?: components["schemas"]["Videos_SuggestedVideos_Multi_Relationship_Object"];
+            thumbnailArt?: components["schemas"]["Videos_ThumbnailArt_Multi_Relationship_Object"];
+            usageRules?: components["schemas"]["Videos_UsageRules_Single_Relationship_Object"];
         };
         Videos_Replacement_Resource_Identifier: {
             /**
@@ -38971,17 +39009,17 @@ export interface components {
             meta?: components["schemas"]["Videos_Replacement_Resource_Identifier_Meta"];
             /**
              * @description Resource type
-             * @example tracks
+             * @example videos
              */
             type: string;
         };
         Videos_Replacement_Resource_Identifier_Meta: {
             replacement?: components["schemas"]["Replacement_Provenance"];
         };
+        Videos_Replacement_Single_Relationship_Data_Document: components["schemas"]["Videos_Replacement_Single_Relationship_Object"] & components["schemas"]["Top_Level_Included"];
         /** @description Target resource types: `videos`. */
-        Videos_Replacement_Single_Relationship_Data_Document: {
+        Videos_Replacement_Single_Relationship_Object: {
             data?: components["schemas"]["Videos_Replacement_Resource_Identifier"] | (never | null);
-            included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
         Videos_Resource_Object: {
@@ -38998,10 +39036,10 @@ export interface components {
              */
             type: "videos";
         };
+        Videos_SimilarVideos_Multi_Relationship_Data_Document: components["schemas"]["Videos_SimilarVideos_Multi_Relationship_Object"] & components["schemas"]["Top_Level_Included"];
         /** @description Target resource types: `videos`. */
-        Videos_SimilarVideos_Multi_Relationship_Data_Document: {
+        Videos_SimilarVideos_Multi_Relationship_Object: {
             data?: components["schemas"]["Videos_SimilarVideos_Resource_Identifier"][];
-            included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
         Videos_SimilarVideos_Resource_Identifier: {
@@ -39013,7 +39051,7 @@ export interface components {
             meta?: components["schemas"]["Videos_SimilarVideos_Resource_Identifier_Meta"];
             /**
              * @description Resource type
-             * @example tracks
+             * @example videos
              */
             type: string;
         };
@@ -39025,10 +39063,10 @@ export interface components {
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
+        Videos_SuggestedVideos_Multi_Relationship_Data_Document: components["schemas"]["Videos_SuggestedVideos_Multi_Relationship_Object"] & components["schemas"]["Top_Level_Included"];
         /** @description Target resource types: `videos`. */
-        Videos_SuggestedVideos_Multi_Relationship_Data_Document: {
+        Videos_SuggestedVideos_Multi_Relationship_Object: {
             data?: components["schemas"]["Videos_SuggestedVideos_Resource_Identifier"][];
-            included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
         Videos_SuggestedVideos_Resource_Identifier: {
@@ -39040,23 +39078,23 @@ export interface components {
             meta?: components["schemas"]["Videos_SuggestedVideos_Resource_Identifier_Meta"];
             /**
              * @description Resource type
-             * @example tracks
+             * @example videos
              */
             type: string;
         };
         Videos_SuggestedVideos_Resource_Identifier_Meta: {
             replacement?: components["schemas"]["Replacement_Provenance"];
         };
+        Videos_ThumbnailArt_Multi_Relationship_Data_Document: components["schemas"]["Videos_ThumbnailArt_Multi_Relationship_Object"] & components["schemas"]["Top_Level_Included"];
         /** @description Target resource types: `artworks`. */
-        Videos_ThumbnailArt_Multi_Relationship_Data_Document: {
+        Videos_ThumbnailArt_Multi_Relationship_Object: {
             data?: components["schemas"]["Resource_Identifier"][];
-            included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
+        Videos_UsageRules_Single_Relationship_Data_Document: components["schemas"]["Videos_UsageRules_Single_Relationship_Object"] & components["schemas"]["Top_Level_Included"];
         /** @description Target resource types: `usageRules`. */
-        Videos_UsageRules_Single_Relationship_Data_Document: {
+        Videos_UsageRules_Single_Relationship_Object: {
             data?: components["schemas"]["Resource_Identifier"] | (never | null);
-            included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
         ViewerContexts_Attributes: {
@@ -39067,10 +39105,10 @@ export interface components {
             isFollowedBy?: components["schemas"]["FollowedBy"];
             isFollowing?: components["schemas"]["Following"];
         };
+        ViewerContexts_Comments_Multi_Relationship_Data_Document: components["schemas"]["ViewerContexts_Comments_Multi_Relationship_Object"] & components["schemas"]["Top_Level_Included"];
         /** @description Target resource types: `comments`. */
-        ViewerContexts_Comments_Multi_Relationship_Data_Document: {
+        ViewerContexts_Comments_Multi_Relationship_Object: {
             data?: components["schemas"]["Resource_Identifier"][];
-            included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
         ViewerContexts_Multi_Resource_Data_Document: {
@@ -39078,17 +39116,17 @@ export interface components {
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
+        ViewerContexts_Reactions_Multi_Relationship_Data_Document: components["schemas"]["ViewerContexts_Reactions_Multi_Relationship_Object"] & components["schemas"]["Top_Level_Included"];
         /** @description Target resource types: `reactions`. */
-        ViewerContexts_Reactions_Multi_Relationship_Data_Document: {
+        ViewerContexts_Reactions_Multi_Relationship_Object: {
             data?: components["schemas"]["Resource_Identifier"][];
-            included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
         ViewerContexts_Relationships: {
-            comments?: components["schemas"]["ViewerContexts_Comments_Multi_Relationship_Data_Document"];
-            reactions?: components["schemas"]["ViewerContexts_Reactions_Multi_Relationship_Data_Document"];
-            subject?: components["schemas"]["ViewerContexts_Subject_Single_Relationship_Data_Document"];
-            viewer?: components["schemas"]["ViewerContexts_Viewer_Single_Relationship_Data_Document"];
+            comments?: components["schemas"]["ViewerContexts_Comments_Multi_Relationship_Object"];
+            reactions?: components["schemas"]["ViewerContexts_Reactions_Multi_Relationship_Object"];
+            subject?: components["schemas"]["ViewerContexts_Subject_Single_Relationship_Object"];
+            viewer?: components["schemas"]["ViewerContexts_Viewer_Single_Relationship_Object"];
         };
         ViewerContexts_Resource_Object: {
             attributes?: components["schemas"]["ViewerContexts_Attributes"];
@@ -39118,23 +39156,23 @@ export interface components {
             meta?: components["schemas"]["ViewerContexts_Subject_Resource_Identifier_Meta"];
             /**
              * @description Resource type
-             * @example tracks
+             * @example albums
              */
             type: string;
         };
         ViewerContexts_Subject_Resource_Identifier_Meta: {
             replacement?: components["schemas"]["Replacement_Provenance"];
         };
+        ViewerContexts_Subject_Single_Relationship_Data_Document: components["schemas"]["ViewerContexts_Subject_Single_Relationship_Object"] & components["schemas"]["Top_Level_Included"];
         /** @description Target resource types: `albums`, `artists`, `comments`, `folders`, `playlists`, `trackSourceFiles`, `tracks`, `videos`. */
-        ViewerContexts_Subject_Single_Relationship_Data_Document: {
+        ViewerContexts_Subject_Single_Relationship_Object: {
             data?: components["schemas"]["ViewerContexts_Subject_Resource_Identifier"] | (never | null);
-            included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
+        ViewerContexts_Viewer_Single_Relationship_Data_Document: components["schemas"]["ViewerContexts_Viewer_Single_Relationship_Object"] & components["schemas"]["Top_Level_Included"];
         /** @description Target resource types: `users`. */
-        ViewerContexts_Viewer_Single_Relationship_Data_Document: {
+        ViewerContexts_Viewer_Single_Relationship_Object: {
             data?: components["schemas"]["Resource_Identifier"] | (never | null);
-            included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
         /** @description Available waveform for this source. May be absent independently of audio. Map playback progress as time/processing.audio.duration when available; catalogue and preview durations are not interchangeable. */
