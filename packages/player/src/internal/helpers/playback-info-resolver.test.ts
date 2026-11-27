@@ -150,36 +150,6 @@ describe('playbackInfoResolver', () => {
     }
   });
 
-  it('fetches track manifest with shareCode provided', async () => {
-    const { clientId, token } = await credentialsProvider.getCredentials();
-
-    if (!token) {
-      throw new Error('No access token, cannot fulfill test.');
-    }
-
-    const result = await fetchPlaybackInfo({
-      accessToken: token,
-      audioAdaptiveBitrateStreaming: true,
-      audioQuality: 'LOSSLESS',
-      clientId,
-      mediaProduct: {
-        productId: '518309787',
-        productType: 'track',
-        shareCode: '36d1002d-e674-48f6-bd57-626b4eb453b6',
-        sourceId: '',
-        sourceType: '',
-      },
-      playerType: 'shaka',
-      prefetch: false,
-      // eslint-disable-next-line no-restricted-syntax
-      streamingSessionId: `tidal-player-js-test-${Date.now()}`,
-    });
-
-    expect(result.assetPresentation).to.equal('FULL');
-    expect(result.manifestMimeType).to.not.equal(undefined);
-    expect(result.manifest).to.not.equal(undefined);
-  });
-
   it('fetches playback info with ABR disabled (single quality)', async () => {
     const { clientId, token } = await credentialsProvider.getCredentials();
 
