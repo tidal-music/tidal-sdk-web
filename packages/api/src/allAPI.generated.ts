@@ -1400,7 +1400,8 @@ export interface paths {
         };
         /**
          * Get shares relationship ("to-many").
-         * @description The album's share links, active and expired, newest first.
+         * @deprecated
+         * @description The album's share links, active and expired, newest first. Deprecated: use `resourceGrantInvitations` instead.
          */
         get: {
             parameters: {
@@ -15218,7 +15219,8 @@ export interface paths {
         put?: never;
         /**
          * Create single savedShare.
-         * @description Redeem an active share with VOUCHER access mode for its offered role. A share without VOUCHER mode returns 403. Every save, repeated ones included, needs a password-protected share's password and counts as a use of a limited share; password attempts are rate limited. Deprecated for playlist shares: use `POST /resourceGrants` with an `invitation` relationship instead.
+         * @deprecated
+         * @description Redeem an active share for its offered role. Every save, repeated ones included, needs a password-protected share's password and counts as a use of a limited share; password attempts are rate limited. The share's creator cannot save it. Deprecated: use `POST /resourceGrants` with an `invitation` relationship instead.
          */
         post: {
             parameters: {
@@ -16211,6 +16213,7 @@ export interface paths {
         };
         /**
          * Get multiple shares.
+         * @deprecated
          * @description Retrieves multiple shares by available filters, or without if applicable.
          */
         get: {
@@ -16263,7 +16266,8 @@ export interface paths {
         put?: never;
         /**
          * Create single share.
-         * @description Creates a new share. Deprecated for playlists: use `resourceGrantInvitations` instead.
+         * @deprecated
+         * @description Creates a new share. Deprecated: use `resourceGrantInvitations` instead.
          */
         post: {
             parameters: {
@@ -16317,6 +16321,7 @@ export interface paths {
         };
         /**
          * Get single share.
+         * @deprecated
          * @description Retrieves single share by id.
          */
         get: {
@@ -16370,7 +16375,8 @@ export interface paths {
         post?: never;
         /**
          * Delete single share.
-         * @description Delete share. Effectively revokes bearer access and acceptance.
+         * @deprecated
+         * @description Delete share. Effectively revokes bearer access and acceptance. Deprecated: use `resourceGrantInvitations` instead.
          */
         delete: {
             parameters: {
@@ -16418,7 +16424,8 @@ export interface paths {
         head?: never;
         /**
          * Update single share.
-         * @description Set, change or remove the share's password. Setting one also removes BEARER access; removing one leaves the access modes unchanged. Existing savers keep their access.
+         * @deprecated
+         * @description Set, change or remove the share's password. Setting one also removes BEARER access; removing one leaves the access modes unchanged. Existing savers keep their access. Deprecated: use `resourceGrantInvitations` instead.
          */
         patch: {
             parameters: {
@@ -16535,6 +16542,7 @@ export interface paths {
         };
         /**
          * Get sharedResources relationship ("to-many").
+         * @deprecated
          * @description Retrieves sharedResources relationship.
          */
         get: {
@@ -21113,7 +21121,8 @@ export interface paths {
         };
         /**
          * Get shares relationship ("to-many").
-         * @description The track's share links, active and expired, newest first.
+         * @deprecated
+         * @description The track's share links, active and expired, newest first. Deprecated: use `resourceGrantInvitations` instead.
          */
         get: {
             parameters: {
@@ -29196,6 +29205,9 @@ export interface components {
              * @example 48
              */
             numberOfFollowing?: number;
+            ownerAgeRestricted?: boolean;
+            /** @enum {string} */
+            ownerAgeRestriction?: "MINOR" | "NO_BIRTHDAY";
             /**
              * @description Ownership type of the artist profile. LABEL: label-managed profile, USER: user-created profile, MIXED: claimed profile with both label and user content. May be null during rollout/backfill.
              * @enum {string}
@@ -30768,6 +30780,11 @@ export interface components {
              * @example 83c92ac0-b8e3-4e28-9e27-07909dcde1e5
              */
             reportingId: string;
+            /**
+             * @description Title of the page
+             * @example Music
+             */
+            title?: string;
         };
         DynamicPages_Modules_Multi_Relationship_Data_Document: components["schemas"]["DynamicPages_Modules_Multi_Relationship_Object"] & components["schemas"]["Top_Level_Included"];
         /** @description Target resource types: `dynamicModules`. */
@@ -33746,7 +33763,7 @@ export interface components {
                  * @enum {string}
                  */
                 code: "SHARE_PASSWORD_INVALID" | "SHARE_PASSWORD_REQUIRED" | "UNAUTHORIZED";
-                /** @example This share does not permit redemption */
+                /** @example This invitation can no longer be accepted */
                 detail?: string;
                 /** @example 403 */
                 status: string;
@@ -33759,7 +33776,7 @@ export interface components {
                  * @enum {string}
                  */
                 code: "SHARE_PASSWORD_ATTEMPTS_EXCEEDED";
-                /** @example Too many share password attempts; try again later */
+                /** @example Too many invitation password attempts; try again later */
                 detail?: string;
                 /** @example 429 */
                 status: string;
@@ -39415,7 +39432,7 @@ export interface components {
                 "application/vnd.api+json": components["schemas"]["ResourceGrantsCreateResource429ResponseBody"];
             };
         };
-        /** @description This share does not permit redemption; This share can no longer be accepted; The share is password protected; send its password; The share password is incorrect */
+        /** @description This invitation can no longer be accepted; The invitation is password protected; send its password; The invitation password is incorrect */
         SavedSharesCreateResource403Response: {
             headers: {
                 [name: string]: unknown;
@@ -39424,7 +39441,7 @@ export interface components {
                 "application/vnd.api+json": components["schemas"]["SavedSharesCreateResource403ResponseBody"];
             };
         };
-        /** @description Too many share password attempts; try again later */
+        /** @description Too many invitation password attempts; try again later */
         SavedSharesCreateResource429Response: {
             headers: {
                 [name: string]: unknown;
