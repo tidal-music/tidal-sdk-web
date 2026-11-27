@@ -375,12 +375,12 @@ export interface paths {
                     /** @description User id. Also accepts `me`. */
                     "filter[owners.id]"?: string[];
                     /**
-                     * @description Include related resources. Available relationships: albumStatistics, artists, coverArt, genres, items, owners, priceConfig, providers, replacement, shares, similarAlbums, suggestedCoverArts, usageRules
+                     * @description Include related resources. Available relationships: albumStatistics, artists, coverArt, genres, items, location, owners, priceConfig, providers, replacement, shares, similarAlbums, suggestedCoverArts, usageRules
                      * @example artists.albums
                      */
                     include?: string[];
                     /** @description Comma-separated direct relationships to return as linkage only, without related content. */
-                    includeLinkage?: ("albumStatistics" | "artists" | "coverArt" | "genres" | "items" | "owners" | "priceConfig" | "providers" | "replacement" | "shares" | "similarAlbums" | "suggestedCoverArts" | "usageRules")[];
+                    includeLinkage?: ("albumStatistics" | "artists" | "coverArt" | "genres" | "items" | "location" | "owners" | "priceConfig" | "providers" | "replacement" | "shares" | "similarAlbums" | "suggestedCoverArts" | "usageRules")[];
                     /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
                     "page[cursor]"?: string;
                     /**
@@ -486,12 +486,12 @@ export interface paths {
                      */
                     countryCode?: string;
                     /**
-                     * @description Include related resources. Available relationships: albumStatistics, artists, coverArt, genres, items, owners, priceConfig, providers, replacement, shares, similarAlbums, suggestedCoverArts, usageRules
+                     * @description Include related resources. Available relationships: albumStatistics, artists, coverArt, genres, items, location, owners, priceConfig, providers, replacement, shares, similarAlbums, suggestedCoverArts, usageRules
                      * @example artists.albums
                      */
                     include?: string[];
                     /** @description Comma-separated direct relationships to return as linkage only, without related content. */
-                    includeLinkage?: ("albumStatistics" | "artists" | "coverArt" | "genres" | "items" | "owners" | "priceConfig" | "providers" | "replacement" | "shares" | "similarAlbums" | "suggestedCoverArts" | "usageRules")[];
+                    includeLinkage?: ("albumStatistics" | "artists" | "coverArt" | "genres" | "items" | "location" | "owners" | "priceConfig" | "providers" | "replacement" | "shares" | "similarAlbums" | "suggestedCoverArts" | "usageRules")[];
                     /**
                      * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: artists.albums
                      * @example artists.albums
@@ -1121,6 +1121,72 @@ export interface paths {
                 503: components["responses"]["Default503Response"];
             };
         };
+        trace?: never;
+    };
+    "/albums/{id}/relationships/location": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get location relationship ("to-one").
+         * @description Retrieves location relationship.
+         */
+        get: {
+            parameters: {
+                query?: {
+                    /**
+                     * @description Include related resources. Available relationships: location
+                     * @example location.children.subject
+                     */
+                    include?: string[];
+                    /**
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: location.children.subject
+                     * @example location.children.subject
+                     */
+                    replaceMedia?: string;
+                    /** @description Share code used as a bearer credential for the resource. */
+                    shareCode?: string;
+                };
+                header?: never;
+                path: {
+                    /**
+                     * @description Album id
+                     * @example 251380836
+                     */
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/vnd.api+json": components["schemas"]["Albums_Location_Single_Relationship_Data_Document"];
+                    };
+                };
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
         trace?: never;
     };
     "/albums/{id}/relationships/owners": {
@@ -6892,7 +6958,7 @@ export interface paths {
                 path: {
                     /**
                      * @description Credit id
-                     * @example 3fG7kLmN2pQrStUv
+                     * @example 827XgmRUZ8hFkG2qovkRMN1vI1IhXhQ1W4KLDePTJLz05fDFgj7HH4yghb
                      */
                     id: string;
                 };
@@ -6956,7 +7022,7 @@ export interface paths {
                 path: {
                     /**
                      * @description Credit id
-                     * @example 3fG7kLmN2pQrStUv
+                     * @example 827XgmRUZ8hFkG2qovkRMN1vI1IhXhQ1W4KLDePTJLz05fDFgj7HH4yghb
                      */
                     id: string;
                 };
@@ -7015,7 +7081,7 @@ export interface paths {
                 path: {
                     /**
                      * @description Credit id
-                     * @example 3fG7kLmN2pQrStUv
+                     * @example 827XgmRUZ8hFkG2qovkRMN1vI1IhXhQ1W4KLDePTJLz05fDFgj7HH4yghb
                      */
                     id: string;
                 };
@@ -7750,7 +7816,7 @@ export interface paths {
                      */
                     deviceType: "BROWSER" | "CAR" | "DESKTOP" | "PHONE" | "TABLET" | "TV";
                     /** @description Type of the page (e.g. `ARTIST`) */
-                    "filter[pageType]": ("HOME_STATIC" | "HOME_UPLOADS" | "HOME_EDITORIAL" | "HOME_FREE" | "STUDIO_HOME" | "ARTIST" | "ALBUM" | "PLAYLIST" | "TRACK" | "VIDEO")[];
+                    "filter[pageType]": ("HOME" | "HOME_STATIC" | "HOME_UPLOADS" | "HOME_EDITORIAL" | "HOME_FREE" | "STUDIO_HOME" | "ARTIST" | "ALBUM" | "PLAYLIST" | "TRACK" | "VIDEO")[];
                     /**
                      * @description The system type of the device making the request
                      * @example IOS
@@ -8046,7 +8112,8 @@ export interface paths {
         put?: never;
         /**
          * Create single folderItem.
-         * @description Creates a new folderItem.
+         * @deprecated
+         * @description Places a folder or album in a folder. Deprecated: create albums and folders with their `location` relationship.
          */
         post: {
             parameters: {
@@ -8599,12 +8666,12 @@ export interface paths {
                     /** @description Folder id (e.g. `e3226624-355b-48f8-aa93-db42532caa66`). Also accepts `me`. */
                     "filter[id]": string[];
                     /**
-                     * @description Include related resources. Available relationships: children, owners, parent, preview
+                     * @description Include related resources. Available relationships: children, location, owners, parent, preview
                      * @example children.subject
                      */
                     include?: string[];
                     /** @description Comma-separated direct relationships to return as linkage only, without related content. */
-                    includeLinkage?: ("children" | "owners" | "parent" | "preview")[];
+                    includeLinkage?: ("children" | "location" | "owners" | "parent" | "preview")[];
                     /**
                      * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: children.subject
                      * @example children.subject
@@ -8668,7 +8735,7 @@ export interface paths {
                         "application/vnd.api+json": components["schemas"]["Folders_Create_Single_Resource_Data_Document"];
                     };
                 };
-                400: components["responses"]["Default400Response"];
+                400: components["responses"]["FoldersCreateResource400Response"];
                 404: components["responses"]["Default404Response"];
                 405: components["responses"]["Default405Response"];
                 406: components["responses"]["Default406Response"];
@@ -8701,12 +8768,12 @@ export interface paths {
             parameters: {
                 query?: {
                     /**
-                     * @description Include related resources. Available relationships: children, owners, parent, preview
+                     * @description Include related resources. Available relationships: children, location, owners, parent, preview
                      * @example children.subject
                      */
                     include?: string[];
                     /** @description Comma-separated direct relationships to return as linkage only, without related content. */
-                    includeLinkage?: ("children" | "owners" | "parent" | "preview")[];
+                    includeLinkage?: ("children" | "location" | "owners" | "parent" | "preview")[];
                     /**
                      * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: children.subject
                      * @example children.subject
@@ -8916,6 +8983,72 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/folders/{id}/relationships/location": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get location relationship ("to-one").
+         * @description Retrieves location relationship.
+         */
+        get: {
+            parameters: {
+                query?: {
+                    /**
+                     * @description Include related resources. Available relationships: location
+                     * @example location.children.subject
+                     */
+                    include?: string[];
+                    /**
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: location.children.subject
+                     * @example location.children.subject
+                     */
+                    replaceMedia?: string;
+                    /** @description Share code used as a bearer credential for the resource. */
+                    shareCode?: string;
+                };
+                header?: never;
+                path: {
+                    /**
+                     * @description Folder id. Use `me` for the authenticated user's resource
+                     * @example me
+                     */
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/vnd.api+json": components["schemas"]["Folders_Location_Single_Relationship_Data_Document"];
+                    };
+                };
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/folders/{id}/relationships/owners": {
         parameters: {
             query?: never;
@@ -8988,7 +9121,8 @@ export interface paths {
         };
         /**
          * Get parent relationship ("to-one").
-         * @description Retrieves parent relationship.
+         * @deprecated
+         * @description Deprecated. Use location.
          */
         get: {
             parameters: {
@@ -13141,7 +13275,7 @@ export interface paths {
         get: {
             parameters: {
                 query: {
-                    /** @description List of price configurations IDs (e.g. `cHJpY2UtY29uZmlnLTEyMzpVUw`) */
+                    /** @description List of price configurations IDs (e.g. `3suohewWQFbLbNrEzU3xzB2Ead`) */
                     "filter[id]": string[];
                 };
                 header?: never;
@@ -13235,7 +13369,7 @@ export interface paths {
                 path: {
                     /**
                      * @description Price configuration id
-                     * @example cHJpY2UtY29uZmlnLTEyMzpVUw
+                     * @example 3suohewWQFbLbNrEzU3xzB2Ead
                      */
                     id: string;
                 };
@@ -14381,6 +14515,8 @@ export interface paths {
                     "filter[code]"?: string;
                     /** @description Album, track or folder owned by the caller. Selects undeleted, unexpired invitations on the resource or its ancestors; used-up ones are included. Each keeps its own subject. Cannot be combined with other filters. Missing or non-owned resources and subjects without a live access node return no records. Ordered by expiry then ID; at most 20 invitations per page. Also accepts `folders:me`. */
                     "filter[self][appliesTo]"?: string;
+                    /** @description Resource the invitations offer a role on. Also accepts `folders:me`. */
+                    "filter[subject]"?: string;
                     /**
                      * @description Include related resources. Available relationships: owners, previewGrant, subject
                      * @example previewGrant.subject
@@ -21643,7 +21779,7 @@ export interface paths {
                 path: {
                     /**
                      * @description Usage rules id
-                     * @example VFJBQ0tTOjEyMzpOTw
+                     * @example 2G8QzmEl36qXLjXacZ
                      */
                     id: string;
                 };
@@ -27936,6 +28072,7 @@ export interface components {
         AlbumsCreateOperation_Payload_Data_Relationships: {
             artists: components["schemas"]["AlbumsCreateOperation_Payload_Data_Relationships_Artists"];
             genres?: components["schemas"]["AlbumsCreateOperation_Payload_Data_Relationships_Genres"];
+            location?: components["schemas"]["AlbumsCreateOperation_Payload_Data_Relationships_Location"];
         };
         AlbumsCreateOperation_Payload_Data_Relationships_Artists: {
             data: components["schemas"]["AlbumsCreateOperation_Payload_Data_Relationships_Artists_Data"][];
@@ -27952,6 +28089,14 @@ export interface components {
             id: string;
             /** @enum {string} */
             type: "genres";
+        };
+        AlbumsCreateOperation_Payload_Data_Relationships_Location: {
+            data: components["schemas"]["AlbumsCreateOperation_Payload_Data_Relationships_Location_Data"];
+        };
+        AlbumsCreateOperation_Payload_Data_Relationships_Location_Data: {
+            id: string;
+            /** @enum {string} */
+            type: "folders";
         };
         AlbumsItemsRelationshipUpdateOperation_Payload: {
             data: components["schemas"]["AlbumsItemsRelationshipUpdateOperation_Payload_Data"][];
@@ -28181,6 +28326,12 @@ export interface components {
              */
             volumeNumber: number;
         };
+        Albums_Location_Single_Relationship_Data_Document: components["schemas"]["Albums_Location_Single_Relationship_Object"] & components["schemas"]["Top_Level_Included"];
+        /** @description Target resource types: `folders`. */
+        Albums_Location_Single_Relationship_Object: {
+            data?: components["schemas"]["Resource_Identifier"] | (never | null);
+            links: components["schemas"]["Links"];
+        };
         Albums_Multi_Resource_Data_Document: {
             data: components["schemas"]["Albums_Resource_Object"][];
             included?: components["schemas"]["Included"];
@@ -28210,6 +28361,7 @@ export interface components {
             coverArt?: components["schemas"]["Albums_CoverArt_Multi_Relationship_Object"];
             genres?: components["schemas"]["Albums_Genres_Multi_Relationship_Object"];
             items?: components["schemas"]["Albums_Items_Multi_Relationship_Object"];
+            location?: components["schemas"]["Albums_Location_Single_Relationship_Object"];
             owners?: components["schemas"]["Albums_Owners_Multi_Relationship_Object"];
             priceConfig?: components["schemas"]["Albums_PriceConfig_Single_Relationship_Object"];
             providers?: components["schemas"]["Albums_Providers_Multi_Relationship_Object"];
@@ -30696,7 +30848,7 @@ export interface components {
             viewAllLayout?: "GRID" | "LIST" | "UNKNOWN";
         };
         DynamicModules_Items_Multi_Relationship_Data_Document: components["schemas"]["DynamicModules_Items_Multi_Relationship_Object"] & components["schemas"]["Top_Level_Included"];
-        /** @description Target resource types: `albums`, `artistStreamsStatistics`, `artists`, `playlists`, `squareItems`, `studioHomeEventTiles`, `studioHomeInsightTiles`, `studioHomeMerchTiles`, `studioHomeMusicTiles`, `tracks`, `videos`. */
+        /** @description Target resource types: `albums`, `artistStreamsStatistics`, `artists`, `dynamicPages`, `playlists`, `squareItems`, `studioHomeEventTiles`, `studioHomeInsightTiles`, `studioHomeMerchTiles`, `studioHomeMusicTiles`, `tracks`, `videos`. */
         DynamicModules_Items_Multi_Relationship_Object: {
             data?: components["schemas"]["DynamicModules_Items_Resource_Identifier"][];
             links: components["schemas"]["Links"];
@@ -30773,7 +30925,7 @@ export interface components {
              * @example HOME_STATIC
              * @enum {string}
              */
-            pageType: "HOME_STATIC" | "HOME_UPLOADS" | "HOME_EDITORIAL" | "HOME_FREE" | "STUDIO_HOME" | "ARTIST" | "ALBUM" | "PLAYLIST" | "TRACK" | "VIDEO";
+            pageType: "HOME" | "HOME_STATIC" | "HOME_UPLOADS" | "HOME_EDITORIAL" | "HOME_FREE" | "STUDIO_HOME" | "ARTIST" | "ALBUM" | "PLAYLIST" | "TRACK" | "VIDEO";
             /**
              * Format: uuid
              * @description Id used for reporting user events
@@ -31102,23 +31254,49 @@ export interface components {
             name: string;
         };
         FoldersCreateOperation_Payload_Data_Relationships: {
+            location?: components["schemas"]["FoldersCreateOperation_Payload_Data_Relationships_Location"];
             parent?: components["schemas"]["FoldersCreateOperation_Payload_Data_Relationships_Parent"];
         };
+        FoldersCreateOperation_Payload_Data_Relationships_Location: {
+            data: components["schemas"]["FoldersLocationIdentifier"];
+        };
+        /**
+         * @deprecated
+         * @description Deprecated: use `location`.
+         */
         FoldersCreateOperation_Payload_Data_Relationships_Parent: {
             data: components["schemas"]["FoldersParentIdentifier"];
         };
-        FoldersDeleteResource400ResponseBody: {
+        FoldersCreateResource400ResponseBody: {
             errors: {
                 /**
-                 * @example ROOT_FOLDER_NOT_MODIFIABLE
+                 * @example LOCATION_AND_PARENT
                  * @enum {string}
                  */
-                code: "ROOT_FOLDER_NOT_MODIFIABLE";
+                code: "LOCATION_AND_PARENT" | "ROOT_FOLDER_NOT_MODIFIABLE";
                 /** @example The root folder cannot be renamed or deleted */
                 detail?: string;
                 /** @example 400 */
                 status: string;
             }[];
+        };
+        FoldersDeleteResource400ResponseBody: {
+            errors: {
+                /**
+                 * @example LOCATION_AND_PARENT
+                 * @enum {string}
+                 */
+                code: "LOCATION_AND_PARENT" | "ROOT_FOLDER_NOT_MODIFIABLE";
+                /** @example The root folder cannot be renamed or deleted */
+                detail?: string;
+                /** @example 400 */
+                status: string;
+            }[];
+        };
+        FoldersLocationIdentifier: {
+            id: string;
+            /** @enum {string} */
+            type: "folders";
         };
         FoldersParentIdentifier: {
             id: string;
@@ -31141,10 +31319,10 @@ export interface components {
         FoldersUpdateResource400ResponseBody: {
             errors: {
                 /**
-                 * @example ROOT_FOLDER_NOT_MODIFIABLE
+                 * @example LOCATION_AND_PARENT
                  * @enum {string}
                  */
-                code: "ROOT_FOLDER_NOT_MODIFIABLE";
+                code: "LOCATION_AND_PARENT" | "ROOT_FOLDER_NOT_MODIFIABLE";
                 /** @example The root folder cannot be renamed or deleted */
                 detail?: string;
                 /** @example 400 */
@@ -31169,6 +31347,12 @@ export interface components {
         };
         Folders_Create_Single_Resource_Data_Document: {
             data: components["schemas"]["Folders_Resource_Object"];
+            links: components["schemas"]["Links"];
+        };
+        Folders_Location_Single_Relationship_Data_Document: components["schemas"]["Folders_Location_Single_Relationship_Object"] & components["schemas"]["Top_Level_Included"];
+        /** @description Target resource types: `folders`. */
+        Folders_Location_Single_Relationship_Object: {
+            data?: components["schemas"]["Resource_Identifier"] | (never | null);
             links: components["schemas"]["Links"];
         };
         Folders_Multi_Resource_Data_Document: {
@@ -31196,7 +31380,9 @@ export interface components {
         };
         Folders_Relationships: {
             children?: components["schemas"]["Folders_Children_Multi_Relationship_Object"];
+            location?: components["schemas"]["Folders_Location_Single_Relationship_Object"];
             owners?: components["schemas"]["Folders_Owners_Multi_Relationship_Object"];
+            /** @deprecated */
             parent?: components["schemas"]["Folders_Parent_Single_Relationship_Object"];
             preview?: components["schemas"]["Folders_Preview_Multi_Relationship_Object"];
         };
@@ -39324,7 +39510,16 @@ export interface components {
                 "application/vnd.api+json": components["schemas"]["FolderItemsParentUpdateSingleDataRelationship400ResponseBody"];
             };
         };
-        /** @description The root folder cannot be renamed or deleted */
+        /** @description The root folder cannot be renamed or deleted; Supply location or the deprecated parent, not both */
+        FoldersCreateResource400Response: {
+            headers: {
+                [name: string]: unknown;
+            };
+            content: {
+                "application/vnd.api+json": components["schemas"]["FoldersCreateResource400ResponseBody"];
+            };
+        };
+        /** @description The root folder cannot be renamed or deleted; Supply location or the deprecated parent, not both */
         FoldersDeleteResource400Response: {
             headers: {
                 [name: string]: unknown;
@@ -39333,7 +39528,7 @@ export interface components {
                 "application/vnd.api+json": components["schemas"]["FoldersDeleteResource400ResponseBody"];
             };
         };
-        /** @description The root folder cannot be renamed or deleted */
+        /** @description The root folder cannot be renamed or deleted; Supply location or the deprecated parent, not both */
         FoldersUpdateResource400Response: {
             headers: {
                 [name: string]: unknown;

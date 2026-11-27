@@ -8,7 +8,7 @@
     "description" : "The TIDAL API is a [JSON:API](https://jsonapi.org/)-compliant web API exposing TIDAL's music catalogue, metadata, and user functionality. Guides, authorization documentation, and API key management live at [developer.tidal.com](https://developer.tidal.com).\n\nAll endpoints exchange `application/vnd.api+json` documents per the [JSON:API specification](https://jsonapi.org/format/): [resource objects](https://jsonapi.org/format/#document-resource-objects) with `attributes` and `relationships`, [compound documents](https://jsonapi.org/format/#document-compound-documents) via `include`, and standard [error objects](https://jsonapi.org/format/#error-objects).\n\n### Authentication and authorization\n\nEvery request requires an OAuth 2.0 access token in the `Authorization: Bearer` header. Tokens are issued at `https://auth.tidal.com/v1/oauth2/token` via the client-credentials flow (server-to-server) or the authorization-code + PKCE flow (user context; authorize at `https://login.tidal.com/authorize`). Each endpoint documents which flows it accepts, the access tier it requires, and the scopes that apply. Access tiers are hierarchical and assigned per client: a client can access endpoints and fields that require its own tier or a lower one. Your client's tier is shown on the [developer dashboard](https://developer.tidal.com/dashboard). Scopes protect private user data: fields you are not authorized to read are redacted from the response rather than causing an error, and resources you cannot access at all behave as if they do not exist. See the [authorization guide](https://developer.tidal.com/documentation/api-sdk/api-sdk-authorization) for details.\n\n### Common wire types and compatibility\n\nEach property's schema is authoritative for its allowed values, format, requiredness, nullability, and constraints. A standard defines how a value is represented; an individual schema may support only a documented subset.\n\n- **Enums** use `UPPER_CASE_UNDERSCORE`, except JSON:API resource types, which use plural camelCase names such as `playlistGenerationSchedules`. New values can be added to any enum at any time, so treat unknown values as forward-compatible rather than errors.\n- **Resource IDs** are opaque strings. A few resources document well-known IDs for permanent system singleton instances; compare those IDs by exact value. Never parse, construct, or infer meaning from any other `id`, even when its current representation resembles an integer, UUID, or another recognizable value. Other properties explicitly marked with OpenAPI `format: uuid` are UUIDs.\n- **Dates and times** use ISO 8601. Date-times use the OpenAPI `date-time` format (`2024-05-01T12:00:00Z`), dates use `YYYY-MM-DD`, and durations use values such as `PT3M5S`.\n- **Recurrence frequencies** use RFC 5545 `FREQ` names such as `DAILY`, `WEEKLY`, and `MONTHLY`. The property's enum lists the frequencies that field currently supports.\n- **Weekdays** use `MONDAY` through `SUNDAY`.\n- **Time zones** use IANA Time Zone Database identifiers such as `Europe/Stockholm`, not abbreviations or raw UTC offsets for recurring civil-time schedules.\n- **Country codes** use ISO 3166-1 alpha-2; the shared country type also accepts `WW` for worldwide. **Locales** use IETF BCP 47 language tags such as `en-US`.\n- **Currencies** use ISO 4217 codes. Monetary amounts are decimal strings; each field defines its sign and precision constraints.\n- **Colors** use three- or six-digit hexadecimal strings (`#RGB` or `#RRGGBB`). Resource links to external URLs use JSON:API link objects with an `href` member.\n\n### Resource identifiers\n\nWhere supported, `filter[subject]=tracks:123` matches a related resource by type and ID;\n`filter[subject.id]=123` and `filter[subject.type]=tracks` match either component.\nWhere multiple identifiers are accepted, comma-separated values match any complete pair.\nWhen a member path names a to-many relationship, at least one related resource must match;\nfiltering does not trim that relationship. On collection and to-many relationship reads, the\nreserved root `self` (`filter[self]=tracks:123`) filters primary data itself.\nEach endpoint lists its supported filters and types.\n\nWhere supported, `me` aliases the authenticated user's dedicated resource ID for the referenced\nresource type. It works in paths, resource-ID filters, compact identifiers (`type:me`), resource\nPATCH primary IDs and standalone relationship mutation identifiers, with the same meaning as\nthe resolved ID. Reads using the alias are `no-store`.\n\n### Relationships and includes\n\n[Relationships](https://jsonapi.org/format/#document-resource-object-relationships) are returned only on request: [`include`](https://jsonapi.org/format/#fetching-includes) selects linkage and related content, while `includeLinkage` selects authorized linkage only. A relationship that was not requested is absent from the response, not empty. The full set of relationships a resource supports is documented in its schema.\n\nFor INTERNAL clients on resource GET endpoints, `includeLinkage` accepts comma-separated direct relationship names, for example `includeLinkage=subject,viewer`. It does not load related resources or add an `included` section. Nested paths and type qualifiers are unsupported. To-many linkage retains its normal pagination and relationship `next` links. Selecting the same relationship with both parameters applies full include behavior and reads the relationship once.\n\nRequest related resources in one round trip with `?include=`, a comma-separated list of dot-separated relationship paths — e.g. `include=coverArt,artists.profileArt` on an album. A nested path automatically embeds its intermediate resources: `artists.profileArt` includes the artists as well as their profile art. Include paths are always relative to the request's root resource, also on relationship endpoints. Including a relationship never changes the primary data; the related resources are added to `included`.\n\nInclude paths are validated: a path that cannot be resolved against the resources' documented relationships is rejected with `400`. Include trees are also bounded in path depth (default 3 levels) and in the total number of distinct resources they name (default 10); individual endpoints may apply different limits. Both selectors share the include-node limit, counting overlapping roots once. A request exceeding either limit is rejected with `400`, with the effective limit stated in the error.\n\n### Filtering, sorting, pagination\n\n- [`filter[<memberPath>]=value`](https://jsonapi.org/format/#fetching-filtering) filters primary data by equality. Each endpoint lists its available filters; most collections require at least one.\n- Where explicitly documented, `filter[<memberPath>][ne]=value` negates the complete equality predicate. When the member path names a to-many relationship, no related ID may match any supplied value; a known-empty relationship matches. Operators are separate from values. Supplied comparisons combine with AND. For a required filter with multiple supported comparisons, at least one must be supplied; the parameter descriptions identify these alternatives. Unsupported operators and groups return `400`.\n- Where documented, `filter[<path>][<operator>]=value` applies an endpoint-defined operator, such as `filter[self][matchesQuery]`. Its meaning is described per endpoint, and it combines with other filters by AND.\n- [`sort=<memberPath>`](https://jsonapi.org/format/#fetching-sorting) sorts ascending, `-<memberPath>` descending (`sort=-addedAt`). Filter and sort member paths are relative to primary data.\n- Parameters an endpoint cannot honor are rejected with `400`: a `filter[...]` parameter the endpoint does not document (the error lists the available filters), or `sort` on an endpoint that documents no sort values.\n- [Pagination](https://jsonapi.org/format/#fetching-pagination) is cursor-based: responses carry `links.self` and, while more pages exist, `links.next` with an opaque `page[cursor]`. Follow `next` until absent — there are no offset or total-page parameters. Collection sizes, when available, appear as `meta.total` and may be approximate.\n\n### Type qualifiers\n\nWhere a relationship can contain several resource types, a path segment may be prefixed with a concrete type to scope which type's member is accessed. A playlist's `items` are `tracks` or `videos`: `GET /playlists/{id}?include=items.tracks:albums` resolves `albums` only for the items that are tracks. Qualifiers scope member access — they never filter which resources appear in a relationship — and can be chained.\n\nThe same syntax applies to `filter` and `sort` member paths on endpoints that support it; where supported, the qualified member is listed among the endpoint's documented filters and sort values. The syntax follows JSON:API proposal [json-api#1695](https://github.com/json-api/json-api/issues/1695).\n\n### Mutations\n\n- [Partial updates](https://jsonapi.org/format/#crud-updating-resource-attributes) distinguish three wire states for nullable attributes: omission leaves the current value unchanged, an explicit `null` clears it, and a concrete value updates it.\n- Every mutation accepts an [`Idempotency-Key`](https://www.ietf.org/archive/id/draft-ietf-httpapi-idempotency-key-header-07.html) header. Keys are scoped to the client and the authenticated user. Once the original request has completed, retrying it with the same key, method, path, query and payload within one hour replays its response; a retry while it is still processing is rejected with `409`, and the same key with a different method, path, query or payload with `422`.\n- After a successful write, your own subsequent reads reflect the change; other clients may observe it with a delay.\n\n### Revisions and concurrent editing\n\nWhere supported, `attributes.revision` identifies the resource's documented aggregate state; a separately versioned relationship collection uses document `meta.revision`. Revisions are nonnegative integers that increase when covered state changes. Compare them only within the same identity and scope, preserve the exact value, and never calculate the next revision. Related content, viewer projections and independent sources are not automatically covered. Domain fields named `version`, such as a music edition, are distinct; existing endpoints retain their documented contracts.\n\nGuarded mutations accept the observed value as top-level `meta.expectedRevision`. Each operation declares its scope and whether the precondition is required. A mismatch returns `409`; missing required input returns `400`. Refresh and reconcile after a conflict, then submit a new operation with a new idempotency key. An identical retry with the original key replays a recorded success under the idempotency contract. These revisions are not HTTP ETags.\n\nReturned revisions describe observed snapshots, not reservations for later writes. Background changes can advance them immediately after a successful response.\n\n### Media resource replacements - BETA Internal only\n\nMedia resources (`tracks`, `videos`, and `albums`) can become unavailable in a country when licensing rights change. By default, TIDAL API returns the resource identifiers originally stored in a collection. This keeps ordinary reads predictable and consistent.\n\nIf a stored media resource is unavailable for the effective country, TIDAL may identify a contextually applicable alternative that is available there. Replacement is best effort, so an alternative is not always available. Replacement never changes the stored collection.\n\nTIDAL API provides two ways to work with replacements:\n\n1. **Inspect the `replacement` relationship.** A media resource can expose its applicable alternative through the `replacement` relationship. Include this relationship when a client needs both the original and replacement identifiers or wants to decide whether to use the replacement.\n\n2. **Apply replacements with `replaceMedia`.** Clients can use `replaceMedia` to substitute applicable replacements directly into selected relationship data. The parameter accepts relationship paths using the same syntax as `include`. Projection affects only the response and preserves relationship order and metadata. Each identifier includes `meta.replacement` describing whether it was `ORIGINAL`, `REPLACED`, or `NOT_REPLACED`.\n\nFor example, `GET /playlists/{id}?include=items&replaceMedia=items` applies replacements to media identifiers in the playlist's `items` relationship.\n\n### Compression\n\nResponses are gzip-compressed when the request includes `Accept-Encoding: gzip` (bodies over 2 KB).\n\n### Deprecation\n\nDeprecated endpoints, parameters, and fields are marked `deprecated` in this specification, with the replacement noted in their description. Deprecated functionality keeps working for at least six months after being marked, and is only removed once a replacement is generally available.",
     "termsOfService" : "https://developer.tidal.com/documentation/guidelines/guidelines-developer-terms",
     "title" : "TIDAL API",
-    "version" : "1.10.273"
+    "version" : "1.10.277"
   },
   "externalDocs" : {
     "description" : "TIDAL Developer - Documentation",
@@ -871,7 +871,7 @@
             }
           }
         }, {
-          "description" : "Include related resources. Available relationships: albumStatistics, artists, coverArt, genres, items, owners, priceConfig, providers, replacement, shares, similarAlbums, suggestedCoverArts, usageRules",
+          "description" : "Include related resources. Available relationships: albumStatistics, artists, coverArt, genres, items, location, owners, priceConfig, providers, replacement, shares, similarAlbums, suggestedCoverArts, usageRules",
           "example" : "artists.albums",
           "in" : "query",
           "name" : "include",
@@ -893,7 +893,7 @@
             "type" : "array",
             "items" : {
               "type" : "string",
-              "enum" : [ "albumStatistics", "artists", "coverArt", "genres", "items", "owners", "priceConfig", "providers", "replacement", "shares", "similarAlbums", "suggestedCoverArts", "usageRules" ]
+              "enum" : [ "albumStatistics", "artists", "coverArt", "genres", "items", "location", "owners", "priceConfig", "providers", "replacement", "shares", "similarAlbums", "suggestedCoverArts", "usageRules" ]
             }
           },
           "style" : "form"
@@ -1149,7 +1149,7 @@
             "type" : "string"
           }
         }, {
-          "description" : "Include related resources. Available relationships: albumStatistics, artists, coverArt, genres, items, owners, priceConfig, providers, replacement, shares, similarAlbums, suggestedCoverArts, usageRules",
+          "description" : "Include related resources. Available relationships: albumStatistics, artists, coverArt, genres, items, location, owners, priceConfig, providers, replacement, shares, similarAlbums, suggestedCoverArts, usageRules",
           "example" : "artists.albums",
           "in" : "query",
           "name" : "include",
@@ -1171,7 +1171,7 @@
             "type" : "array",
             "items" : {
               "type" : "string",
-              "enum" : [ "albumStatistics", "artists", "coverArt", "genres", "items", "owners", "priceConfig", "providers", "replacement", "shares", "similarAlbums", "suggestedCoverArts", "usageRules" ]
+              "enum" : [ "albumStatistics", "artists", "coverArt", "genres", "items", "location", "owners", "priceConfig", "providers", "replacement", "shares", "similarAlbums", "suggestedCoverArts", "usageRules" ]
             }
           },
           "style" : "form"
@@ -2070,6 +2070,97 @@
           "Authorization_Code_PKCE" : [ "w_usr" ]
         } ],
         "summary" : "Update items relationship (\"to-many\").",
+        "tags" : [ "albums" ],
+        "x-path-item-properties" : {
+          "required-access-tier" : "INTERNAL"
+        }
+      }
+    },
+    "/albums/{id}/relationships/location" : {
+      "get" : {
+        "description" : "Retrieves location relationship.",
+        "parameters" : [ {
+          "description" : "Album id",
+          "example" : "251380836",
+          "in" : "path",
+          "name" : "id",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "description" : "Include related resources. Available relationships: location",
+          "example" : "location.children.subject",
+          "in" : "query",
+          "name" : "include",
+          "required" : false,
+          "schema" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "example" : "location.children.subject"
+            }
+          }
+        }, {
+          "description" : "Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: location.children.subject",
+          "example" : "location.children.subject",
+          "in" : "query",
+          "name" : "replaceMedia",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "example" : "location.children.subject"
+          }
+        }, {
+          "description" : "Share code used as a bearer credential for the resource.",
+          "in" : "query",
+          "name" : "shareCode",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "example" : "xyz"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/vnd.api+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Albums_Location_Single_Relationship_Data_Document"
+                }
+              }
+            },
+            "description" : "Successful response"
+          },
+          "400" : {
+            "$ref" : "#/components/responses/Default400Response"
+          },
+          "404" : {
+            "$ref" : "#/components/responses/Default404Response"
+          },
+          "405" : {
+            "$ref" : "#/components/responses/Default405Response"
+          },
+          "406" : {
+            "$ref" : "#/components/responses/Default406Response"
+          },
+          "415" : {
+            "$ref" : "#/components/responses/Default415Response"
+          },
+          "429" : {
+            "$ref" : "#/components/responses/Default429Response"
+          },
+          "500" : {
+            "$ref" : "#/components/responses/Default500Response"
+          },
+          "503" : {
+            "$ref" : "#/components/responses/Default503Response"
+          }
+        },
+        "security" : [ {
+          "Authorization_Code_PKCE" : [ ]
+        } ],
+        "summary" : "Get location relationship (\"to-one\").",
         "tags" : [ "albums" ],
         "x-path-item-properties" : {
           "required-access-tier" : "INTERNAL"
@@ -10340,7 +10431,7 @@
         "description" : "Retrieves single credit by id.",
         "parameters" : [ {
           "description" : "Credit id",
-          "example" : "3fG7kLmN2pQrStUv",
+          "example" : "827XgmRUZ8hFkG2qovkRMN1vI1IhXhQ1W4KLDePTJLz05fDFgj7HH4yghb",
           "in" : "path",
           "name" : "id",
           "required" : true,
@@ -10438,7 +10529,7 @@
         "description" : "Retrieves artist relationship.",
         "parameters" : [ {
           "description" : "Credit id",
-          "example" : "3fG7kLmN2pQrStUv",
+          "example" : "827XgmRUZ8hFkG2qovkRMN1vI1IhXhQ1W4KLDePTJLz05fDFgj7HH4yghb",
           "in" : "path",
           "name" : "id",
           "required" : true,
@@ -10522,7 +10613,7 @@
         "description" : "Retrieves category relationship.",
         "parameters" : [ {
           "description" : "Credit id",
-          "example" : "3fG7kLmN2pQrStUv",
+          "example" : "827XgmRUZ8hFkG2qovkRMN1vI1IhXhQ1W4KLDePTJLz05fDFgj7HH4yghb",
           "in" : "path",
           "name" : "id",
           "required" : true,
@@ -11680,7 +11771,7 @@
             "type" : "array",
             "items" : {
               "type" : "string",
-              "enum" : [ "HOME_STATIC", "HOME_UPLOADS", "HOME_EDITORIAL", "HOME_FREE", "STUDIO_HOME", "ARTIST", "ALBUM", "PLAYLIST", "TRACK", "VIDEO" ]
+              "enum" : [ "HOME", "HOME_STATIC", "HOME_UPLOADS", "HOME_EDITORIAL", "HOME_FREE", "STUDIO_HOME", "ARTIST", "ALBUM", "PLAYLIST", "TRACK", "VIDEO" ]
             }
           }
         }, {
@@ -12212,7 +12303,8 @@
         }
       },
       "post" : {
-        "description" : "Creates a new folderItem.",
+        "deprecated" : true,
+        "description" : "Places a folder or album in a folder. Deprecated: create albums and folders with their `location` relationship.",
         "parameters" : [ {
           "$ref" : "#/components/parameters/IdempotencyKey"
         } ],
@@ -13023,7 +13115,7 @@
             }
           }
         }, {
-          "description" : "Include related resources. Available relationships: children, owners, parent, preview",
+          "description" : "Include related resources. Available relationships: children, location, owners, parent, preview",
           "example" : "children.subject",
           "in" : "query",
           "name" : "include",
@@ -13045,7 +13137,7 @@
             "type" : "array",
             "items" : {
               "type" : "string",
-              "enum" : [ "children", "owners", "parent", "preview" ]
+              "enum" : [ "children", "location", "owners", "parent", "preview" ]
             }
           },
           "style" : "form"
@@ -13142,7 +13234,7 @@
             "description" : "Successful response"
           },
           "400" : {
-            "$ref" : "#/components/responses/Default400Response"
+            "$ref" : "#/components/responses/FoldersCreateResource400Response"
           },
           "404" : {
             "$ref" : "#/components/responses/Default404Response"
@@ -13269,7 +13361,7 @@
             "type" : "string"
           }
         }, {
-          "description" : "Include related resources. Available relationships: children, owners, parent, preview",
+          "description" : "Include related resources. Available relationships: children, location, owners, parent, preview",
           "example" : "children.subject",
           "in" : "query",
           "name" : "include",
@@ -13291,7 +13383,7 @@
             "type" : "array",
             "items" : {
               "type" : "string",
-              "enum" : [ "children", "owners", "parent", "preview" ]
+              "enum" : [ "children", "location", "owners", "parent", "preview" ]
             }
           },
           "style" : "form"
@@ -13545,6 +13637,97 @@
         }
       }
     },
+    "/folders/{id}/relationships/location" : {
+      "get" : {
+        "description" : "Retrieves location relationship.",
+        "parameters" : [ {
+          "description" : "Folder id. Use `me` for the authenticated user's resource",
+          "example" : "me",
+          "in" : "path",
+          "name" : "id",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "description" : "Include related resources. Available relationships: location",
+          "example" : "location.children.subject",
+          "in" : "query",
+          "name" : "include",
+          "required" : false,
+          "schema" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "example" : "location.children.subject"
+            }
+          }
+        }, {
+          "description" : "Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: location.children.subject",
+          "example" : "location.children.subject",
+          "in" : "query",
+          "name" : "replaceMedia",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "example" : "location.children.subject"
+          }
+        }, {
+          "description" : "Share code used as a bearer credential for the resource.",
+          "in" : "query",
+          "name" : "shareCode",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "example" : "xyz"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/vnd.api+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Folders_Location_Single_Relationship_Data_Document"
+                }
+              }
+            },
+            "description" : "Successful response"
+          },
+          "400" : {
+            "$ref" : "#/components/responses/Default400Response"
+          },
+          "404" : {
+            "$ref" : "#/components/responses/Default404Response"
+          },
+          "405" : {
+            "$ref" : "#/components/responses/Default405Response"
+          },
+          "406" : {
+            "$ref" : "#/components/responses/Default406Response"
+          },
+          "415" : {
+            "$ref" : "#/components/responses/Default415Response"
+          },
+          "429" : {
+            "$ref" : "#/components/responses/Default429Response"
+          },
+          "500" : {
+            "$ref" : "#/components/responses/Default500Response"
+          },
+          "503" : {
+            "$ref" : "#/components/responses/Default503Response"
+          }
+        },
+        "security" : [ {
+          "Authorization_Code_PKCE" : [ "collection.read", "r_usr" ]
+        } ],
+        "summary" : "Get location relationship (\"to-one\").",
+        "tags" : [ "folders" ],
+        "x-path-item-properties" : {
+          "required-access-tier" : "INTERNAL"
+        }
+      }
+    },
     "/folders/{id}/relationships/owners" : {
       "get" : {
         "description" : "Retrieves owners relationship.",
@@ -13638,7 +13821,8 @@
     },
     "/folders/{id}/relationships/parent" : {
       "get" : {
-        "description" : "Retrieves parent relationship.",
+        "deprecated" : true,
+        "description" : "Deprecated. Use location.",
         "parameters" : [ {
           "description" : "Folder id. Use `me` for the authenticated user's resource",
           "example" : "me",
@@ -19801,7 +19985,7 @@
       "get" : {
         "description" : "Retrieves multiple priceConfigurations by available filters, or without if applicable.",
         "parameters" : [ {
-          "description" : "List of price configurations IDs (e.g. `cHJpY2UtY29uZmlnLTEyMzpVUw`)",
+          "description" : "List of price configurations IDs (e.g. `3suohewWQFbLbNrEzU3xzB2Ead`)",
           "in" : "query",
           "name" : "filter[id]",
           "required" : true,
@@ -19933,7 +20117,7 @@
         "description" : "Retrieves single priceConfiguration by id.",
         "parameters" : [ {
           "description" : "Price configuration id",
-          "example" : "cHJpY2UtY29uZmlnLTEyMzpVUw",
+          "example" : "3suohewWQFbLbNrEzU3xzB2Ead",
           "in" : "path",
           "name" : "id",
           "required" : true,
@@ -21591,6 +21775,15 @@
           "required" : false,
           "schema" : {
             "pattern" : "^(?:tracks|albums|folders):[^,]+$",
+            "type" : "string"
+          }
+        }, {
+          "description" : "Resource the invitations offer a role on. Also accepts `folders:me`.",
+          "in" : "query",
+          "name" : "filter[subject]",
+          "required" : false,
+          "schema" : {
+            "pattern" : "^(?:albums|tracks|folders|playlists):[^,]+$",
             "type" : "string"
           }
         }, {
@@ -32343,7 +32536,7 @@
         "description" : "Retrieves single usageRule by id.",
         "parameters" : [ {
           "description" : "Usage rules id",
-          "example" : "VFJBQ0tTOjEyMzpOTw",
+          "example" : "2G8QzmEl36qXLjXacZ",
           "in" : "path",
           "name" : "id",
           "required" : true,
@@ -41616,6 +41809,16 @@
         },
         "description" : "A folder cannot be placed inside itself or one of its descendants"
       },
+      "FoldersCreateResource400Response" : {
+        "content" : {
+          "application/vnd.api+json" : {
+            "schema" : {
+              "$ref" : "#/components/schemas/FoldersCreateResource400ResponseBody"
+            }
+          }
+        },
+        "description" : "The root folder cannot be renamed or deleted; Supply location or the deprecated parent, not both"
+      },
       "FoldersDeleteResource400Response" : {
         "content" : {
           "application/vnd.api+json" : {
@@ -41624,7 +41827,7 @@
             }
           }
         },
-        "description" : "The root folder cannot be renamed or deleted"
+        "description" : "The root folder cannot be renamed or deleted; Supply location or the deprecated parent, not both"
       },
       "FoldersUpdateResource400Response" : {
         "content" : {
@@ -41634,7 +41837,7 @@
             }
           }
         },
-        "description" : "The root folder cannot be renamed or deleted"
+        "description" : "The root folder cannot be renamed or deleted; Supply location or the deprecated parent, not both"
       },
       "Idempotency409Response" : {
         "content" : {
@@ -42838,6 +43041,9 @@
           },
           "genres" : {
             "$ref" : "#/components/schemas/AlbumsCreateOperation_Payload_Data_Relationships_Genres"
+          },
+          "location" : {
+            "$ref" : "#/components/schemas/AlbumsCreateOperation_Payload_Data_Relationships_Location"
           }
         }
       },
@@ -42894,6 +43100,28 @@
           "type" : {
             "type" : "string",
             "enum" : [ "genres" ]
+          }
+        }
+      },
+      "AlbumsCreateOperation_Payload_Data_Relationships_Location" : {
+        "required" : [ "data" ],
+        "type" : "object",
+        "properties" : {
+          "data" : {
+            "$ref" : "#/components/schemas/AlbumsCreateOperation_Payload_Data_Relationships_Location_Data"
+          }
+        }
+      },
+      "AlbumsCreateOperation_Payload_Data_Relationships_Location_Data" : {
+        "required" : [ "id", "type" ],
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "type" : "string"
+          },
+          "type" : {
+            "type" : "string",
+            "enum" : [ "folders" ]
           }
         }
       },
@@ -43367,6 +43595,32 @@
           }
         }
       },
+      "Albums_Location_Single_Relationship_Data_Document" : {
+        "allOf" : [ {
+          "$ref" : "#/components/schemas/Albums_Location_Single_Relationship_Object"
+        }, {
+          "$ref" : "#/components/schemas/Top_Level_Included"
+        } ]
+      },
+      "Albums_Location_Single_Relationship_Object" : {
+        "required" : [ "links" ],
+        "type" : "object",
+        "properties" : {
+          "data" : {
+            "oneOf" : [ {
+              "$ref" : "#/components/schemas/Resource_Identifier"
+            }, {
+              "type" : "object",
+              "nullable" : true,
+              "enum" : [ null ]
+            } ]
+          },
+          "links" : {
+            "$ref" : "#/components/schemas/Links"
+          }
+        },
+        "description" : "Target resource types: `folders`."
+      },
       "Albums_Multi_Resource_Data_Document" : {
         "required" : [ "data", "links" ],
         "type" : "object",
@@ -43473,6 +43727,9 @@
           },
           "items" : {
             "$ref" : "#/components/schemas/Albums_Items_Multi_Relationship_Object"
+          },
+          "location" : {
+            "$ref" : "#/components/schemas/Albums_Location_Single_Relationship_Object"
           },
           "owners" : {
             "$ref" : "#/components/schemas/Albums_Owners_Multi_Relationship_Object"
@@ -49278,7 +49535,7 @@
             "$ref" : "#/components/schemas/Links"
           }
         },
-        "description" : "Target resource types: `albums`, `artistStreamsStatistics`, `artists`, `playlists`, `squareItems`, `studioHomeEventTiles`, `studioHomeInsightTiles`, `studioHomeMerchTiles`, `studioHomeMusicTiles`, `tracks`, `videos`."
+        "description" : "Target resource types: `albums`, `artistStreamsStatistics`, `artists`, `dynamicPages`, `playlists`, `squareItems`, `studioHomeEventTiles`, `studioHomeInsightTiles`, `studioHomeMerchTiles`, `studioHomeMusicTiles`, `tracks`, `videos`."
       },
       "DynamicModules_Items_Resource_Identifier" : {
         "required" : [ "id", "type" ],
@@ -49433,7 +49690,7 @@
             "type" : "string",
             "description" : "Type of the page eg. home, artist",
             "example" : "HOME_STATIC",
-            "enum" : [ "HOME_STATIC", "HOME_UPLOADS", "HOME_EDITORIAL", "HOME_FREE", "STUDIO_HOME", "ARTIST", "ALBUM", "PLAYLIST", "TRACK", "VIDEO" ]
+            "enum" : [ "HOME", "HOME_STATIC", "HOME_UPLOADS", "HOME_EDITORIAL", "HOME_FREE", "STUDIO_HOME", "ARTIST", "ALBUM", "PLAYLIST", "TRACK", "VIDEO" ]
           },
           "reportingId" : {
             "type" : "string",
@@ -50222,8 +50479,20 @@
       "FoldersCreateOperation_Payload_Data_Relationships" : {
         "type" : "object",
         "properties" : {
+          "location" : {
+            "$ref" : "#/components/schemas/FoldersCreateOperation_Payload_Data_Relationships_Location"
+          },
           "parent" : {
             "$ref" : "#/components/schemas/FoldersCreateOperation_Payload_Data_Relationships_Parent"
+          }
+        }
+      },
+      "FoldersCreateOperation_Payload_Data_Relationships_Location" : {
+        "required" : [ "data" ],
+        "type" : "object",
+        "properties" : {
+          "data" : {
+            "$ref" : "#/components/schemas/FoldersLocationIdentifier"
           }
         }
       },
@@ -50233,6 +50502,36 @@
         "properties" : {
           "data" : {
             "$ref" : "#/components/schemas/FoldersParentIdentifier"
+          }
+        },
+        "description" : "Deprecated: use `location`.",
+        "deprecated" : true
+      },
+      "FoldersCreateResource400ResponseBody" : {
+        "required" : [ "errors" ],
+        "type" : "object",
+        "properties" : {
+          "errors" : {
+            "type" : "array",
+            "items" : {
+              "required" : [ "code", "status" ],
+              "type" : "object",
+              "properties" : {
+                "code" : {
+                  "type" : "string",
+                  "example" : "LOCATION_AND_PARENT",
+                  "enum" : [ "LOCATION_AND_PARENT", "ROOT_FOLDER_NOT_MODIFIABLE" ]
+                },
+                "detail" : {
+                  "type" : "string",
+                  "example" : "The root folder cannot be renamed or deleted"
+                },
+                "status" : {
+                  "type" : "string",
+                  "example" : "400"
+                }
+              }
+            }
           }
         }
       },
@@ -50248,8 +50547,8 @@
               "properties" : {
                 "code" : {
                   "type" : "string",
-                  "example" : "ROOT_FOLDER_NOT_MODIFIABLE",
-                  "enum" : [ "ROOT_FOLDER_NOT_MODIFIABLE" ]
+                  "example" : "LOCATION_AND_PARENT",
+                  "enum" : [ "LOCATION_AND_PARENT", "ROOT_FOLDER_NOT_MODIFIABLE" ]
                 },
                 "detail" : {
                   "type" : "string",
@@ -50261,6 +50560,19 @@
                 }
               }
             }
+          }
+        }
+      },
+      "FoldersLocationIdentifier" : {
+        "required" : [ "id", "type" ],
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "type" : "string"
+          },
+          "type" : {
+            "type" : "string",
+            "enum" : [ "folders" ]
           }
         }
       },
@@ -50326,8 +50638,8 @@
               "properties" : {
                 "code" : {
                   "type" : "string",
-                  "example" : "ROOT_FOLDER_NOT_MODIFIABLE",
-                  "enum" : [ "ROOT_FOLDER_NOT_MODIFIABLE" ]
+                  "example" : "LOCATION_AND_PARENT",
+                  "enum" : [ "LOCATION_AND_PARENT", "ROOT_FOLDER_NOT_MODIFIABLE" ]
                 },
                 "detail" : {
                   "type" : "string",
@@ -50397,6 +50709,32 @@
             "$ref" : "#/components/schemas/Links"
           }
         }
+      },
+      "Folders_Location_Single_Relationship_Data_Document" : {
+        "allOf" : [ {
+          "$ref" : "#/components/schemas/Folders_Location_Single_Relationship_Object"
+        }, {
+          "$ref" : "#/components/schemas/Top_Level_Included"
+        } ]
+      },
+      "Folders_Location_Single_Relationship_Object" : {
+        "required" : [ "links" ],
+        "type" : "object",
+        "properties" : {
+          "data" : {
+            "oneOf" : [ {
+              "$ref" : "#/components/schemas/Resource_Identifier"
+            }, {
+              "type" : "object",
+              "nullable" : true,
+              "enum" : [ null ]
+            } ]
+          },
+          "links" : {
+            "$ref" : "#/components/schemas/Links"
+          }
+        },
+        "description" : "Target resource types: `folders`."
       },
       "Folders_Multi_Resource_Data_Document" : {
         "required" : [ "data", "links" ],
@@ -50493,11 +50831,17 @@
           "children" : {
             "$ref" : "#/components/schemas/Folders_Children_Multi_Relationship_Object"
           },
+          "location" : {
+            "$ref" : "#/components/schemas/Folders_Location_Single_Relationship_Object"
+          },
           "owners" : {
             "$ref" : "#/components/schemas/Folders_Owners_Multi_Relationship_Object"
           },
           "parent" : {
-            "$ref" : "#/components/schemas/Folders_Parent_Single_Relationship_Object"
+            "deprecated" : true,
+            "allOf" : [ {
+              "$ref" : "#/components/schemas/Folders_Parent_Single_Relationship_Object"
+            } ]
           },
           "preview" : {
             "$ref" : "#/components/schemas/Folders_Preview_Multi_Relationship_Object"
