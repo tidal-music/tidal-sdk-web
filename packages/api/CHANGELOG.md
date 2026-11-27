@@ -5,6 +5,33 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.62.0] - 2026-11-27
+
+### Added
+
+- Endpoint `GET /albums/{id}/relationships/location`
+- Endpoint `GET /folders/{id}/relationships/location`
+- Schema `AlbumsCreateOperation_Payload_Data_Relationships_Location`
+- Schema `AlbumsCreateOperation_Payload_Data_Relationships_Location_Data`
+- Schema `Albums_Location_Single_Relationship_Data_Document`
+- Schema `Albums_Location_Single_Relationship_Object`
+- Schema `FoldersCreateOperation_Payload_Data_Relationships_Location`
+- Schema `FoldersCreateResource400ResponseBody`
+- Schema `FoldersLocationIdentifier`
+- Schema `Folders_Location_Single_Relationship_Data_Document`
+- Schema `Folders_Location_Single_Relationship_Object`
+
+### Changed
+
+- Sync to new API definitions (version: 1.10.277)
+- `AlbumsCreateOperation_Payload_Data_Relationships`: added property `location`
+- `Albums_Relationships`: added property `location`
+- `Artists_Attributes`: added property `ownerAgeRestricted`
+- `Artists_Attributes`: added property `ownerAgeRestriction`
+- `DynamicPages_Attributes`: added property `title`
+- `FoldersCreateOperation_Payload_Data_Relationships`: added property `location`
+- `Folders_Relationships`: added property `location`
+
 ## [0.61.0] - 2026-11-26
 
 ### Changed
